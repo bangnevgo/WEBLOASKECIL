@@ -2401,3 +2401,388 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--nv-dim);
 }
+
+/* ===== Illustration Showcase Strip ===== */
+.nv-illust-strip {
+  padding: 40px 24px 32px;
+  background: var(--nv-bg-2);
+  border-bottom: 1px solid var(--nv-border);
+  text-align: center;
+}
+
+.nv-illust-strip-inner {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .nv-illust-strip-inner {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+}
+
+.nv-illust-card {
+  flex: 1;
+  max-width: 300px;
+  text-align: center;
+}
+
+.nv-illust-card-tall {
+  max-width: 300px;
+  flex: 1;
+}
+
+.nv-illust-card-frame {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--nv-glass-border);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.nv-illust-card-tall .nv-illust-card-frame {
+  height: 300px;
+}
+
+.nv-illust-card:hover .nv-illust-card-frame {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(212, 160, 83, 0.15);
+}
+
+.nv-illust-card-img {
+  object-fit: cover;
+  transition: opacity 0.3s;
+  opacity: 0.85;
+}
+
+.nv-illust-card:hover .nv-illust-card-img {
+  opacity: 1;
+}
+
+.nv-illust-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 50%, rgba(10, 10, 12, 0.4) 100%);
+  pointer-events: none;
+}
+
+.nv-illust-card-caption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--nv-muted);
+  font-style: italic;
+}
+
+.nv-illust-caption-icon {
+  color: var(--nv-gold);
+  font-size: 10px;
+}
+
+.nv-illust-tagline {
+  margin-top: 24px;
+}
+
+.nv-illust-tagline p {
+  font-size: 15px;
+  color: var(--nv-dim);
+  font-style: italic;
+  margin: 0;
+}
+
+.nv-illust-tagline em {
+  color: var(--nv-gold);
+  font-style: italic;
+}
+
+/* ===== Illustration Divider (before pricing CTA) ===== */
+.nv-illust-divider {
+  margin-top: 64px;
+  margin-bottom: 16px;
+}
+
+.nv-illust-divider-imgs {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .nv-illust-divider-imgs {
+    gap: 12px;
+  }
+}
+
+.nv-illust-divider-frame {
+  position: relative;
+  width: 260px;
+  height: 180px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--nv-glass-border);
+  flex-shrink: 0;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.nv-illust-divider-frame:hover {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .nv-illust-divider-frame {
+    width: 140px;
+    height: 100px;
+  }
+}
+
+.nv-illust-divider-img {
+  object-fit: cover;
+}
+
+.nv-illust-divider-center {
+  flex: 1;
+  text-align: center;
+  padding: 16px 0;
+}
+
+.nv-illust-divider-glyph {
+  display: block;
+  font-size: 28px;
+  color: var(--nv-gold);
+  margin-bottom: 8px;
+  animation: nv-glow-pulse 3s ease-in-out infinite;
+}
+
+@keyframes nv-glow-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; text-shadow: 0 0 20px rgba(212, 160, 83, 0.4); }
+}
+
+.nv-illust-divider-text {
+  font-size: 16px;
+  color: var(--nv-muted);
+  font-style: italic;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ===== Free Lesson Hero Layout ===== */
+.nv-fl-hero-layout {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .nv-fl-hero-layout {
+    flex-direction: column;
+    gap: 24px;
+  }
+}
+
+.nv-fl-hero-text-side {
+  flex: 1;
+  min-width: 0;
+}
+
+.nv-fl-hero-illust {
+  flex-shrink: 0;
+  width: 300px;
+}
+
+@media (max-width: 768px) {
+  .nv-fl-hero-illust {
+    width: 260px;
+  }
+}
+
+.nv-fl-hero-illust-frame {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2px solid rgba(212, 160, 83, 0.2);
+  box-shadow: 0 8px 40px rgba(212, 160, 83, 0.1);
+}
+
+@media (max-width: 768px) {
+  .nv-fl-hero-illust-frame {
+    height: 220px;
+  }
+}
+
+.nv-fl-hero-illust-glow {
+  position: absolute;
+  inset: -30%;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 30% 40%, rgba(212, 160, 83, 0.1), transparent 60%);
+}
+
+.nv-fl-hero-illust-img {
+  object-fit: cover;
+  opacity: 0.88;
+  transition: opacity 0.3s;
+}
+
+.nv-fl-hero-illust-frame:hover .nv-fl-hero-illust-img {
+  opacity: 1;
+}
+
+.nv-fl-hero-illust-caption {
+  font-size: 12px;
+  color: var(--nv-dim);
+  text-align: center;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+/* ===== Free Lesson Illustration Break ===== */
+.nv-fl-illust-break {
+  margin: 24px 0;
+}
+
+.nv-fl-illust-break-frame {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--nv-glass-border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .nv-fl-illust-break-frame {
+    height: 200px;
+  }
+}
+
+.nv-fl-illust-break-img {
+  object-fit: cover;
+  opacity: 0.75;
+  transition: opacity 0.3s;
+}
+
+.nv-fl-illust-break-frame:hover .nv-fl-illust-break-img {
+  opacity: 0.9;
+}
+
+.nv-fl-illust-break-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(10, 10, 12, 0.5) 100%);
+  pointer-events: none;
+}
+
+.nv-fl-illust-break-caption {
+  font-size: 12px;
+  color: var(--nv-dim);
+  text-align: center;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+/* ===== Free Lesson Practice Illustration Layout ===== */
+.nv-fl-practice-layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+@media (max-width: 768px) {
+  .nv-fl-practice-layout {
+    flex-direction: column;
+  }
+}
+
+.nv-fl-practice-text-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.nv-fl-practice-illust-col {
+  flex-shrink: 0;
+  width: 160px;
+}
+
+@media (max-width: 768px) {
+  .nv-fl-practice-illust-col {
+    width: 100%;
+    order: -1;
+  }
+}
+
+.nv-fl-practice-illust-frame {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--nv-glass-border);
+}
+
+@media (max-width: 768px) {
+  .nv-fl-practice-illust-frame {
+    height: 140px;
+  }
+}
+
+.nv-fl-practice-illust-img {
+  object-fit: cover;
+  opacity: 0.75;
+  border-radius: 12px;
+}
+
+/* ===== Free Lesson Conversion Illustration Strip ===== */
+.nv-fl-conversion-illust-strip {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.nv-fl-conversion-illust-mini {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--nv-glass-border);
+  opacity: 0.6;
+  transition: opacity 0.3s;
+}
+
+.nv-fl-conversion-illust-mini:hover {
+  opacity: 0.85;
+}
+
+.nv-fl-conversion-illust-mini-img {
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .nv-fl-conversion-illust-mini {
+    width: 80px;
+    height: 80px;
+  }
+}

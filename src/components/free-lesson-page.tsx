@@ -1,9 +1,29 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback } from 'react'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
 import { ALL_PARTS, FREE_LESSON_NUMS } from '@/lib/curriculum-data'
+
+// Map each free lesson to a thematic illustration
+const lessonIllustrations: Record<string, { src: string; alt: string; caption: string }> = {
+  '1.1': {
+    src: '/images/illustrations/manifestation-journal.webp',
+    alt: 'Jurnal Manifestasi — Menulis I AM',
+    caption: '"I AM" bukan sekadar kata — ia adalah kekuatan kreatif',
+  },
+  '1.2': {
+    src: '/images/illustrations/gemini-vision.png',
+    alt: 'Kesadaran Menciptakan Realitas',
+    caption: 'Dunia luar adalah cerminan dunia dalam',
+  },
+  '1.3': {
+    src: '/images/illustrations/meditation-imagination.webp',
+    alt: 'Meditasi — Dua Sisi Penciptaan',
+    caption: 'Perasaan adalah jembatan antara sadar dan bawah sadar',
+  },
+}
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -97,22 +117,47 @@ export default function FreeLessonPage() {
         </div>
       </header>
 
-      {/* Hero section */}
+      {/* Hero section with illustration */}
       <motion.section className="nv-fl-hero" {...fadeIn}>
         <div className="nv-fl-hero-bg" />
-        <div className="nv-fl-num">{lesson.num}</div>
-        <h1 className="nv-fl-title">{lesson.title}</h1>
-        <p className="nv-fl-epigraph">{lesson.takeaway}</p>
-        <div className="nv-fl-meta-row">
-          <span className="nv-fl-meta-item">
-            <span className="nv-fl-meta-accent">⏱</span> 8 min baca
-          </span>
-          <span className="nv-fl-meta-item">
-            <span className="nv-fl-meta-accent">📖</span> Pelajaran {freeIndex + 1}/3 gratis
-          </span>
-          <span className="nv-fl-meta-item">
-            BAGIAN {part.num}: {part.title.length > 30 ? part.title.slice(0, 28) + '…' : part.title}
-          </span>
+        <div className="nv-fl-hero-layout">
+          <div className="nv-fl-hero-text-side">
+            <div className="nv-fl-num">{lesson.num}</div>
+            <h1 className="nv-fl-title">{lesson.title}</h1>
+            <p className="nv-fl-epigraph">{lesson.takeaway}</p>
+            <div className="nv-fl-meta-row">
+              <span className="nv-fl-meta-item">
+                <span className="nv-fl-meta-accent">⏱</span> 8 min baca
+              </span>
+              <span className="nv-fl-meta-item">
+                <span className="nv-fl-meta-accent">📖</span> Pelajaran {freeIndex + 1}/3 gratis
+              </span>
+              <span className="nv-fl-meta-item">
+                BAGIAN {part.num}: {part.title.length > 30 ? part.title.slice(0, 28) + '…' : part.title}
+              </span>
+            </div>
+          </div>
+          {lessonIllustrations[lesson.num] && (
+            <motion.div
+              className="nv-fl-hero-illust"
+              initial={{ opacity: 0, x: 30, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+            >
+              <div className="nv-fl-hero-illust-frame">
+                <div className="nv-fl-hero-illust-glow" />
+                <Image
+                  src={lessonIllustrations[lesson.num].src}
+                  alt={lessonIllustrations[lesson.num].alt}
+                  fill
+                  className="nv-fl-hero-illust-img"
+                  sizes="(max-width: 768px) 280px, 360px"
+                  priority
+                />
+              </div>
+              <p className="nv-fl-hero-illust-caption">{lessonIllustrations[lesson.num].caption}</p>
+            </motion.div>
+          )}
         </div>
       </motion.section>
 
@@ -123,7 +168,7 @@ export default function FreeLessonPage() {
         <span className="nv-fl-ornament-line" />
       </div>
 
-      {/* Content body */}
+      {/* Content body with illustration break */}
       <motion.div className="nv-fl-body" {...fadeIn} transition={{ delay: 0.15 }}>
         {paragraphs.map((para, i) => {
           // Process highlight words from quotes
@@ -138,11 +183,34 @@ export default function FreeLessonPage() {
           })
 
           return (
-            <p
-              key={i}
-              className={i === 0 ? 'nv-fl-drop-cap' : ''}
-              dangerouslySetInnerHTML={{ __html: processedPara }}
-            />
+            <div key={i}>
+              <p
+                className={i === 0 ? 'nv-fl-drop-cap' : ''}
+                dangerouslySetInnerHTML={{ __html: processedPara }}
+              />
+              {/* Insert illustration break after the 2nd paragraph */}
+              {i === 1 && lessonIllustrations[lesson.num] && (
+                <motion.div
+                  className="nv-fl-illust-break"
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <div className="nv-fl-illust-break-frame">
+                    <Image
+                      src={lessonIllustrations[lesson.num].src}
+                      alt={lessonIllustrations[lesson.num].alt}
+                      fill
+                      className="nv-fl-illust-break-img"
+                      sizes="(max-width: 768px) 90vw, 680px"
+                    />
+                    <div className="nv-fl-illust-break-overlay" />
+                  </div>
+                  <p className="nv-fl-illust-break-caption">{lessonIllustrations[lesson.num].caption}</p>
+                </motion.div>
+              )}
+            </div>
           )
         })}
 
@@ -189,7 +257,7 @@ export default function FreeLessonPage() {
           </motion.div>
         ))}
 
-        {/* Practice card */}
+        {/* Practice card with illustration */}
         <div className="nv-fl-ornament">
           <span className="nv-fl-ornament-line" />
           <span className="nv-fl-ornament-dot">✦</span>
@@ -203,18 +271,33 @@ export default function FreeLessonPage() {
           transition={{ duration: 0.5 }}
         >
           <div className="nv-fl-practice-glow" />
-          <div className="nv-fl-practice-header">
-            <span className="nv-fl-practice-icon">🕯️</span>
-            <span className="nv-fl-practice-title">Praktik Hari Ini</span>
-          </div>
-          <p>{lesson.practice}</p>
-          <div className="nv-fl-practice-checkbox" onClick={handlePracticeCheck}>
-            <input
-              type="checkbox"
-              checked={practiceDone || completedLessons.has(lesson.num)}
-              onChange={() => {}}
-            />
-            <label>Saya sudah mempraktikkan ini</label>
+          <div className="nv-fl-practice-layout">
+            <div className="nv-fl-practice-text-col">
+              <div className="nv-fl-practice-header">
+                <span className="nv-fl-practice-icon">🕯️</span>
+                <span className="nv-fl-practice-title">Praktik Hari Ini</span>
+              </div>
+              <p>{lesson.practice}</p>
+              <div className="nv-fl-practice-checkbox" onClick={handlePracticeCheck}>
+                <input
+                  type="checkbox"
+                  checked={practiceDone || completedLessons.has(lesson.num)}
+                  onChange={() => {}}
+                />
+                <label>Saya sudah mempraktikkan ini</label>
+              </div>
+            </div>
+            <div className="nv-fl-practice-illust-col">
+              <div className="nv-fl-practice-illust-frame">
+                <Image
+                  src={lessonIllustrations[lesson.num]?.src || '/images/illustrations/meditation-imagination.webp'}
+                  alt={lessonIllustrations[lesson.num]?.alt || 'Praktik Meditasi'}
+                  fill
+                  className="nv-fl-practice-illust-img"
+                  sizes="200px"
+                />
+              </div>
+            </div>
           </div>
         </motion.div>
 
@@ -263,7 +346,7 @@ export default function FreeLessonPage() {
         })}
       </motion.div>
 
-      {/* Conversion section */}
+      {/* Conversion section with illustration */}
       <motion.div
         className="nv-fl-conversion"
         initial={{ opacity: 0, y: 20 }}
@@ -273,6 +356,35 @@ export default function FreeLessonPage() {
       >
         <div className="nv-fl-conversion-glow" />
         <div className="nv-fl-conversion-content">
+          <div className="nv-fl-conversion-illust-strip">
+            <div className="nv-fl-conversion-illust-mini">
+              <Image
+                src="/images/illustrations/manifestation-journal.webp"
+                alt="Jurnal Manifestasi"
+                fill
+                className="nv-fl-conversion-illust-mini-img"
+                sizes="120px"
+              />
+            </div>
+            <div className="nv-fl-conversion-illust-mini">
+              <Image
+                src="/images/illustrations/gemini-vision.png"
+                alt="Visi Kreatif"
+                fill
+                className="nv-fl-conversion-illust-mini-img"
+                sizes="120px"
+              />
+            </div>
+            <div className="nv-fl-conversion-illust-mini">
+              <Image
+                src="/images/illustrations/meditation-imagination.webp"
+                alt="Meditasi"
+                fill
+                className="nv-fl-conversion-illust-mini-img"
+                sizes="120px"
+              />
+            </div>
+          </div>
           <h2 className="nv-fl-conversion-title">Anda baru saja memulai perjalanan.</h2>
           <p className="nv-fl-conversion-desc">
             Pelajaran ini adalah fondasi. Tetapi fondasi tanpa bangunan adalah tanah kosong.

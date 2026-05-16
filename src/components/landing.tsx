@@ -36,9 +36,9 @@ const fadeInRight = {
 }
 
 const partImages = [
-  '/images/parts/part-1.png',
+  '/images/illustrations/manifestation-journal.webp',
   '/images/parts/part-2.png',
-  '/images/parts/part-3.png',
+  '/images/illustrations/meditation-imagination.webp',
   '/images/parts/part-4.png',
   '/images/parts/part-5.png',
   '/images/parts/part-6.png',
@@ -191,6 +191,90 @@ export default function Landing() {
             </div>
           </div>
         </motion.section>
+      </div>
+
+      {/* ─── ILLUSTRATION SHOWCASE ─── */}
+      <div className="nv-illust-strip">
+        <div className="nv-illust-strip-inner">
+          <motion.div
+            className="nv-illust-card"
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0 }}
+          >
+            <div className="nv-illust-card-frame">
+              <Image
+                src="/images/illustrations/manifestation-journal.webp"
+                alt="Jurnal Manifestasi — Visualisasi keinginan"
+                fill
+                className="nv-illust-card-img"
+                sizes="320px"
+              />
+              <div className="nv-illust-card-overlay" />
+            </div>
+            <div className="nv-illust-card-caption">
+              <span className="nv-illust-caption-icon">✦</span>
+              <span>Jurnal Manifestasi</span>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="nv-illust-card nv-illust-card-tall"
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <div className="nv-illust-card-frame">
+              <Image
+                src="/images/illustrations/gemini-vision.png"
+                alt="Imajinasi Menciptakan Realitas"
+                fill
+                className="nv-illust-card-img"
+                sizes="320px"
+              />
+              <div className="nv-illust-card-overlay" />
+            </div>
+            <div className="nv-illust-card-caption">
+              <span className="nv-illust-caption-icon">✦</span>
+              <span>Imajinasi → Realitas</span>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="nv-illust-card"
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <div className="nv-illust-card-frame">
+              <Image
+                src="/images/illustrations/meditation-imagination.webp"
+                alt="Meditasi & Imajinasi"
+                fill
+                className="nv-illust-card-img"
+                sizes="320px"
+              />
+              <div className="nv-illust-card-overlay" />
+            </div>
+            <div className="nv-illust-card-caption">
+              <span className="nv-illust-caption-icon">✦</span>
+              <span>Meditasi & Asumsi</span>
+            </div>
+          </motion.div>
+        </div>
+
+        <motion.div
+          className="nv-illust-tagline"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+        >
+          <p>&ldquo;Imajinasi menciptakan realitas&rdquo; — ini bukan sekadar kutipan, ini adalah <em>praktik</em>.</p>
+        </motion.div>
       </div>
 
       {/* ─── STICKY NAV ─── */}
@@ -368,6 +452,40 @@ export default function Landing() {
             </div>
           )
         })}
+
+        {/* ─── ILLUSTRATION DIVIDER ─── */}
+        <motion.div
+          className="nv-illust-divider"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <div className="nv-illust-divider-imgs">
+            <div className="nv-illust-divider-frame nv-illust-divider-frame-left">
+              <Image
+                src="/images/illustrations/meditation-imagination.webp"
+                alt="Meditasi"
+                fill
+                className="nv-illust-divider-img"
+                sizes="(max-width: 768px) 50vw, 300px"
+              />
+            </div>
+            <div className="nv-illust-divider-center">
+              <span className="nv-illust-divider-glyph">✦</span>
+              <p className="nv-illust-divider-text">Mulailah dari dalam,<br />maka dunia luar mengikuti</p>
+            </div>
+            <div className="nv-illust-divider-frame nv-illust-divider-frame-right">
+              <Image
+                src="/images/illustrations/manifestation-journal.webp"
+                alt="Jurnal Afirmasi"
+                fill
+                className="nv-illust-divider-img"
+                sizes="(max-width: 768px) 50vw, 300px"
+              />
+            </div>
+          </div>
+        </motion.div>
 
         {/* ─── PRICING CTA SECTION ─── */}
         <motion.div
