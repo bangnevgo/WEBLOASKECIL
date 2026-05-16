@@ -1388,7 +1388,6 @@
 .nv-hero-photo-frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 884 / 1250;
   border-radius: 20px;
   overflow: hidden;
   border: 2px solid rgba(212, 160, 83, 0.25);
@@ -1405,11 +1404,14 @@
 }
 
 .nv-hero-photo {
-  object-fit: contain;
-  object-position: center center;
-  border-radius: 20px;
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 18px;
   opacity: 0.92;
   transition: opacity 0.4s, transform 0.4s;
+  position: relative;
+  z-index: 2;
 }
 
 .nv-hero-photo-frame:hover .nv-hero-photo {

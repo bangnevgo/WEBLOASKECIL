@@ -111,9 +111,10 @@ export default function Landing() {
                 <Image
                   src="/images/neville-goddard.png"
                   alt="Neville Goddard"
-                  fill
+                  width={884}
+                  height={1250}
                   className="nv-hero-photo"
-                  sizes="(max-width: 768px) 280px, 400px"
+                  sizes="(max-width: 768px) 260px, 380px"
                   priority
                 />
               </div>
