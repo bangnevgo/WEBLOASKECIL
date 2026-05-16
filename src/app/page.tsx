@@ -1,0 +1,35 @@
+'use client'
+
+import { useEffect } from 'react'
+import { useAppStore } from '@/lib/store'
+import Landing from '@/components/landing'
+import Dashboard from '@/components/dashboard'
+import LessonDetail from '@/components/lesson-detail'
+import Pricing from '@/components/pricing'
+
+export default function Home() {
+  const { view } = useAppStore()
+
+  // Scroll to top when view changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
+  }, [view])
+
+  // Always use dark mode for this site
+  useEffect(() => {
+    document.documentElement.classList.add('dark')
+  }, [])
+
+  switch (view) {
+    case 'landing':
+      return <Landing />
+    case 'dashboard':
+      return <Dashboard />
+    case 'lesson':
+      return <LessonDetail />
+    case 'pricing':
+      return <Pricing />
+    default:
+      return <Landing />
+  }
+}
