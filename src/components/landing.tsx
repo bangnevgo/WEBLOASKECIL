@@ -37,7 +37,7 @@ const fadeInRight = {
 
 const partImages = [
   '/images/illustrations/manifestation-journal.webp',
-  '/images/neville-goddard.png',
+  '/images/neville-profile.jpg',
   '/images/illustrations/meditation-imagination.webp',
   '/images/parts/part-4.png',
   '/images/parts/part-5.png',
