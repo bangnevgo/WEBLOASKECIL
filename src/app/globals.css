@@ -228,7 +228,13 @@
 }
 
 .nv-hero-title {
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+}
+
+@media (max-width: 768px) {
+  .nv-hero-title {
+    align-items: center;
+  }
 }
 
 .nv-hero-top {
@@ -250,6 +256,7 @@
 
 .nv-hero-mark {
   max-width: 600px; padding: 20px 24px; border-radius: 12px; margin-top: 8px;
+  width: 100%;
 }
 
 .nv-hero-mark-quote {
@@ -266,6 +273,7 @@
   font-size: 12px; color: var(--nv-dim); display: flex; align-items: center; gap: 8px;
   font-family: var(--font-geist-mono), monospace; letter-spacing: 1px;
   margin-top: 8px;
+  flex-wrap: wrap;
 }
 
 .nv-meta-sep { color: var(--nv-faint); }
@@ -1351,9 +1359,87 @@
   position: relative;
   z-index: 1;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  gap: 48px;
+  width: 100%;
+  max-width: 1100px;
+}
+
+@media (max-width: 768px) {
+  .nv-hero-content {
+    flex-direction: column;
+    gap: 28px;
+    align-items: center;
+  }
+}
+
+.nv-hero-photo-col {
+  flex-shrink: 0;
+  width: 380px;
+}
+
+@media (max-width: 768px) {
+  .nv-hero-photo-col {
+    width: 260px;
+  }
+}
+
+.nv-hero-photo-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 2px solid rgba(212, 160, 83, 0.25);
+  box-shadow: 0 8px 40px rgba(212, 160, 83, 0.12), 0 0 80px rgba(212, 160, 83, 0.06);
+}
+
+.nv-hero-photo-glow {
+  position: absolute;
+  inset: -30%;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 30% 40%, rgba(212, 160, 83, 0.12), transparent 60%);
+}
+
+.nv-hero-photo {
+  object-fit: cover;
+  object-position: top center;
+  border-radius: 20px;
+  opacity: 0.92;
+  transition: opacity 0.4s, transform 0.4s;
+}
+
+.nv-hero-photo-frame:hover .nv-hero-photo {
+  opacity: 1;
+  transform: scale(1.02);
+}
+
+.nv-hero-text-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 20px;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .nv-hero-text-col {
+    align-items: center;
+    text-align: center;
+  }
+  .nv-hero-text-col .nv-hero-title {
+    align-items: center;
+  }
+  .nv-hero-text-col .nv-hero-meta {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .nv-hero-text-col .nv-hero-mark {
+    text-align: left;
+  }
 }
 
 .nv-hero-logo-inner {

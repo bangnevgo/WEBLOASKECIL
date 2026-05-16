@@ -99,71 +99,94 @@ export default function Landing() {
           <div className="nv-hero-grid-overlay" />
 
           <div className="nv-hero-content">
+            {/* Photo on the left */}
             <motion.div
-              className="nv-hero-logo"
-              initial={{ scale: 0, rotate: -180 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ duration: 0.8, type: 'spring', bounce: 0.4 }}
+              className="nv-hero-photo-col"
+              initial={{ opacity: 0, x: -40, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
             >
-              <span className="nv-hero-logo-inner">✦</span>
+              <div className="nv-hero-photo-frame">
+                <div className="nv-hero-photo-glow" />
+                <Image
+                  src="/images/neville-goddard.png"
+                  alt="Neville Goddard"
+                  fill
+                  className="nv-hero-photo"
+                  sizes="(max-width: 768px) 280px, 400px"
+                  priority
+                />
+              </div>
             </motion.div>
 
-            <motion.div className="nv-hero-title" variants={staggerContainer} initial="initial" animate="animate">
-              <motion.span className="nv-hero-top" variants={fadeInUp}>Neville Goddard</motion.span>
-              <motion.span className="nv-hero-main" variants={fadeInUp}>HUKUM ASUMSI</motion.span>
-              <motion.span className="nv-hero-sub" variants={fadeInUp}>(Ajaran &amp; Praktik)</motion.span>
-            </motion.div>
+            {/* Text on the right */}
+            <div className="nv-hero-text-col">
+              <motion.div
+                className="nv-hero-logo"
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ duration: 0.8, type: 'spring', bounce: 0.4 }}
+              >
+                <span className="nv-hero-logo-inner">✦</span>
+              </motion.div>
 
-            <motion.div
-              className="nv-hero-mark nv-glass"
-              variants={scaleIn}
-              initial="initial"
-              animate="animate"
-            >
-              <div className="nv-hero-mark-accent" />
-              <p className="nv-hero-mark-quote">
-                &ldquo;Sebuah asumsi, meskipun salah, jika <em>terus dipegang teguh</em>, akan mengeras menjadi fakta.
-                Manusia, dengan mengasumsikan perasaan dari keinginan yang telah terwujud, mengubah masa depannya
-                selaras dengan asumsinya.&rdquo;
-              </p>
-              <p className="nv-hero-mark-source">— LIMA PELAJARAN · PELAJARAN 1 · 1948</p>
-            </motion.div>
+              <motion.div className="nv-hero-title" variants={staggerContainer} initial="initial" animate="animate">
+                <motion.span className="nv-hero-top" variants={fadeInUp}>Neville Goddard</motion.span>
+                <motion.span className="nv-hero-main" variants={fadeInUp}>HUKUM ASUMSI</motion.span>
+                <motion.span className="nv-hero-sub" variants={fadeInUp}>(Ajaran &amp; Praktik)</motion.span>
+              </motion.div>
 
-            <motion.div
-              className="nv-hero-meta"
-              variants={fadeInUp}
-              initial="initial"
-              animate="animate"
-            >
-              <span className="nv-meta-item">
-                <span className="nv-meta-label">KURIKULUM</span>
-              </span>
-              <span className="nv-meta-sep">·</span>
-              <span className="nv-meta-item">
-                <span className="nv-meta-accent">10</span>
-                <span className="nv-meta-label">BAGIAN</span>
-              </span>
-              <span className="nv-meta-sep">·</span>
-              <span className="nv-meta-item">
-                <span className="nv-meta-accent">49</span>
-                <span className="nv-meta-label">PELAJARAN</span>
-              </span>
-              <span className="nv-meta-sep">·</span>
-              <span className="nv-meta-item">
-                <span className="nv-meta-label">15+ BUKU &amp; 200+ KULIAH</span>
-              </span>
-            </motion.div>
+              <motion.div
+                className="nv-hero-mark nv-glass"
+                variants={scaleIn}
+                initial="initial"
+                animate="animate"
+              >
+                <div className="nv-hero-mark-accent" />
+                <p className="nv-hero-mark-quote">
+                  &ldquo;Sebuah asumsi, meskipun salah, jika <em>terus dipegang teguh</em>, akan mengeras menjadi fakta.
+                  Manusia, dengan mengasumsikan perasaan dari keinginan yang telah terwujud, mengubah masa depannya
+                  selaras dengan asumsinya.&rdquo;
+                </p>
+                <p className="nv-hero-mark-source">— LIMA PELAJARAN · PELAJARAN 1 · 1948</p>
+              </motion.div>
 
-            <motion.button
-              className="nv-cta-button nv-cta-pulse"
-              onClick={() => setView('pricing')}
-              whileHover={{ scale: 1.03, y: -2 }}
-              whileTap={{ scale: 0.97 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-            >
-              <span className="nv-cta-icon">✦</span>
-              Dapatkan Akses Penuh — Berlangganan Sekarang
-            </motion.button>
+              <motion.div
+                className="nv-hero-meta"
+                variants={fadeInUp}
+                initial="initial"
+                animate="animate"
+              >
+                <span className="nv-meta-item">
+                  <span className="nv-meta-label">KURIKULUM</span>
+                </span>
+                <span className="nv-meta-sep">·</span>
+                <span className="nv-meta-item">
+                  <span className="nv-meta-accent">10</span>
+                  <span className="nv-meta-label">BAGIAN</span>
+                </span>
+                <span className="nv-meta-sep">·</span>
+                <span className="nv-meta-item">
+                  <span className="nv-meta-accent">49</span>
+                  <span className="nv-meta-label">PELAJARAN</span>
+                </span>
+                <span className="nv-meta-sep">·</span>
+                <span className="nv-meta-item">
+                  <span className="nv-meta-label">15+ BUKU &amp; 200+ KULIAH</span>
+                </span>
+              </motion.div>
+
+              <motion.button
+                className="nv-cta-button nv-cta-pulse"
+                onClick={() => setView('pricing')}
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+              >
+                <span className="nv-cta-icon">✦</span>
+                Dapatkan Akses Penuh — Berlangganan Sekarang
+              </motion.button>
+            </div>
           </div>
         </motion.section>
       </div>

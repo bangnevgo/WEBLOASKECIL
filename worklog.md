@@ -188,3 +188,29 @@ Stage Summary:
 - Dashboard shows part illustrations alongside descriptions
 - Responsive design maintained across all breakpoints
 - Lint passes, dev server compiles successfully
+
+---
+Task ID: 11
+Agent: Main
+Task: Add Neville Goddard photo to hero section next to the title
+
+Work Log:
+- Copied uploaded "Neville Goddard.png" from /upload/ to /public/images/neville-goddard.png
+- Restructured hero section from centered column to side-by-side layout (photo left, text right)
+- Added nv-hero-photo-col with animated entrance (opacity + x slide)
+- Added nv-hero-photo-frame with 3:4 aspect ratio, golden border, glow shadow
+- Added nv-hero-photo-glow with radial gradient overlay
+- Added nv-hero-text-col for right-aligned text content
+- Updated .nv-hero-content CSS to flex-direction: row with 48px gap
+- Added responsive breakpoints: stacks vertically on mobile (768px)
+- Updated .nv-hero-title to align left on desktop, center on mobile
+- Updated .nv-hero-mark to full width within text column
+- Updated .nv-hero-meta with flex-wrap for better responsiveness
+- Lint passes, dev server compiles successfully
+
+Stage Summary:
+- Hero section now features Neville Goddard portrait photo on the left
+- Text content (title, quote, meta, CTA) aligned on the right
+- Photo has golden border, glow effect, hover zoom animation
+- Fully responsive: stacks vertically on mobile devices
+- Proportional 3:4 aspect ratio maintained for the portrait
