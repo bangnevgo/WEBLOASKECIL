@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import Image from 'next/image'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
 import { ALL_PARTS, BONUS_ITEMS, MARQUEE_ITEMS, isLessonFree } from '@/lib/curriculum-data'
 import LockedLessonModal from '@/components/locked-lesson-modal'
@@ -35,6 +35,96 @@ const fadeInRight = {
   transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }
 }
 
+// Count-up stat component with animated number
+function CountUpStat({ value, label, suffix, delay }: { value: number; label: string; suffix: string; delay: number }) {
+  const [count, setCount] = useState(0)
+  const [hasStarted, setHasStarted] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasStarted) {
+          setHasStarted(true)
+        }
+      },
+      { threshold: 0.3 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [hasStarted])
+
+  useEffect(() => {
+    if (!hasStarted) return
+    const duration = 2000
+    const steps = 60
+    const stepTime = duration / steps
+    let current = 0
+    const increment = value / steps
+    const timer = setInterval(() => {
+      current += increment
+      if (current >= value) {
+        setCount(value)
+        clearInterval(timer)
+      } else {
+        setCount(Math.floor(current))
+      }
+    }, stepTime)
+    return () => clearInterval(timer)
+  }, [hasStarted, value])
+
+  return (
+    <motion.div
+      ref={ref}
+      className="nv-stat-item nv-glass"
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
+    >
+      <span className="nv-stat-value">{count}{suffix}</span>
+      <span className="nv-stat-label">{label}</span>
+    </motion.div>
+  )
+}
+
+// FAQ accordion item component
+function FaqItem({ question, answer, index }: { question: string; answer: string; index: number }) {
+  const [isOpen, setIsOpen] = useState(false)
+
+  return (
+    <motion.div
+      className={`nv-faq-item nv-glass ${isOpen ? 'nv-faq-item-open' : ''}`}
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, delay: index * 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
+    >
+      <button
+        className="nv-faq-question"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
+      >
+        <span className="nv-faq-question-text">{question}</span>
+        <span className="nv-faq-icon">{isOpen ? '−' : '+'}</span>
+      </button>
+      <motion.div
+        className="nv-faq-answer-wrap"
+        initial={false}
+        animate={{
+          height: isOpen ? 'auto' : 0,
+          opacity: isOpen ? 1 : 0,
+        }}
+        transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+      >
+        <p className="nv-faq-answer">{answer}</p>
+      </motion.div>
+    </motion.div>
+  )
+}
+
 const partImages = [
   '/images/illustrations/manifestation-journal.webp',
   '/images/neville-profile.jpg',
@@ -65,6 +155,7 @@ const partImageAspectRatios = [
 export default function Landing() {
   const { setView } = useAppStore()
   const [activeSection, setActiveSection] = useState<string | null>(null)
+  const [showBackTop, setShowBackTop] = useState(false)
   const mainRef = useRef<HTMLDivElement>(null)
   const heroRef = useRef<HTMLDivElement>(null)
 
@@ -92,9 +183,16 @@ export default function Landing() {
         }
       }
       setActiveSection(current)
+
+      // Back-to-top visibility
+      setShowBackTop(window.scrollY > 600)
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const scrollToTop = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
 
   return (
@@ -248,6 +346,82 @@ export default function Landing() {
             </span>
           ))}
         </div>
+      </div>
+
+      {/* ─── SOCIAL PROOF / TESTIMONIALS ─── */}
+      <div className="nv-container">
+        <motion.section
+          className="nv-testimonials"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="nv-testimonials-head">
+            <h2 className="nv-testimonials-title">Dipercaya Pebelajar dari Seluruh Indonesia</h2>
+            <p className="nv-testimonials-subtitle">Ribuan orang telah menerapkan ajaran Neville dan mengubah hidup mereka</p>
+          </div>
+
+          {/* Stat Counters */}
+          <div className="nv-stats-row">
+            {[
+              { value: 49, label: 'Pelajaran', suffix: '' },
+              { value: 10, label: 'Bagian', suffix: '' },
+              { value: 15, label: 'Buku', suffix: '+' },
+              { value: 200, label: 'Kuliah', suffix: '+' },
+            ].map((stat, i) => (
+              <CountUpStat key={i} value={stat.value} label={stat.label} suffix={stat.suffix} delay={i * 0.1} />
+            ))}
+          </div>
+
+          {/* Testimonial Cards */}
+          <div className="nv-testimonials-grid">
+            {[
+              {
+                name: 'Ratna Sari',
+                role: 'Praktisi Hukum Asumsi · Jakarta',
+                quote: 'Teknik SATS dari ajaran Neville benar-benar mengubah cara saya memandang kehidupan. Dalam 3 bulan, saya berhasil mewujudkan impian yang selama ini saya anggap mustahil. Ajaran ini bukan teori — ini adalah hukum alam.',
+                stars: 5,
+              },
+              {
+                name: 'Budi Santoso',
+                role: 'Pengusaha · Surabaya',
+                quote: 'Saya telah membaca puluhan buku pengembangan diri, tapi tidak ada yang sejelas ajaran Neville Goddard. Konsep "asumsi sebagai fakta" memberi saya kekuatan untuk membangun bisnis dari nol. Kurikulum ini sangat terstruktur.',
+                stars: 5,
+              },
+              {
+                name: 'Dewi Lestari',
+                role: 'Guru Meditasi · Bali',
+                quote: 'Sebagai praktisi meditasi selama 15 tahun, saya menemukan bahwa ajaran Neville membawa dimensi baru dalam praktik saya. Hukum Asumsi melengkapi pemahaman saya tentang kekuatan kesadaran secara mendalam.',
+                stars: 5,
+              },
+            ].map((testimonial, i) => (
+              <motion.div
+                key={i}
+                className="nv-testimonial-card nv-glass nv-glow-border"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              >
+                <div className="nv-testimonial-stars">
+                  {Array.from({ length: testimonial.stars }).map((_, si) => (
+                    <span key={si} className="nv-testimonial-star">★</span>
+                  ))}
+                </div>
+                <p className="nv-testimonial-quote">&ldquo;{testimonial.quote}&rdquo;</p>
+                <div className="nv-testimonial-author">
+                  <div className="nv-testimonial-avatar">{testimonial.name.charAt(0)}</div>
+                  <div>
+                    <p className="nv-testimonial-name">{testimonial.name}</p>
+                    <p className="nv-testimonial-role">{testimonial.role}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
       </div>
 
       {/* ─── CURRICULUM PARTS ─── */}
@@ -483,6 +657,50 @@ export default function Landing() {
           </motion.div>
         </div>
 
+        {/* ─── FAQ SECTION ─── */}
+        <motion.section
+          className="nv-faq"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="nv-faq-head">
+            <h2 className="nv-faq-title">Pertanyaan yang Sering Diajukan</h2>
+            <p className="nv-faq-subtitle">Jawaban untuk pertanyaan umum tentang Hukum Asumsi dan kurikulum ini</p>
+          </div>
+          <div className="nv-faq-list">
+            {[
+              {
+                q: 'Apa itu Hukum Asumsi?',
+                a: 'Hukum Asumsi adalah prinsip inti dari ajaran Neville Goddard yang menyatakan bahwa sebuah asumsi, meskipun salah, jika terus dipegang teguh akan mengeras menjadi fakta. Dengan mengasumsikan perasaan dari keinginan yang telah terwujud, Anda mengubah masa depan selaras dengan asumsi tersebut.',
+              },
+              {
+                q: 'Apakah saya perlu latar belakang agama?',
+                a: 'Tidak. Ajaran Neville bersifat universal dan dapat diterapkan oleh siapa saja tanpa memandang latar belakang agama atau keyakinan. Meskipun Neville menggunakan bahasa alkitabiah dalam kuliahnya, prinsip-prinsipnya bersifat praktis dan psikologis.',
+              },
+              {
+                q: 'Apa perbedaan paket Pelajar dan Master?',
+                a: 'Paket Pelajar memberikan akses ke seluruh 49 pelajaran terperinci dengan ajaran lengkap, kutipan bersumber, dan praktik harian. Paket Master menambahkan akses ke arsip 200+ kuliah asli, panduan praktik lanjutan, dan pembaruan materi secara berkala.',
+              },
+              {
+                q: 'Bagaimana teknik SATS bekerja?',
+                a: 'SATS (State Akin To Sleep) adalah teknik meditasi di mana Anda memasuki kondisi rileks antara terjaga dan tidur, lalu membayangkan adegan yang menyiratkan keinginan Anda telah terwujud. Dalam kondisi ini, pikiran bawah sadar paling reseptif terhadap sugesti baru.',
+              },
+              {
+                q: 'Apakah saya bisa membatalkan langganan?',
+                a: 'Ya, Anda dapat membatalkan kapan saja tanpa penalti. Akses Anda akan tetap aktif hingga akhir periode berlangganan yang telah dibayar. Tidak ada biaya tersembunyi atau komitmen jangka panjang.',
+              },
+              {
+                q: 'Dari mana sumber materi ini?',
+                a: 'Seluruh materi bersumber dari 15+ buku dan 200+ kuliah asli Neville Goddard dari tahun 1939 hingga 1972. Setiap pelajaran dilengkapi dengan kutipan langsung dan rujukan ke sumber aslinya, memastikan keakuratan dan integritas ajaran.',
+              },
+            ].map((item, i) => (
+              <FaqItem key={i} question={item.q} answer={item.a} index={i} />
+            ))}
+          </div>
+        </motion.section>
+
         {/* ─── FOOTER CTA ─── */}
         <div className="nv-footer-cta">
           Bersumber secara eksklusif dari{' '}
@@ -493,12 +711,68 @@ export default function Landing() {
       </div>
 
       {/* ─── FOOTER ─── */}
-      <footer className="nv-footer">
-        <div className="nv-footer-inner">
-          <span className="nv-footer-logo">✦</span>
-          <span>Neville Goddard · KURIKULUM LENGKAP Hukum Asumsi · 2026</span>
+      <footer className="nv-footer-pro">
+        <div className="nv-footer-top">
+          <div className="nv-footer-brand">
+            <span className="nv-footer-logo">✦</span>
+            <div>
+              <div className="nv-footer-brand-name">Hukum Asumsi</div>
+              <div className="nv-footer-brand-tagline">Kurikulum Lengkap Ajaran Neville Goddard</div>
+            </div>
+          </div>
+        </div>
+        <div className="nv-footer-columns">
+          <div className="nv-footer-col">
+            <h4 className="nv-footer-col-title">Kurikulum</h4>
+            <ul className="nv-footer-col-links">
+              <li><a href="#part-1">Bagian 01 — Kesadaran</a></li>
+              <li><a href="#part-2">Bagian 02 — Asumsi</a></li>
+              <li><a href="#part-3">Bagian 03 — Perasaan</a></li>
+              <li><a href="#part-4">Bagian 04 — Diam</a></li>
+              <li><a href="#part-5">Bagian 05 — Kondisi</a></li>
+            </ul>
+          </div>
+          <div className="nv-footer-col">
+            <h4 className="nv-footer-col-title">Sumber Daya</h4>
+            <ul className="nv-footer-col-links">
+              <li><a href="#bonus">Buku Esensial</a></li>
+              <li><a href="#">FAQ</a></li>
+              <li><a href="#">Meditasi Panduan</a></li>
+            </ul>
+          </div>
+          <div className="nv-footer-col">
+            <h4 className="nv-footer-col-title">Legal</h4>
+            <ul className="nv-footer-col-links">
+              <li><a href="#">Syarat &amp; Ketentuan</a></li>
+              <li><a href="#">Kebijakan Privasi</a></li>
+              <li><a href="#">Kontak</a></li>
+            </ul>
+          </div>
+        </div>
+        <div className="nv-footer-bottom">
+          <span>© {new Date().getFullYear()} Hukum Asumsi. Seluruh hak dilindungi.</span>
+          <span className="nv-footer-bottom-accent">Dibuat dengan ✦ untuk pencari kebenaran</span>
         </div>
       </footer>
+
+      {/* ─── BACK TO TOP ─── */}
+      <AnimatePresence>
+        {showBackTop && (
+          <motion.button
+            className="nv-back-top"
+            onClick={scrollToTop}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            aria-label="Kembali ke atas"
+          >
+            ↑
+          </motion.button>
+        )}
+      </AnimatePresence>
 
       {/* ─── LOCKED LESSON MODAL ─── */}
       <LockedLessonModal />

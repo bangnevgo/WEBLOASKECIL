@@ -26,18 +26,45 @@ interface AppState {
   closeLockedLesson: () => void
 }
 
-export const useAppStore = create<AppState>((set) => ({
+// Load persisted state from localStorage
+function loadPersistedState() {
+  if (typeof window === 'undefined') return null
+  try {
+    const raw = localStorage.getItem('nv-app-state')
+    if (!raw) return null
+    return JSON.parse(raw)
+  } catch {
+    return null
+  }
+}
+
+function persistState(state: { userName: string; isSubscribed: boolean; completedLessons: string[] }) {
+  if (typeof window === 'undefined') return
+  try {
+    localStorage.setItem('nv-app-state', JSON.stringify(state))
+  } catch {
+    // localStorage might be full or blocked
+  }
+}
+
+// Initialize from persisted state
+const persisted = typeof window !== 'undefined' ? loadPersistedState() : null
+
+export const useAppStore = create<AppState>((set, get) => ({
   view: 'landing',
   setView: (view) => set({ view }),
-  userName: '',
-  setUserName: (name) => set({ userName: name }),
+  userName: persisted?.userName || '',
+  setUserName: (name) => {
+    set({ userName: name })
+    persistState({ userName: name, isSubscribed: get().isSubscribed, completedLessons: [...get().completedLessons] })
+  },
   activePartId: null,
   activeLessonNum: null,
   openLesson: (partId, lessonNum) =>
     set({ activePartId: partId, activeLessonNum: lessonNum, view: 'lesson' }),
   closeLesson: () =>
     set({ activePartId: null, activeLessonNum: null, view: 'dashboard' }),
-  completedLessons: new Set<string>(),
+  completedLessons: new Set<string>(persisted?.completedLessons || []),
   toggleCompleted: (lessonNum) =>
     set((state) => {
       const next = new Set(state.completedLessons)
@@ -46,18 +73,23 @@ export const useAppStore = create<AppState>((set) => ({
       } else {
         next.add(lessonNum)
       }
+      persistState({ userName: state.userName, isSubscribed: state.isSubscribed, completedLessons: [...next] })
       return { completedLessons: next }
     }),
-  isSubscribed: false,
-  subscribe: (name) =>
-    set({ isSubscribed: true, userName: name, view: 'dashboard' }),
-  unsubscribe: () =>
+  isSubscribed: persisted?.isSubscribed || false,
+  subscribe: (name) => {
+    set({ isSubscribed: true, userName: name, view: 'dashboard' })
+    persistState({ userName: name, isSubscribed: true, completedLessons: [...get().completedLessons] })
+  },
+  unsubscribe: () => {
     set({
       isSubscribed: false,
       userName: '',
       view: 'landing',
       completedLessons: new Set<string>(),
-    }),
+    })
+    persistState({ userName: '', isSubscribed: false, completedLessons: [] })
+  },
   // Freemium
   freeLessonNum: null,
   openFreeLesson: (lessonNum) =>

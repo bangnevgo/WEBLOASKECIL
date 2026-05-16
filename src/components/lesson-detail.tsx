@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
 import { ALL_PARTS } from '@/lib/curriculum-data'
+import { toast } from 'sonner'
 
 export default function LessonDetail() {
   const { activePartId, activeLessonNum, closeLesson, toggleCompleted, completedLessons } = useAppStore()
@@ -78,7 +79,14 @@ export default function LessonDetail() {
           <motion.button
             className={`nv-complete-btn ${isComplete ? 'nv-complete-btn-done' : ''}`}
             style={{ borderColor: isComplete ? 'var(--nv-gold)' : `${part.color}66`, color: isComplete ? 'var(--nv-gold)' : part.color }}
-            onClick={() => toggleCompleted(lesson.num)}
+            onClick={() => {
+              toggleCompleted(lesson.num)
+              if (isComplete) {
+                toast(`Pelajaran ${lesson.num} dibatalkan`)
+              } else {
+                toast(`✦ Pelajaran ${lesson.num} selesai!`)
+              }
+            }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >

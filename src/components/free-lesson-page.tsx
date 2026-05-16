@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
 import { ALL_PARTS, FREE_LESSON_NUMS } from '@/lib/curriculum-data'
+import { toast } from 'sonner'
 
 // Map each free lesson to a thematic illustration with its aspect ratio
 const lessonIllustrations: Record<string, { src: string; alt: string; caption: string; aspectRatio: string }> = {
@@ -64,6 +65,7 @@ export default function FreeLessonPage() {
   const handlePracticeCheck = useCallback(() => {
     setPracticeDone(true)
     if (freeLessonNum) toggleCompleted(freeLessonNum)
+    toast('✦ Pelajaran ditandai selesai!')
   }, [freeLessonNum, toggleCompleted])
 
   if (!lesson || !part) {
@@ -425,10 +427,47 @@ export default function FreeLessonPage() {
       </motion.div>
 
       {/* Footer */}
-      <footer className="nv-footer" style={{ marginTop: 24 }}>
-        <div className="nv-footer-inner">
-          <span className="nv-footer-logo">✦</span>
-          <span>Neville Goddard · KURIKULUM LENGKAP Hukum Asumsi · 2026</span>
+      <footer className="nv-footer-pro">
+        <div className="nv-footer-top">
+          <div className="nv-footer-brand">
+            <span className="nv-footer-logo">✦</span>
+            <div>
+              <div className="nv-footer-brand-name">Hukum Asumsi</div>
+              <div className="nv-footer-brand-tagline">Kurikulum Lengkap Ajaran Neville Goddard</div>
+            </div>
+          </div>
+        </div>
+        <div className="nv-footer-columns">
+          <div className="nv-footer-col">
+            <h4 className="nv-footer-col-title">Kurikulum</h4>
+            <ul className="nv-footer-col-links">
+              <li><a href="#part-1">Bagian 01 — Kesadaran</a></li>
+              <li><a href="#part-2">Bagian 02 — Asumsi</a></li>
+              <li><a href="#part-3">Bagian 03 — Perasaan</a></li>
+              <li><a href="#part-4">Bagian 04 — Diam</a></li>
+              <li><a href="#part-5">Bagian 05 — Kondisi</a></li>
+            </ul>
+          </div>
+          <div className="nv-footer-col">
+            <h4 className="nv-footer-col-title">Sumber Daya</h4>
+            <ul className="nv-footer-col-links">
+              <li><a href="#bonus">Buku Esensial</a></li>
+              <li><a href="#">FAQ</a></li>
+              <li><a href="#">Meditasi Panduan</a></li>
+            </ul>
+          </div>
+          <div className="nv-footer-col">
+            <h4 className="nv-footer-col-title">Legal</h4>
+            <ul className="nv-footer-col-links">
+              <li><a href="#">Syarat &amp; Ketentuan</a></li>
+              <li><a href="#">Kebijakan Privasi</a></li>
+              <li><a href="#">Kontak</a></li>
+            </ul>
+          </div>
+        </div>
+        <div className="nv-footer-bottom">
+          <span>© {new Date().getFullYear()} Hukum Asumsi. Seluruh hak dilindungi.</span>
+          <span className="nv-footer-bottom-accent">Dibuat dengan ✦ untuk pencari kebenaran</span>
         </div>
       </footer>
     </div>

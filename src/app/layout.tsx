@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "sonner";
+import CookieConsent from "@/components/cookie-consent";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,16 +16,37 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Neville Goddard — Hukum Asumsi | Kurikulum Lengkap",
-  description: "Kurikulum lengkap ajaran Neville Goddard: 10 bagian, 49 pelajaran, praktik harian, dan kutipan bersumber dari seluruh karyanya.",
-  keywords: ["Neville Goddard", "Law of Assumption", "Hukum Asumsi", "Consciousness", "I AM", "Manifestation"],
+  description:
+    "Pelajari Hukum Asumsi dari Neville Goddard melalui kurikulum terstruktur: 10 bagian, 49 pelajaran, praktik harian, dan kutipan bersumber dari seluruh karyanya. Mulai perjalanan manifestasi Anda sekarang.",
+  keywords: [
+    "Neville Goddard",
+    "Law of Assumption",
+    "Hukum Asumsi",
+    "Consciousness",
+    "I AM",
+    "Manifestation",
+    "Kesadaran",
+    "Imajinasi",
+    "SATS",
+    "Manifestasi",
+  ],
   authors: [{ name: "Neville Goddard Curriculum" }],
   icons: {
-    icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
+    icon: "/favicon.svg",
   },
   openGraph: {
     title: "Neville Goddard — Hukum Asumsi",
-    description: "Kurikulum lengkap ajaran Neville Goddard",
+    description:
+      "Kurikulum lengkap ajaran Neville Goddard: 10 bagian, 49 pelajaran, praktik harian, dan kutipan bersumber. Mulai jelajahi kekuatan asumsi Anda.",
     type: "website",
+    locale: "id_ID",
+    siteName: "Hukum Asumsi — Neville Goddard",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Neville Goddard — Hukum Asumsi",
+    description:
+      "Kurikulum lengkap ajaran Neville Goddard: 10 bagian, 49 pelajaran, praktik harian, dan kutipan bersumber.",
   },
 };
 
@@ -34,12 +56,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="id" className="dark" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
         {children}
-        <Toaster />
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            style: {
+              background: "var(--nv-bg-2)",
+              color: "var(--nv-text)",
+              border: "1px solid var(--nv-glass-border)",
+              borderRadius: "10px",
+              fontSize: "14px",
+            },
+          }}
+        />
+        <CookieConsent />
       </body>
     </html>
   );

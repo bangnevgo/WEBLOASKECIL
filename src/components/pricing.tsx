@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
 import { Check, Sparkles, Crown, BookOpen, X } from 'lucide-react'
+import { toast } from 'sonner'
 
 interface PricingTier {
   name: string
@@ -92,6 +93,7 @@ export default function Pricing() {
     // Free tier: go directly to free lesson 1.1
     if (tier.name === 'Penggemar') {
       openFreeLesson('1.1')
+      toast('✦ Mulai jelajahi pelajaran gratis!')
       return
     }
     setSelectedTier(tier)
@@ -102,6 +104,7 @@ export default function Pricing() {
   const confirmSubscribe = () => {
     const name = nameInput.trim() || 'Pengguna'
     subscribe(name)
+    toast(`✦ Selamat datang, ${name}! Langganan aktif.`)
   }
 
   return (
