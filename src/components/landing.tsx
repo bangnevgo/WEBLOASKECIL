@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
-import { ALL_PARTS, BONUS_ITEMS, MARQUEE_ITEMS } from '@/lib/curriculum-data'
+import { ALL_PARTS, BONUS_ITEMS, MARQUEE_ITEMS, isLessonFree } from '@/lib/curriculum-data'
+import LockedLessonModal from '@/components/locked-lesson-modal'
 
 const staggerContainer = {
   animate: { transition: { staggerChildren: 0.06 } }
@@ -287,31 +288,54 @@ export default function Landing() {
 
               {/* Lesson Cards Grid */}
               <div className="nv-grid">
-                {part.lessons.map((lesson, lessonIdx) => (
-                  <motion.div
-                    key={lesson.num}
-                    className="nv-card nv-glass nv-glow-border"
-                    initial={{ opacity: 0, y: 16 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: '-50px' }}
-                    transition={{ duration: 0.4, delay: lessonIdx * 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
-                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                  >
-                    <div className="nv-card-accent" style={{ background: `linear-gradient(135deg, ${part.color}, ${part.color}66)` }} />
-                    <div className="nv-card-head">
-                      <span className="nv-card-num" style={{ color: part.color, background: `${part.color}15` }}>{lesson.num}</span>
-                      <span className="nv-card-title">{lesson.title}</span>
-                    </div>
-                    <ul className="nv-card-bullets">
-                      {lesson.bullets.map((b, bi) => (
-                        <li key={bi}>
-                          <span className="nv-bullet-dot" style={{ background: part.color }} />
-                          {b}
-                        </li>
-                      ))}
-                    </ul>
-                  </motion.div>
-                ))}
+                {part.lessons.map((lesson, lessonIdx) => {
+                  const free = isLessonFree(lesson.num)
+                  return (
+                    <motion.div
+                      key={lesson.num}
+                      className="nv-card nv-glass nv-glow-border"
+                      style={{ position: 'relative', cursor: 'pointer' }}
+                      initial={{ opacity: 0, y: 16 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: '-50px' }}
+                      transition={{ duration: 0.4, delay: lessonIdx * 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
+                      whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                      onClick={() => {
+                        if (free) {
+                          useAppStore.getState().openFreeLesson(lesson.num)
+                        } else {
+                          useAppStore.getState().openLockedLesson({
+                            num: lesson.num,
+                            title: lesson.title,
+                            bullets: lesson.bullets,
+                            partColor: part.color,
+                            partTitle: part.title,
+                          })
+                        }
+                      }}
+                    >
+                      {free && <span className="nv-card-free-badge">GRATIS ✦</span>}
+                      <div className="nv-card-accent" style={{ background: `linear-gradient(135deg, ${part.color}, ${part.color}66)` }} />
+                      <div className="nv-card-head">
+                        <span className="nv-card-num" style={{ color: part.color, background: `${part.color}15` }}>{lesson.num}</span>
+                        <span className="nv-card-title">{lesson.title}</span>
+                      </div>
+                      <ul className="nv-card-bullets">
+                        {lesson.bullets.map((b, bi) => (
+                          <li key={bi}>
+                            <span className="nv-bullet-dot" style={{ background: part.color }} />
+                            {b}
+                          </li>
+                        ))}
+                      </ul>
+                      {!free && (
+                        <div className="nv-card-locked-overlay">
+                          <span className="nv-card-locked-icon">🔒</span>
+                        </div>
+                      )}
+                    </motion.div>
+                  )
+                })}
                 {part.partQuote && part.lessons.length % 3 !== 0 && (
                   <motion.div
                     className="nv-premium-quote"
@@ -427,6 +451,9 @@ export default function Landing() {
           <span>Neville Goddard · KURIKULUM LENGKAP Hukum Asumsi · 2026</span>
         </div>
       </footer>
+
+      {/* ─── LOCKED LESSON MODAL ─── */}
+      <LockedLessonModal />
     </div>
   )
 }

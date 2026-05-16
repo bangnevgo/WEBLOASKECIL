@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-type View = 'landing' | 'dashboard' | 'lesson' | 'pricing'
+type View = 'landing' | 'dashboard' | 'lesson' | 'pricing' | 'free-lesson'
 
 interface AppState {
   view: View
@@ -16,6 +16,14 @@ interface AppState {
   isSubscribed: boolean
   subscribe: (name: string) => void
   unsubscribe: () => void
+  // Freemium lesson state
+  freeLessonNum: string | null
+  openFreeLesson: (lessonNum: string) => void
+  closeFreeLesson: () => void
+  // Locked lesson modal
+  lockedLesson: { num: string; title: string; bullets: string[]; partColor: string; partTitle: string } | null
+  openLockedLesson: (info: { num: string; title: string; bullets: string[]; partColor: string; partTitle: string }) => void
+  closeLockedLesson: () => void
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -50,4 +58,16 @@ export const useAppStore = create<AppState>((set) => ({
       view: 'landing',
       completedLessons: new Set<string>(),
     }),
+  // Freemium
+  freeLessonNum: null,
+  openFreeLesson: (lessonNum) =>
+    set({ freeLessonNum: lessonNum, view: 'free-lesson' }),
+  closeFreeLesson: () =>
+    set({ freeLessonNum: null, view: 'landing' }),
+  // Locked modal
+  lockedLesson: null,
+  openLockedLesson: (info) =>
+    set({ lockedLesson: info }),
+  closeLockedLesson: () =>
+    set({ lockedLesson: null }),
 }))

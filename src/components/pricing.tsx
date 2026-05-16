@@ -29,7 +29,7 @@ const TIERS: PricingTier[] = [
       'Ringkasan ajaran',
       'Kutipan pilihan',
     ],
-    cta: 'Mulai Gratis',
+    cta: 'Jelajahi Gratis',
     featured: false,
     icon: <BookOpen className="nv-pricing-icon-svg" />,
   },
@@ -83,12 +83,17 @@ const cardVariants = {
 }
 
 export default function Pricing() {
-  const { setView, subscribe } = useAppStore()
+  const { setView, subscribe, openFreeLesson } = useAppStore()
   const [showNameModal, setShowNameModal] = useState(false)
   const [selectedTier, setSelectedTier] = useState<PricingTier | null>(null)
   const [nameInput, setNameInput] = useState('')
 
   const handleSubscribe = (tier: PricingTier) => {
+    // Free tier: go directly to free lesson 1.1
+    if (tier.name === 'Penggemar') {
+      openFreeLesson('1.1')
+      return
+    }
     setSelectedTier(tier)
     setNameInput('')
     setShowNameModal(true)

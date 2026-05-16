@@ -5,6 +5,7 @@ import { useAppStore } from '@/lib/store'
 import Landing from '@/components/landing'
 import Dashboard from '@/components/dashboard'
 import LessonDetail from '@/components/lesson-detail'
+import FreeLessonPage from '@/components/free-lesson-page'
 import Pricing from '@/components/pricing'
 
 export default function Home() {
@@ -27,6 +28,8 @@ export default function Home() {
       return <Dashboard />
     case 'lesson':
       return <LessonDetail />
+    case 'free-lesson':
+      return <FreeLessonPage />
     case 'pricing':
       return <Pricing />
     default:
