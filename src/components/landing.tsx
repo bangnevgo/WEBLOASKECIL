@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
 import { ALL_PARTS, BONUS_ITEMS, MARQUEE_ITEMS } from '@/lib/curriculum-data'
@@ -25,6 +26,26 @@ const fadeInLeft = {
   viewport: { once: true },
   transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }
 }
+
+const fadeInRight = {
+  initial: { opacity: 0, x: 20 },
+  whileInView: { opacity: 1, x: 0 },
+  viewport: { once: true },
+  transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }
+}
+
+const partImages = [
+  '/images/parts/part-1.png',
+  '/images/parts/part-2.png',
+  '/images/parts/part-3.png',
+  '/images/parts/part-4.png',
+  '/images/parts/part-5.png',
+  '/images/parts/part-6.png',
+  '/images/parts/part-7.png',
+  '/images/parts/part-8.png',
+  '/images/parts/part-9.png',
+  '/images/parts/part-10.png',
+]
 
 export default function Landing() {
   const { setView } = useAppStore()
@@ -192,83 +213,113 @@ export default function Landing() {
 
       {/* ─── CURRICULUM PARTS ─── */}
       <div className="nv-container">
-        {ALL_PARTS.map((part, partIdx) => (
-          <div key={part.id} id={part.id} className="nv-part">
-            {/* Part Header */}
-            <motion.div
-              className="nv-part-head"
-              style={{ borderColor: `${part.color}22` }}
-              {...fadeInLeft}
-              transition={{ ...fadeInLeft.transition, delay: 0.05 }}
-            >
-              <span className="nv-part-num" style={{ color: part.color, background: `${part.color}15` }}>{part.num}</span>
-              <div className="nv-part-info">
-                <h2>{part.title}</h2>
-                <span className="nv-part-meta">{part.meta}</span>
-              </div>
-            </motion.div>
+        {ALL_PARTS.map((part, partIdx) => {
+          const isEven = partIdx % 2 === 0
+          const partImage = partImages[partIdx] || partImages[0]
 
-            {/* Connector */}
-            <div className="nv-connector" style={{ background: `linear-gradient(90deg, ${part.color}44, ${part.color}11)` }} />
-
-            {/* Lesson Cards Grid */}
-            <div className="nv-grid">
-              {part.lessons.map((lesson, lessonIdx) => (
+          return (
+            <div key={part.id} id={part.id} className="nv-part">
+              {/* Part Header with Image */}
+              <div className="nv-part-hero-row">
                 <motion.div
-                  key={lesson.num}
-                  className="nv-card nv-glass nv-glow-border"
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-50px' }}
-                  transition={{ duration: 0.4, delay: lessonIdx * 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
-                  whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                  className={`nv-part-hero-text ${isEven ? '' : 'nv-part-hero-text-reverse'}`}
+                  {...fadeInLeft}
+                  transition={{ ...fadeInLeft.transition, delay: 0.05 }}
                 >
-                  <div className="nv-card-accent" style={{ background: `linear-gradient(135deg, ${part.color}, ${part.color}66)` }} />
-                  <div className="nv-card-head">
-                    <span className="nv-card-num" style={{ color: part.color, background: `${part.color}15` }}>{lesson.num}</span>
-                    <span className="nv-card-title">{lesson.title}</span>
+                  <span className="nv-part-num" style={{ color: part.color, background: `${part.color}15` }}>{part.num}</span>
+                  <div className="nv-part-info">
+                    <h2>{part.title}</h2>
+                    <span className="nv-part-meta">{part.meta}</span>
                   </div>
-                  <ul className="nv-card-bullets">
-                    {lesson.bullets.map((b, bi) => (
-                      <li key={bi}>
-                        <span className="nv-bullet-dot" style={{ background: part.color }} />
-                        {b}
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="nv-part-description">{part.description}</p>
+                  {part.partQuote && (
+                    <div className="nv-part-inline-quote">
+                      <div className="nv-quote-accent" style={{ background: part.color }} />
+                      <p className="nv-inline-quote-text">&ldquo;{part.partQuote.text}&rdquo;</p>
+                      <p className="nv-inline-quote-source">— {part.partQuote.source}</p>
+                    </div>
+                  )}
                 </motion.div>
-              ))}
-              {part.partQuote && part.lessons.length % 3 !== 0 && (
                 <motion.div
-                  className="nv-premium-quote"
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.1 }}
+                  className={`nv-part-hero-image ${isEven ? '' : 'nv-part-hero-image-reverse'}`}
+                  {...fadeInRight}
+                  transition={{ ...fadeInRight.transition, delay: 0.15 }}
                 >
-                  <div className="nv-quote-accent" style={{ background: part.color }} />
-                  <p className="nv-quote-text">&ldquo;{part.partQuote.text}&rdquo;</p>
-                  <p className="nv-quote-source">{part.partQuote.source}</p>
+                  <div className="nv-part-image-frame" style={{ borderColor: `${part.color}33` }}>
+                    <div className="nv-part-image-glow" style={{ background: `radial-gradient(ellipse at center, ${part.color}22, transparent 70%)` }} />
+                    <Image
+                      src={partImage}
+                      alt={`Ilustrasi ${part.title}`}
+                      fill
+                      className="nv-part-image"
+                      sizes="(max-width: 768px) 100vw, 500px"
+                    />
+                  </div>
                 </motion.div>
+              </div>
+
+              {/* Connector */}
+              <div className="nv-connector" style={{ background: `linear-gradient(90deg, ${part.color}44, ${part.color}11)` }} />
+
+              {/* Lesson Cards Grid */}
+              <div className="nv-grid">
+                {part.lessons.map((lesson, lessonIdx) => (
+                  <motion.div
+                    key={lesson.num}
+                    className="nv-card nv-glass nv-glow-border"
+                    initial={{ opacity: 0, y: 16 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: '-50px' }}
+                    transition={{ duration: 0.4, delay: lessonIdx * 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
+                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                  >
+                    <div className="nv-card-accent" style={{ background: `linear-gradient(135deg, ${part.color}, ${part.color}66)` }} />
+                    <div className="nv-card-head">
+                      <span className="nv-card-num" style={{ color: part.color, background: `${part.color}15` }}>{lesson.num}</span>
+                      <span className="nv-card-title">{lesson.title}</span>
+                    </div>
+                    <ul className="nv-card-bullets">
+                      {lesson.bullets.map((b, bi) => (
+                        <li key={bi}>
+                          <span className="nv-bullet-dot" style={{ background: part.color }} />
+                          {b}
+                        </li>
+                      ))}
+                    </ul>
+                  </motion.div>
+                ))}
+                {part.partQuote && part.lessons.length % 3 !== 0 && (
+                  <motion.div
+                    className="nv-premium-quote"
+                    initial={{ opacity: 0, y: 16 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                  >
+                    <div className="nv-quote-accent" style={{ background: part.color }} />
+                    <p className="nv-quote-text">&ldquo;{part.partQuote.text}&rdquo;</p>
+                    <p className="nv-quote-source">{part.partQuote.source}</p>
+                  </motion.div>
+                )}
+              </div>
+              {part.partQuote && part.lessons.length % 3 === 0 && (
+                <div className="nv-part-quote-wrap">
+                  <motion.div
+                    className="nv-premium-quote nv-premium-quote-full"
+                    initial={{ opacity: 0, y: 16 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                  >
+                    <div className="nv-quote-accent" style={{ background: part.color }} />
+                    <p className="nv-quote-text">&ldquo;{part.partQuote.text}&rdquo;</p>
+                    <p className="nv-quote-source">{part.partQuote.source}</p>
+                  </motion.div>
+                </div>
               )}
             </div>
-            {part.partQuote && part.lessons.length % 3 === 0 && (
-              <div className="nv-part-quote-wrap">
-                <motion.div
-                  className="nv-premium-quote nv-premium-quote-full"
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.1 }}
-                >
-                  <div className="nv-quote-accent" style={{ background: part.color }} />
-                  <p className="nv-quote-text">&ldquo;{part.partQuote.text}&rdquo;</p>
-                  <p className="nv-quote-source">{part.partQuote.source}</p>
-                </motion.div>
-              </div>
-            )}
-          </div>
-        ))}
+          )
+        })}
 
         {/* ─── PRICING CTA SECTION ─── */}
         <motion.div

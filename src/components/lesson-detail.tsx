@@ -33,10 +33,10 @@ export default function LessonDetail() {
     return (
       <div className="nv-page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
         <div style={{ textAlign: 'center' }}>
-          <p style={{ color: 'var(--nv-muted)', fontSize: 16, marginBottom: 8 }}>Lesson not found</p>
-          <p style={{ color: 'var(--nv-dim)', fontSize: 13, marginBottom: 20 }}>The lesson you are looking for does not exist.</p>
+          <p style={{ color: 'var(--nv-muted)', fontSize: 16, marginBottom: 8 }}>Pelajaran tidak ditemukan</p>
+          <p style={{ color: 'var(--nv-dim)', fontSize: 13, marginBottom: 20 }}>Pelajaran yang Anda cari tidak ada.</p>
           <button className="nv-back-btn" onClick={closeLesson} style={{ marginTop: 16 }}>
-            &larr; Back to Dashboard
+            &larr; Kembali ke Dasbor
           </button>
         </div>
       </div>
@@ -67,7 +67,7 @@ export default function LessonDetail() {
             whileHover={{ x: -3 }}
             whileTap={{ scale: 0.95 }}
           >
-            &larr; Dashboard
+            &larr; Dasbor
           </motion.button>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <span style={{ fontFamily: 'var(--font-geist-mono), monospace', fontWeight: 800, fontSize: 13, color: part.color }}>
@@ -82,7 +82,7 @@ export default function LessonDetail() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            {isComplete ? '\u2713 Completed' : 'Mark Complete'}
+            {isComplete ? '\u2713 Selesai' : 'Tandai Selesai'}
           </motion.button>
         </div>
       </div>
@@ -130,7 +130,7 @@ export default function LessonDetail() {
             transition={{ duration: 0.5 }}
           >
             <h3 className="nv-lesson-section-title" style={{ color: part.color }}>
-              &#10022; Sourced Quotes
+              &#10022; Kutipan Bersumber
             </h3>
             {lesson.quotes.map((q, i) => (
               <motion.div
@@ -153,7 +153,7 @@ export default function LessonDetail() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Read full text at CoolWisdomBooks &rarr;
+                  Baca teks lengkap di CoolWisdomBooks &rarr;
                 </a>
               </motion.div>
             ))}
@@ -169,7 +169,7 @@ export default function LessonDetail() {
             transition={{ duration: 0.5 }}
           >
             <h3 className="nv-lesson-section-title" style={{ color: part.color }}>
-              &#129495; Daily Practice
+              &#129495; Praktik Harian
             </h3>
             <p>{lesson.practice}</p>
           </motion.div>
@@ -184,7 +184,7 @@ export default function LessonDetail() {
             transition={{ duration: 0.5 }}
           >
             <h3 className="nv-lesson-section-title" style={{ color: part.color }}>
-              &#128273; Key Takeaway
+              &#128273; Poin Penting
             </h3>
             <p style={{ fontWeight: 600, fontSize: 16, lineHeight: 1.6 }}>{lesson.takeaway}</p>
           </motion.div>
@@ -198,7 +198,7 @@ export default function LessonDetail() {
                 whileHover={{ x: -3 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <span style={{ fontSize: 12, color: 'var(--nv-dim)' }}>&larr; Previous</span>
+                <span style={{ fontSize: 12, color: 'var(--nv-dim)' }}>&larr; Sebelumnya</span>
                 <span style={{ fontSize: 14, fontWeight: 700 }}>{prevLesson.num} {prevLesson.title}</span>
               </motion.button>
             ) : <div />}
@@ -209,7 +209,7 @@ export default function LessonDetail() {
                 whileHover={{ x: 3 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <span style={{ fontSize: 12, color: 'var(--nv-dim)' }}>Next &rarr;</span>
+                <span style={{ fontSize: 12, color: 'var(--nv-dim)' }}>Berikutnya &rarr;</span>
                 <span style={{ fontSize: 14, fontWeight: 700 }}>{nextLesson.num} {nextLesson.title}</span>
               </motion.button>
             ) : <div />}
@@ -220,7 +220,7 @@ export default function LessonDetail() {
         <aside className="nv-lesson-sidebar nv-scroll-premium">
           <div className="nv-lesson-sidebar-card nv-glass">
             <h4 style={{ fontSize: 13, fontWeight: 800, marginBottom: 12, color: part.color }}>
-              Part {part.num}: {part.title}
+              Bagian {part.num}: {part.title}
             </h4>
             {part.lessons.map((l, idx) => {
               const done = completedLessons.has(l.num)

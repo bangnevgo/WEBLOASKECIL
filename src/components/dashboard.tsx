@@ -1,9 +1,23 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
 import { ALL_PARTS } from '@/lib/curriculum-data'
+
+const partImages = [
+  '/images/parts/part-1.png',
+  '/images/parts/part-2.png',
+  '/images/parts/part-3.png',
+  '/images/parts/part-4.png',
+  '/images/parts/part-5.png',
+  '/images/parts/part-6.png',
+  '/images/parts/part-7.png',
+  '/images/parts/part-8.png',
+  '/images/parts/part-9.png',
+  '/images/parts/part-10.png',
+]
 
 export default function Dashboard() {
   const { userName, openLesson, completedLessons, unsubscribe } = useAppStore()
@@ -33,9 +47,9 @@ export default function Dashboard() {
           >
             <div className="nv-dash-logo" style={{ boxShadow: '0 0 20px var(--nv-gold-glow)' }}>✦</div>
             <div>
-              <div style={{ fontWeight: 800, fontSize: 16 }}>Law of Assumption</div>
+              <div style={{ fontWeight: 800, fontSize: 16 }}>Hukum Asumsi</div>
               <div style={{ fontSize: 11, color: 'var(--nv-dim)', fontFamily: 'var(--font-geist-mono), monospace' }}>
-                FULL CURRICULUM
+                KURIKULUM LENGKAP
               </div>
             </div>
           </motion.div>
@@ -45,14 +59,14 @@ export default function Dashboard() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <span style={{ fontSize: 13, color: 'var(--nv-muted)' }}>Welcome, {userName}</span>
+            <span style={{ fontSize: 13, color: 'var(--nv-muted)' }}>Selamat datang, {userName}</span>
             <motion.button
               className="nv-dash-logout"
               onClick={unsubscribe}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              Sign Out
+              Keluar
             </motion.button>
           </motion.div>
         </div>
@@ -101,7 +115,7 @@ export default function Dashboard() {
                   {completedCount}<span style={{ fontSize: 13, color: 'var(--nv-dim)', fontWeight: 400 }}>/{totalLessons}</span>
                 </div>
                 <div style={{ fontSize: 11, color: 'var(--nv-muted)', fontFamily: 'var(--font-geist-mono), monospace', marginTop: 2 }}>
-                  {progressPct}% Complete
+                  {progressPct}% Selesai
                 </div>
               </div>
             </div>
@@ -116,7 +130,7 @@ export default function Dashboard() {
               transition={{ delay: 0.3 }}
             >
               <div style={{ fontSize: 18, fontWeight: 900, color: 'var(--nv-gold)' }}>{ALL_PARTS.length}</div>
-              <div style={{ fontSize: 10, color: 'var(--nv-dim)', fontFamily: 'var(--font-geist-mono), monospace' }}>PARTS</div>
+              <div style={{ fontSize: 10, color: 'var(--nv-dim)', fontFamily: 'var(--font-geist-mono), monospace' }}>BAGIAN</div>
             </motion.div>
             <motion.div
               className="nv-stat-card"
@@ -125,7 +139,7 @@ export default function Dashboard() {
               transition={{ delay: 0.35 }}
             >
               <div style={{ fontSize: 18, fontWeight: 900, color: 'var(--nv-gold)' }}>{totalLessons - completedCount}</div>
-              <div style={{ fontSize: 10, color: 'var(--nv-dim)', fontFamily: 'var(--font-geist-mono), monospace' }}>REMAINING</div>
+              <div style={{ fontSize: 10, color: 'var(--nv-dim)', fontFamily: 'var(--font-geist-mono), monospace' }}>SISA</div>
             </motion.div>
           </div>
 
@@ -193,14 +207,14 @@ export default function Dashboard() {
           >
             <div style={{ position: 'absolute', top: -30, right: -30, width: 120, height: 120, borderRadius: '50%', background: 'rgba(212, 160, 83, 0.05)', filter: 'blur(30px)' }} />
             <h2 style={{ fontSize: 20, fontWeight: 800, margin: '0 0 8px', position: 'relative' }}>
-              Welcome back, {userName} ✦
+              Selamat datang kembali, {userName} ✦
             </h2>
             <p style={{ fontSize: 14, color: 'var(--nv-muted)', margin: 0, position: 'relative' }}>
               {completedCount === 0
-                ? "Start your journey through Neville Goddard's complete teachings. Begin with Part 1: Consciousness Is the Only Reality."
+                ? "Mulai perjalanan Anda melalui ajaran lengkap Neville Goddard. Mulai dari Bagian 1: Kesadaran Adalah Satu-satunya Realitas."
                 : completedCount < totalLessons
-                  ? `You've completed ${completedCount} of ${totalLessons} lessons. Keep going — persistence is the key!`
-                  : 'Congratulations! You have completed the entire curriculum. 🎉'
+                  ? `Anda telah menyelesaikan ${completedCount} dari ${totalLessons} pelajaran. Teruslah maju — persistensi adalah kuncinya!`
+                  : 'Selamat! Anda telah menyelesaikan seluruh kurikulum. 🎉'
               }
             </p>
           </motion.div>
@@ -222,9 +236,21 @@ export default function Dashboard() {
                   </span>
                   <h2 style={{ fontSize: 22, fontWeight: 800, margin: 0 }}>{part.title}</h2>
                 </div>
-                <p style={{ color: 'var(--nv-muted)', fontSize: 14, lineHeight: 1.6, margin: '8px 0 16px' }}>
-                  {part.description}
-                </p>
+                <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start', marginTop: 12 }}>
+                  <p style={{ color: 'var(--nv-muted)', fontSize: 14, lineHeight: 1.6, margin: 0, flex: 1 }}>
+                    {part.description}
+                  </p>
+                  <div style={{ width: 200, height: 130, borderRadius: 12, overflow: 'hidden', border: '1px solid var(--nv-glass-border)', flexShrink: 0, position: 'relative' }}>
+                    <div style={{ position: 'absolute', inset: '-10%', background: `radial-gradient(ellipse at center, ${part.color}15, transparent 70%)`, pointerEvents: 'none', zIndex: 1 }} />
+                    <Image
+                      src={partImages[partIdx] || partImages[0]}
+                      alt={`Ilustrasi ${part.title}`}
+                      fill
+                      style={{ objectFit: 'cover', opacity: 0.8 }}
+                      sizes="200px"
+                    />
+                  </div>
+                </div>
               </div>
 
               <div className="nv-dash-lessons-grid">
@@ -259,9 +285,9 @@ export default function Dashboard() {
                       </ul>
                       <div style={{ marginTop: 'auto', paddingTop: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span style={{ fontSize: 10, fontFamily: 'var(--font-geist-mono), monospace', color: 'var(--nv-faint)' }}>
-                          {lesson.quotes.length} quote{lesson.quotes.length !== 1 ? 's' : ''} · Practice
+                          {lesson.quotes.length} kutipan · Praktik
                         </span>
-                        {isComplete && <span style={{ fontSize: 12, color: 'var(--nv-gold)' }}>✓ Done</span>}
+                        {isComplete && <span style={{ fontSize: 12, color: 'var(--nv-gold)' }}>✓ Selesai</span>}
                       </div>
                     </motion.button>
                   )

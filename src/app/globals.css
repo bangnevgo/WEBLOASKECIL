@@ -375,6 +375,113 @@
   margin-top: 64px;
 }
 
+.nv-part-hero-row {
+  display: flex;
+  align-items: stretch;
+  gap: 32px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .nv-part-hero-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .nv-part-hero-image {
+    width: 100%;
+  }
+  .nv-part-hero-image-reverse {
+    order: 0;
+  }
+  .nv-part-image-frame {
+    height: 200px;
+  }
+  .nv-part-hero-text-reverse {
+    order: 0;
+  }
+}
+
+.nv-part-hero-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--nv-border);
+}
+
+.nv-part-hero-text-reverse {
+  order: 2;
+}
+
+.nv-part-description {
+  font-size: 14px;
+  color: var(--nv-muted);
+  line-height: 1.7;
+  margin: 0;
+  max-width: 560px;
+}
+
+.nv-part-inline-quote {
+  padding: 12px 16px;
+  border-left: 3px solid var(--nv-gold);
+  background: rgba(212, 160, 83, 0.03);
+  border-radius: 0 8px 8px 0;
+  margin-top: 4px;
+  position: relative;
+}
+
+.nv-inline-quote-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--nv-text);
+  font-style: italic;
+  margin: 0;
+}
+
+.nv-inline-quote-source {
+  font-size: 11px;
+  color: var(--nv-dim);
+  margin: 6px 0 0;
+  font-family: var(--font-geist-mono), monospace;
+}
+
+.nv-part-hero-image {
+  flex-shrink: 0;
+  width: 400px;
+}
+
+.nv-part-hero-image-reverse {
+  order: 1;
+}
+
+.nv-part-image-frame {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--nv-glass-border);
+}
+
+.nv-part-image-glow {
+  position: absolute;
+  inset: -20%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.nv-part-image {
+  object-fit: cover;
+  border-radius: 16px;
+  opacity: 0.85;
+  transition: opacity 0.3s;
+}
+
+.nv-part-image-frame:hover .nv-part-image {
+  opacity: 1;
+}
+
 .nv-part-head {
   display: flex; align-items: center; gap: 12px;
   padding-bottom: 16px; border-bottom: 1px solid var(--nv-border);
@@ -720,6 +827,16 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .nv-dash-section-head > div:last-child {
+    flex-direction: column;
+  }
+  .nv-dash-section-head > div:last-child > div:last-child {
+    width: 100%;
+    height: 160px;
+  }
 }
 
 .nv-dash-lesson-card {
