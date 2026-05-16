@@ -176,11 +176,10 @@
 
 /* ===== Hero Section ===== */
 .nv-hero {
-  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 80px 24px;
+  padding: 48px 24px 24px;
   position: relative;
 }
 
@@ -352,10 +351,11 @@
 
 /* ===== Marquee ===== */
 .nv-marquee-wrap {
-  overflow: hidden; padding: 16px 0;
+  overflow: hidden; padding: 12px 0;
   border-top: 1px solid var(--nv-border);
   border-bottom: 1px solid var(--nv-border);
   background: var(--nv-bg-2);
+  margin-top: 8px;
 }
 
 .nv-marquee {
