@@ -14,7 +14,7 @@ const lessonIllustrations: Record<string, { src: string; alt: string; caption: s
     caption: '"I AM" bukan sekadar kata — ia adalah kekuatan kreatif',
   },
   '1.2': {
-    src: '/images/illustrations/gemini-vision.png',
+    src: '/images/illustrations/consciousness-creates-world.png',
     alt: 'Kesadaran Menciptakan Realitas',
     caption: 'Dunia luar adalah cerminan dunia dalam',
   },
@@ -368,8 +368,8 @@ export default function FreeLessonPage() {
             </div>
             <div className="nv-fl-conversion-illust-mini">
               <Image
-                src="/images/illustrations/gemini-vision.png"
-                alt="Visi Kreatif"
+                src="/images/illustrations/consciousness-creates-world.png"
+                alt="Kesadaran Menciptakan Realitas"
                 fill
                 className="nv-fl-conversion-illust-mini-img"
                 sizes="120px"

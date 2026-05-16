@@ -228,8 +228,8 @@ export default function Landing() {
           >
             <div className="nv-illust-card-frame">
               <Image
-                src="/images/illustrations/gemini-vision.png"
-                alt="Imajinasi Menciptakan Realitas"
+                src="/images/illustrations/consciousness-creates-world.png"
+                alt="Kesadaran Menciptakan Realitas"
                 fill
                 className="nv-illust-card-img"
                 sizes="320px"
@@ -238,7 +238,7 @@ export default function Landing() {
             </div>
             <div className="nv-illust-card-caption">
               <span className="nv-illust-caption-icon">✦</span>
-              <span>Imajinasi → Realitas</span>
+              <span>Kesadaran → Realitas</span>
             </div>
           </motion.div>
 
