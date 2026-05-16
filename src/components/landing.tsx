@@ -48,6 +48,20 @@ const partImages = [
   '/images/parts/part-10.png',
 ]
 
+// Aspect ratios matching each part image's natural dimensions
+const partImageAspectRatios = [
+  '1/1',   // manifestation-journal (1024×1024)
+  '1/1',   // neville-profile (2048×2048)
+  '1/1',   // meditation-imagination (1024×1024)
+  '4/3',   // part-4 (1152×864)
+  '4/3',   // part-5 (1152×864)
+  '4/3',   // part-6 (1152×864)
+  '4/3',   // part-7 (1152×864)
+  '4/3',   // part-8 (1152×864)
+  '4/3',   // part-9 (1152×864)
+  '4/3',   // part-10 (1152×864)
+]
+
 export default function Landing() {
   const { setView } = useAppStore()
   const [activeSection, setActiveSection] = useState<string | null>(null)
@@ -354,7 +368,7 @@ export default function Landing() {
                   {...fadeInRight}
                   transition={{ ...fadeInRight.transition, delay: 0.15 }}
                 >
-                  <div className="nv-part-image-frame" style={{ borderColor: `${part.color}33` }}>
+                  <div className="nv-part-image-frame" style={{ borderColor: `${part.color}33`, aspectRatio: partImageAspectRatios[partIdx] }}>
                     <div className="nv-part-image-glow" style={{ background: `radial-gradient(ellipse at center, ${part.color}22, transparent 70%)` }} />
                     <Image
                       src={partImage}

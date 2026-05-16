@@ -6,22 +6,25 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
 import { ALL_PARTS, FREE_LESSON_NUMS } from '@/lib/curriculum-data'
 
-// Map each free lesson to a thematic illustration
-const lessonIllustrations: Record<string, { src: string; alt: string; caption: string }> = {
+// Map each free lesson to a thematic illustration with its aspect ratio
+const lessonIllustrations: Record<string, { src: string; alt: string; caption: string; aspectRatio: string }> = {
   '1.1': {
     src: '/images/illustrations/manifestation-journal.webp',
     alt: 'Jurnal Manifestasi — Menulis I AM',
     caption: '"I AM" bukan sekadar kata — ia adalah kekuatan kreatif',
+    aspectRatio: '1/1',
   },
   '1.2': {
     src: '/images/illustrations/consciousness-creates-world.png',
     alt: 'Kesadaran Menciptakan Realitas',
     caption: 'Dunia luar adalah cerminan dunia dalam',
+    aspectRatio: '3/4',
   },
   '1.3': {
     src: '/images/illustrations/meditation-imagination.webp',
     alt: 'Meditasi — Dua Sisi Penciptaan',
     caption: 'Perasaan adalah jembatan antara sadar dan bawah sadar',
+    aspectRatio: '1/1',
   },
 }
 
@@ -144,7 +147,7 @@ export default function FreeLessonPage() {
               animate={{ opacity: 1, x: 0, scale: 1 }}
               transition={{ duration: 0.7, delay: 0.2 }}
             >
-              <div className="nv-fl-hero-illust-frame">
+              <div className="nv-fl-hero-illust-frame" style={{ aspectRatio: lessonIllustrations[lesson.num].aspectRatio }}>
                 <div className="nv-fl-hero-illust-glow" />
                 <Image
                   src={lessonIllustrations[lesson.num].src}
@@ -197,7 +200,7 @@ export default function FreeLessonPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5 }}
                 >
-                  <div className="nv-fl-illust-break-frame">
+                  <div className="nv-fl-illust-break-frame" style={{ aspectRatio: lessonIllustrations[lesson.num].aspectRatio }}>
                     <Image
                       src={lessonIllustrations[lesson.num].src}
                       alt={lessonIllustrations[lesson.num].alt}
@@ -288,7 +291,7 @@ export default function FreeLessonPage() {
               </div>
             </div>
             <div className="nv-fl-practice-illust-col">
-              <div className="nv-fl-practice-illust-frame">
+              <div className="nv-fl-practice-illust-frame" style={{ aspectRatio: lessonIllustrations[lesson.num]?.aspectRatio || '1/1' }}>
                 <Image
                   src={lessonIllustrations[lesson.num]?.src || '/images/illustrations/meditation-imagination.webp'}
                   alt={lessonIllustrations[lesson.num]?.alt || 'Praktik Meditasi'}

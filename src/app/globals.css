@@ -466,11 +466,9 @@
 .nv-part-image-frame {
   position: relative;
   width: 100%;
-  height: 320px;
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid var(--nv-glass-border);
-  background: rgba(10, 10, 12, 0.4);
 }
 
 .nv-part-image-glow {
@@ -481,7 +479,7 @@
 }
 
 .nv-part-image {
-  object-fit: contain;
+  object-fit: cover;
   border-radius: 16px;
   opacity: 0.85;
   transition: opacity 0.3s;
@@ -2441,17 +2439,16 @@
 .nv-illust-card-frame {
   position: relative;
   width: 100%;
-  height: 320px;
+  aspect-ratio: 1/1;
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid var(--nv-glass-border);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s, box-shadow 0.3s;
-  background: rgba(10, 10, 12, 0.6);
 }
 
 .nv-illust-card-tall .nv-illust-card-frame {
-  height: 400px;
+  aspect-ratio: 3/4;
 }
 
 .nv-illust-card:hover .nv-illust-card-frame {
@@ -2460,7 +2457,7 @@
 }
 
 .nv-illust-card-img {
-  object-fit: contain;
+  object-fit: cover;
   transition: opacity 0.3s;
   opacity: 0.85;
 }
@@ -2531,14 +2528,13 @@
 .nv-illust-divider-frame {
   position: relative;
   width: 260px;
-  height: 260px;
+  aspect-ratio: 1/1;
   border-radius: 14px;
   overflow: hidden;
   border: 1px solid var(--nv-glass-border);
   flex-shrink: 0;
   opacity: 0.7;
   transition: opacity 0.3s;
-  background: rgba(10, 10, 12, 0.4);
 }
 
 .nv-illust-divider-frame:hover {
@@ -2548,12 +2544,11 @@
 @media (max-width: 768px) {
   .nv-illust-divider-frame {
     width: 140px;
-    height: 140px;
   }
 }
 
 .nv-illust-divider-img {
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .nv-illust-divider-center {
@@ -2620,18 +2615,10 @@
 .nv-fl-hero-illust-frame {
   position: relative;
   width: 100%;
-  height: 400px;
   border-radius: 16px;
   overflow: hidden;
   border: 2px solid rgba(212, 160, 83, 0.2);
   box-shadow: 0 8px 40px rgba(212, 160, 83, 0.1);
-  background: rgba(10, 10, 12, 0.5);
-}
-
-@media (max-width: 768px) {
-  .nv-fl-hero-illust-frame {
-    height: 320px;
-  }
 }
 
 .nv-fl-hero-illust-glow {
@@ -2643,7 +2630,7 @@
 }
 
 .nv-fl-hero-illust-img {
-  object-fit: contain;
+  object-fit: cover;
   opacity: 0.88;
   transition: opacity 0.3s;
 }
@@ -2668,24 +2655,16 @@
 .nv-fl-illust-break-frame {
   position: relative;
   width: 100%;
-  max-width: 680px;
+  max-width: 500px;
   margin: 0 auto;
-  height: 400px;
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid var(--nv-glass-border);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  background: rgba(10, 10, 12, 0.5);
-}
-
-@media (max-width: 768px) {
-  .nv-fl-illust-break-frame {
-    height: 280px;
-  }
 }
 
 .nv-fl-illust-break-img {
-  object-fit: contain;
+  object-fit: cover;
   opacity: 0.75;
   transition: opacity 0.3s;
 }
@@ -2729,7 +2708,7 @@
 
 .nv-fl-practice-illust-col {
   flex-shrink: 0;
-  width: 160px;
+  width: 200px;
 }
 
 @media (max-width: 768px) {
@@ -2742,21 +2721,13 @@
 .nv-fl-practice-illust-frame {
   position: relative;
   width: 100%;
-  height: 200px;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid var(--nv-glass-border);
-  background: rgba(10, 10, 12, 0.4);
-}
-
-@media (max-width: 768px) {
-  .nv-fl-practice-illust-frame {
-    height: 180px;
-  }
 }
 
 .nv-fl-practice-illust-img {
-  object-fit: contain;
+  object-fit: cover;
   opacity: 0.75;
   border-radius: 12px;
 }
@@ -2772,13 +2743,12 @@
 .nv-fl-conversion-illust-mini {
   position: relative;
   width: 100px;
-  height: 100px;
+  aspect-ratio: 1/1;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid var(--nv-glass-border);
   opacity: 0.6;
   transition: opacity 0.3s;
-  background: rgba(10, 10, 12, 0.4);
 }
 
 .nv-fl-conversion-illust-mini:hover {
@@ -2786,12 +2756,11 @@
 }
 
 .nv-fl-conversion-illust-mini-img {
-  object-fit: contain;
+  object-fit: cover;
 }
 
 @media (max-width: 768px) {
   .nv-fl-conversion-illust-mini {
     width: 80px;
-    height: 80px;
   }
 }
