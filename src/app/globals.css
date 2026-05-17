@@ -455,11 +455,13 @@
 .nv-ebook-cover-wrap {
   position: relative;
   width: 180px;
-  height: 240px;
+  height: 260px;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.15);
   border: 1px solid var(--nv-glass-border);
+  background: var(--nv-bg-2);
+  padding: 8px;
   transition: box-shadow 0.3s ease;
 }
 
@@ -468,8 +470,7 @@
 }
 
 .nv-ebook-cover {
-  object-fit: cover;
-  border-radius: 12px;
+  object-fit: contain !important;
 }
 
 .nv-ebook-info {
@@ -4667,7 +4668,7 @@
   }
   .nv-ebook-cover-wrap {
     width: 140px;
-    height: 190px;
+    height: 200px;
   }
   .nv-ebook-marquee {
     gap: 16px;
@@ -4689,7 +4690,7 @@
   }
   .nv-ebook-cover-wrap {
     width: 120px;
-    height: 164px;
+    height: 175px;
   }
   .nv-ebook-marquee {
     gap: 12px;

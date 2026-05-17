@@ -546,6 +546,7 @@ export default function Landing() {
                       alt={item.title}
                       fill
                       className="nv-ebook-cover"
+                      style={{ objectFit: 'contain' }}
                       sizes="(max-width: 768px) 160px, 220px"
                     />
                   </div>
