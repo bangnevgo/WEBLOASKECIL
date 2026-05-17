@@ -177,6 +177,21 @@ export default function Landing() {
                   priority
                 />
               </div>
+              {/* AI CTA directly below Neville photo */}
+              <motion.button
+                className="nv-ai-hero-cta"
+                onClick={() => setView('ai-manifestation')}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 1.0 }}
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <span className="nv-ai-hero-cta-icon">✦</span>
+                <span className="nv-ai-hero-cta-text">Full Analisa by AI</span>
+                <span className="nv-ai-hero-cta-sub">Manifestasimu</span>
+                <span className="nv-ai-hero-cta-badge">GRATIS</span>
+              </motion.button>
             </motion.div>
 
             {/* Text on the right */}
@@ -249,21 +264,7 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* ─── AI CTA below hero content ─── */}
-          <motion.button
-            className="nv-ai-hero-cta"
-            onClick={() => setView('ai-manifestation')}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-            whileHover={{ scale: 1.04, y: -2 }}
-            whileTap={{ scale: 0.97 }}
-          >
-            <span className="nv-ai-hero-cta-icon">✦</span>
-            <span className="nv-ai-hero-cta-text">Full Analisa by AI</span>
-            <span className="nv-ai-hero-cta-sub">Manifestasimu</span>
-            <span className="nv-ai-hero-cta-badge">GRATIS</span>
-          </motion.button>
+
         </motion.section>
       </div>
 
