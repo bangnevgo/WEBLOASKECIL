@@ -33,7 +33,7 @@ function buildMessages(feature: Feature, payload: Record<string, unknown>) {
     case 'manifestation': {
       const { manifestation, category } = payload
       return [
-        { role: 'assistant' as const, content: systemPrompt },
+        { role: 'system' as const, content: systemPrompt },
         {
           role: 'user' as const,
           content: `Saya ingin memanifestasikan: ${manifestation}\n\nKategori: ${category}\n\nMohon analisa dan berikan hasil dalam format JSON sesuai instruksi.`,
@@ -46,7 +46,7 @@ function buildMessages(feature: Feature, payload: Record<string, unknown>) {
         .map(([id, answer]) => `Pertanyaan ${id}: ${answer}`)
         .join('\n')
       return [
-        { role: 'assistant' as const, content: systemPrompt },
+        { role: 'system' as const, content: systemPrompt },
         {
           role: 'user' as const,
           content: `Berikut jawaban kuesioner saya:\n\n${formattedAnswers}\n\nMohon analisa dan berikan hasil dalam format JSON sesuai instruksi.`,
@@ -59,7 +59,7 @@ function buildMessages(feature: Feature, payload: Record<string, unknown>) {
         .map(([id, answer]) => `Pertanyaan ${id}: ${answer}`)
         .join('\n')
       return [
-        { role: 'assistant' as const, content: systemPrompt },
+        { role: 'system' as const, content: systemPrompt },
         {
           role: 'user' as const,
           content: `Berikut jawaban kuesioner saya:\n\n${formattedAnswers}\n\nMohon analisa dan berikan hasil dalam format JSON sesuai instruksi.`,
@@ -73,7 +73,7 @@ function buildMessages(feature: Feature, payload: Record<string, unknown>) {
         content: m.content,
       }))
       return [
-        { role: 'assistant' as const, content: systemPrompt },
+        { role: 'system' as const, content: systemPrompt },
         ...userMessages,
       ]
     }
@@ -115,7 +115,7 @@ function parseAIResponse(text: string, feature: Feature) {
   }
 }
 
-async function callWithRetry(messages: Array<{ role: 'assistant' | 'user'; content: string }>, retries = 3) {
+async function callWithRetry(messages: Array<{ role: 'system' | 'assistant' | 'user'; content: string }>, retries = 3) {
   let lastError: Error | null = null
 
   for (let attempt = 1; attempt <= retries; attempt++) {

@@ -24,6 +24,7 @@ export interface QuestionnaireQuestion {
   id: string;
   question: string;
   type: 'text' | 'scale';
+  placeholder?: string;
 }
 
 export const LIMITING_BELIEF_QUESTIONS: QuestionnaireQuestion[] = [

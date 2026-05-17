@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
-import { PRIVATE_SESSION_PROMPT } from '@/lib/ai-prompts'
 import { toast } from 'sonner'
 
 interface Message {
@@ -59,8 +58,8 @@ export default function AiPrivateSession() {
         }),
       })
       const data = await res.json()
-      if (data.message) {
-        setMessages([...updatedMessages, { role: 'assistant', content: data.message }])
+      if (data.success && data.data?.message) {
+        setMessages([...updatedMessages, { role: 'assistant', content: data.data.message }])
       } else {
         // Fallback mock response
         const mockResponses = [

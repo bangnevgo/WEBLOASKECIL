@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
-import { MANIFESTATION_PROMPT } from '@/lib/ai-prompts'
 import { toast } from 'sonner'
 
 const CATEGORIES = [
@@ -68,8 +67,8 @@ export default function AiManifestation() {
         }),
       })
       const data = await res.json()
-      if (data.results) {
-        setResults(data.results)
+      if (data.success && data.data) {
+        setResults(data.data)
       } else {
         // Fallback mock results
         setResults({

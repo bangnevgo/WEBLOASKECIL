@@ -77,8 +77,8 @@ export default function AiLimitingBelief() {
         }),
       })
       const data = await res.json()
-      if (data.results) {
-        setResults(data.results)
+      if (data.success && data.data) {
+        setResults(data.data)
       } else {
         // Fallback mock results
         setResults({
