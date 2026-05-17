@@ -13,20 +13,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model ActivationCode {
+  id        String    @id @default(cuid())
+  code      String    @unique
+  tier      String    // "pelajar" or "master"
+  used      Boolean   @default(false)
+  usedBy    String?   // name of the user who used it
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
 }
