@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState, useCallback, useSyncExternalStore } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
@@ -103,6 +103,12 @@ export default function Landing() {
   const isAdmin = useAppStore((s) => s.isAdmin)
   const [activeSection, setActiveSection] = useState<string | null>(null)
   const [showBackTop, setShowBackTop] = useState(false)
+  // Client-only flag to avoid hydration mismatch
+  const isMounted = useSyncExternalStore(
+    () => () => {},   // subscribe (no-op, value never changes)
+    () => true,       // getSnapshot (client)
+    () => false       // getServerSnapshot (server)
+  )
   const mainRef = useRef<HTMLDivElement>(null)
   const heroRef = useRef<HTMLDivElement>(null)
 
@@ -665,8 +671,8 @@ export default function Landing() {
       </AnimatePresence>
 
       {/* ─── ADMIN BADGE ─── */}
-      <AnimatePresence>
-        {isAdmin && (
+      {isMounted && isAdmin && (
+        <AnimatePresence>
           <motion.div
             className="nv-admin-badge"
             initial={{ opacity: 0, x: 20 }}
@@ -676,8 +682,8 @@ export default function Landing() {
           >
             🔓 ADMIN
           </motion.div>
-        )}
-      </AnimatePresence>
+        </AnimatePresence>
+      )}
 
       {/* ─── LOCKED LESSON MODAL ─── */}
       <LockedLessonModal />

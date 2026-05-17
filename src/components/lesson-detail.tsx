@@ -155,6 +155,9 @@ export default function LessonDetail() {
                   &ldquo;{q.highlight ? q.text.replace(q.highlight, `\u00AB${q.highlight}\u00BB`) : q.text}&rdquo;
                 </p>
                 <p className="nv-lesson-quote-source">&mdash; {q.source}</p>
+                {q.translation && (
+                  <p className="nv-lesson-quote-translation">{q.translation}</p>
+                )}
                 <a
                   className="nv-lesson-source-link"
                   href={lesson.sourceUrl}
