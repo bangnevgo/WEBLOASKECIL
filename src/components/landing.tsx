@@ -188,9 +188,8 @@ export default function Landing() {
                 whileTap={{ scale: 0.97 }}
               >
                 <span className="nv-ai-hero-cta-icon">✦</span>
-                <span className="nv-ai-hero-cta-text">Full Analisa by AI</span>
-                <span className="nv-ai-hero-cta-sub">Manifestasimu</span>
-                <span className="nv-ai-hero-cta-badge">GRATIS</span>
+                <span className="nv-ai-hero-cta-text">Analisa Perjalanan Manifestasimu</span>
+                <span className="nv-ai-hero-cta-badge">(AI Powered)</span>
               </motion.button>
             </motion.div>
 
