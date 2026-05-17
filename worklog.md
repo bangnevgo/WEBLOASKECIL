@@ -60,3 +60,84 @@ Stage Summary:
 - AI Hub section placed after Part 10 curriculum
 - All imports fixed and lint passes
 - API tested successfully with real AI responses
+
+---
+Task ID: 4
+Agent: general-purpose
+Task: Translate Part 1 curriculum (lessons 1.1–1.5)
+
+Work Log:
+- Translated fullContent for lesson 1.4 from English to Indonesian (4 paragraphs covering "Anda Sudah Menjadi Itu" — you are already that which you want to be)
+- Translated fullContent for lesson 1.5 from English to Indonesian (4 paragraphs covering "Mekanisme Realisasi" — Neville's 3-step SATS technique)
+- Translated practice fields from English to Indonesian for lessons 1.1, 1.2, and 1.4 (lessons 1.3 and 1.5 already had Indonesian practices)
+- Added `translation` field to all 10 quotes across lessons 1.1–1.5:
+  - 1.1: 2 quotes (I AM as self-definition of God; God's name as eternal I AM)
+  - 1.2: 2 quotes (Consciousness as one and only reality; world as objective picture of subjective state)
+  - 1.3: 2 quotes (Feeling as only medium to subconscious; subconscious as beloved wife)
+  - 1.4: 2 quotes (Already that which you want to be; wish felt as state that is)
+  - 1.5: 2 quotes (Difference between success and failure; assume feeling of wish fulfilled)
+- Consistently used Neville Goddard terminology: I AM (kept), asumsi, bawah sadar, sadar, perasaan, keinginan yang telah terwujud, SATS (kept), manifestasi, kesadaran, persistensi
+- TypeScript compilation verified clean with `npx tsc --noEmit`
+
+Stage Summary:
+- Part 1 fully translated: all fullContent, practice, and quote translations now in Indonesian
+- 10 quote `translation` fields added (original English `text` preserved unchanged)
+- 3 practice fields translated, 2 fullContent translations added
+- No changes to lesson structure, source URLs, highlights, or takeaway fields
+- TypeScript compiles cleanly
+
+---
+Task ID: 5
+Agent: general-purpose
+Task: Translate Part 3 curriculum (lessons 3.1–3.5)
+
+Work Log:
+- Translated fullContent for ALL 5 lessons (3.1–3.5) from English to Indonesian:
+  - 3.1: "Perasaan sebagai Satu-satunya Medium" — 4 paragraphs on feeling as the only medium to the subconscious
+  - 3.2: "SAYA ADALAH vs. SAYA AKAN MENJADI" — 4 paragraphs on present-tense vs future-tense feeling
+  - 3.3: "Iman Adalah Perasaan" — 4 paragraphs on faith redefined as feeling, subconscious responds to persuasion
+  - 3.4: "Perubahan Perasaan = Perubahan Nasib" — 4 paragraphs on change of feeling as change of destiny
+  - 3.5: "Menginduksi Kondisi Perasaan" — 4 paragraphs on physical relaxation + sensory imagination technique
+- Translated practice fields from English to Indonesian for lessons 3.1 and 3.3 (lessons 3.2, 3.4, 3.5 already had Indonesian practices)
+- Added `translation` field to all 8 quotes across lessons 3.1–3.5:
+  - 3.1: 2 quotes (Feeling as one and only medium; No idea impressed until felt)
+  - 3.2: 1 quote (I am healthy stronger than I will be healthy)
+  - 3.3: 2 quotes (Faith is feeling; Subconscious as beloved wife)
+  - 3.4: 2 quotes (Change of feeling is change of destiny; Subconscious never alters accepted beliefs)
+  - 3.5: 1 quote (Assume the feeling of wish fulfilled)
+- Consistently used Neville Goddard terminology: I AM (kept), perasaan, bawah sadar, sadar, asumsi, keinginan yang telah terwujud, SATS (kept), manifestasi, kesadaran, iman, persistensi
+- Original English `text` fields in quotes preserved unchanged; translations added in `translation` field
+
+Stage Summary:
+- Part 3 fully translated: all fullContent, practice, and quote translations now in Indonesian
+- 8 quote `translation` fields added
+- 2 practice fields translated, 5 fullContent translations added
+- No changes to lesson structure, source URLs, highlights, or takeaway fields
+
+---
+Task ID: 6
+Agent: general-purpose
+Task: Translate Part 2 curriculum (lessons 2.1–2.5)
+
+Work Log:
+- Translated fullContent for ALL 5 lessons (2.1–2.5) from English to Indonesian:
+  - 2.1: "Apa Itu Asumsi?" — 4 paragraphs on assumption as conscious act of accepting a state as real, creative power of consciousness
+  - 2.2: "Dunia Asumtif" — 4 paragraphs on the world as assumptive (not objective), consciousness crystallized into form
+  - 2.3: "Asumsi Mengeras Menjadi Fakta" — 4 paragraphs on the cornerstone law, Jesus allegory, subconscious rewiring, time lag
+  - 2.4: "Kekuatan Persistensi" — 4 paragraphs on persistence as sustained occupation, Blake's fool paradox, living FROM the end
+  - 2.5: "Importunity: Kelancangan yang Berani" — 4 paragraphs on importunity from Luke 11, brazen persistence, confident insistence
+- Translated practice fields from English to Indonesian for lessons 2.2, 2.4, and 2.5 (lessons 2.1 and 2.3 already had Indonesian practices)
+- Added `translation` field to all 10 quotes across lessons 2.1–2.5:
+  - 2.1: 2 quotes (Assumptive world; Man alters future by assuming wish fulfilled)
+  - 2.2: 2 quotes (Blake's "What seems to be, is"; Physical world as assumptive world)
+  - 2.3: 2 quotes (Assumption hardens into fact; Story of Jesus is persistent assumption)
+  - 2.4: 2 quotes (Dare to assume; Fool persisting in folly becomes wise)
+  - 2.5: 2 quotes (Importunity from Luke 11:8; Dare to assume — assumption hardens into fact)
+- Consistently used Neville Goddard terminology: I AM (kept), asumsi, bawah sadar, sadar, perasaan, keinginan yang telah terwujud, SATS (kept), manifestasi, kesadaran, persistensi, penyaliban, kebangkitan, importunity/kelancangan/kegigihan tanpa tahu malu
+- Original English `text` fields in quotes preserved unchanged; translations added in `translation` field
+
+Stage Summary:
+- Part 2 fully translated: all fullContent, practice, and quote translations now in Indonesian
+- 10 quote `translation` fields added
+- 3 practice fields translated, 5 fullContent translations added
+- No changes to lesson structure, source URLs, highlights, or takeaway fields

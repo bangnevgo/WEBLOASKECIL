@@ -1875,6 +1875,16 @@
   margin: 0;
 }
 
+.nv-fl-pull-quote-translation {
+  font-size: 14px;
+  color: var(--nv-dim);
+  font-style: italic;
+  margin: 8px 0 0;
+  padding-left: 12px;
+  border-left: 2px solid var(--nv-gold-2);
+  line-height: 1.6;
+}
+
 .nv-fl-pull-quote-link {
   display: inline-block;
   font-size: 11px;

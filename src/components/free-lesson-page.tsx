@@ -249,6 +249,9 @@ export default function FreeLessonPage() {
               )}
             </p>
             <p className="nv-fl-pull-quote-source">— {quote.source}</p>
+            {quote.translation && (
+              <p className="nv-fl-pull-quote-translation">{quote.translation}</p>
+            )}
             {lesson.sourceUrl && (
               <a
                 href={lesson.sourceUrl}
