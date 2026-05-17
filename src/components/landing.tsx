@@ -6,6 +6,7 @@ import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
 import { ALL_PARTS, BONUS_ITEMS, MARQUEE_ITEMS, isLessonFree } from '@/lib/curriculum-data'
 import LockedLessonModal from '@/components/locked-lesson-modal'
+import AiHubSection from '@/components/ai-hub-section'
 
 const staggerContainer = {
   animate: { transition: { staggerChildren: 0.06 } }
@@ -247,6 +248,22 @@ export default function Landing() {
               </motion.button>
             </div>
           </div>
+
+          {/* ─── AI CTA below hero content ─── */}
+          <motion.button
+            className="nv-ai-hero-cta"
+            onClick={() => setView('ai-manifestation')}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+            whileHover={{ scale: 1.04, y: -2 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <span className="nv-ai-hero-cta-icon">✦</span>
+            <span className="nv-ai-hero-cta-text">Full Analisa by AI</span>
+            <span className="nv-ai-hero-cta-sub">Manifestasimu</span>
+            <span className="nv-ai-hero-cta-badge">GRATIS</span>
+          </motion.button>
         </motion.section>
       </div>
 
@@ -426,7 +443,9 @@ export default function Landing() {
           )
         })}
 
-        {/* ─── ILLUSTRATION DIVIDER ─── */}
+        {/* ─── AI HUB after Part 10 ─── */}
+        <AiHubSection />
+
         <motion.div
           className="nv-illust-divider"
           initial={{ opacity: 0 }}
