@@ -7,16 +7,12 @@ import { useAppStore } from '@/lib/store'
 import { ALL_PARTS, BONUS_ITEMS, MARQUEE_ITEMS, isLessonFree } from '@/lib/curriculum-data'
 
 const EBOOK_ITEMS = [
-  { cover: '/images/parts/part-1.png', title: 'Kesadaran Adalah Satu-satunya Realitas', part: 'Bagian 01' },
-  { cover: '/images/parts/part-2.png', title: 'Hukum Asumsi', part: 'Bagian 02' },
-  { cover: '/images/parts/part-3.png', title: 'Perasaan Adalah Rahasianya', part: 'Bagian 03' },
-  { cover: '/images/parts/part-4.png', title: 'Diam dalam Keinginan yang Terwujud', part: 'Bagian 04' },
-  { cover: '/images/parts/part-5.png', title: 'Kondisi-Kondisi Kesadaran', part: 'Bagian 05' },
-  { cover: '/images/parts/part-6.png', title: 'Revisi: Mengubah Masa Lalu', part: 'Bagian 06' },
-  { cover: '/images/parts/part-7.png', title: 'Imajinasi Menciptakan Realitas', part: 'Bagian 07' },
-  { cover: '/images/parts/part-8.png', title: 'Dimensi Keempat', part: 'Bagian 08' },
-  { cover: '/images/parts/part-9.png', title: 'Mati kepada Diri Lama', part: 'Bagian 09' },
-  { cover: '/images/parts/part-10.png', title: 'Janji', part: 'Bagian 10' },
+  { cover: '/images/ebooks/sukses-praktek-hukum-asumsi.jpg', title: 'Sukses Praktek Hukum Asumsi', tag: 'Hukum Asumsi Series' },
+  { cover: '/images/ebooks/asumsimu-itu-dahsyat.png', title: 'Asumsimu Itu Dahsyat!', tag: 'Hukum Asumsi Series' },
+  { cover: '/images/ebooks/kamu-tidak-akan-hidup-bahagia.jpg', title: 'Kamu Tidak Akan Bahagia Bila Tidak Kaya', tag: 'Joseph Murphy' },
+  { cover: '/images/ebooks/memahami-jembatan-peristiwa.jpg', title: 'Memahami Fenomena Jembatan Peristiwa', tag: 'Neville Goddard' },
+  { cover: '/images/ebooks/memahami-inner-shadow.png', title: 'Kunci Memahami Inner Shadow', tag: 'Bang Nevgo' },
+  { cover: '/images/ebooks/koleksi-6-ebook.jpg', title: 'Koleksi 6 eBook Manifestasi', tag: 'Bundle Lengkap' },
 ]
 import LockedLessonModal from '@/components/locked-lesson-modal'
 import AiHubSection from '@/components/ai-hub-section'
@@ -537,8 +533,8 @@ export default function Landing() {
             transition={{ duration: 0.5 }}
           >
             <span className="nv-ebook-etalase-badge">✦ KOLEKSI eBOOK</span>
-            <h2 className="nv-ebook-etalase-title">10 eBook Panduan Lengkap</h2>
-            <p className="nv-ebook-etalase-subtitle">Setiap bagian kurikulum tersedia sebagai eBook mandiri — ringkas, bersumber, dan siap dipraktikkan</p>
+            <h2 className="nv-ebook-etalase-title">eBook Panduan Manifestasi</h2>
+            <p className="nv-ebook-etalase-subtitle">Koleksi eBook berbayar oleh Bang Nevgo — praktis, bersumber, dan siap membantu perjalanan manifestasimu</p>
           </motion.div>
           <div className="nv-ebook-marquee-wrap">
             <div className="nv-ebook-marquee">
@@ -554,7 +550,7 @@ export default function Landing() {
                     />
                   </div>
                   <div className="nv-ebook-info">
-                    <span className="nv-ebook-part">{item.part}</span>
+                    <span className="nv-ebook-part">{item.tag}</span>
                     <span className="nv-ebook-name">{item.title}</span>
                   </div>
                 </div>
