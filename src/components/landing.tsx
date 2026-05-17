@@ -463,39 +463,6 @@ export default function Landing() {
         {/* ─── AI HUB after Part 10 ─── */}
         <AiHubSection />
 
-        <motion.div
-          className="nv-illust-divider"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
-          <div className="nv-illust-divider-imgs">
-            <div className="nv-illust-divider-frame nv-illust-divider-frame-left">
-              <Image
-                src="/images/illustrations/meditation-imagination.webp"
-                alt="Meditasi"
-                fill
-                className="nv-illust-divider-img"
-                sizes="(max-width: 768px) 50vw, 300px"
-              />
-            </div>
-            <div className="nv-illust-divider-center">
-              <span className="nv-illust-divider-glyph">✦</span>
-              <p className="nv-illust-divider-text">Mulailah dari dalam,<br />maka dunia luar mengikuti</p>
-            </div>
-            <div className="nv-illust-divider-frame nv-illust-divider-frame-right">
-              <Image
-                src="/images/illustrations/manifestation-journal.webp"
-                alt="Jurnal Afirmasi"
-                fill
-                className="nv-illust-divider-img"
-                sizes="(max-width: 768px) 50vw, 300px"
-              />
-            </div>
-          </div>
-        </motion.div>
-
         {/* ─── PRICING CTA SECTION ─── */}
         <motion.div
           className="nv-pricing-cta-section nv-glass"
