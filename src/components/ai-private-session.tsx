@@ -21,7 +21,8 @@ const fadeIn = {
 }
 
 export default function AiPrivateSession() {
-  const { setView, isSubscribed } = useAppStore()
+  const { setView } = useAppStore()
+  const hasFullAccess = useAppStore((s) => s.hasFullAccess())
   const [messages, setMessages] = useState<Message[]>([INITIAL_GREETING])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -85,7 +86,7 @@ export default function AiPrivateSession() {
   }
 
   // Premium lock overlay
-  if (!isSubscribed) {
+  if (!hasFullAccess) {
     return (
       <div className="nv-ai-page">
         <header className="nv-ai-header">

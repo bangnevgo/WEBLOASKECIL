@@ -27,7 +27,8 @@ const staggerItem = {
 }
 
 export default function AiLimitingBelief() {
-  const { setView, isSubscribed } = useAppStore()
+  const { setView } = useAppStore()
+  const hasFullAccess = useAppStore((s) => s.hasFullAccess())
   const [step, setStep] = useState<1 | 2>(1)
   const [currentQ, setCurrentQ] = useState(0)
   const [answers, setAnswers] = useState<Record<number, string | number>>({})
@@ -120,7 +121,7 @@ export default function AiLimitingBelief() {
   }
 
   // Premium lock overlay
-  if (!isSubscribed) {
+  if (!hasFullAccess) {
     return (
       <div className="nv-ai-page">
         <header className="nv-ai-header">

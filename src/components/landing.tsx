@@ -100,6 +100,7 @@ const partImageAspectRatios = [
 
 export default function Landing() {
   const { setView } = useAppStore()
+  const isAdmin = useAppStore((s) => s.isAdmin)
   const [activeSection, setActiveSection] = useState<string | null>(null)
   const [showBackTop, setShowBackTop] = useState(false)
   const mainRef = useRef<HTMLDivElement>(null)
@@ -375,8 +376,7 @@ export default function Landing() {
                       transition={{ duration: 0.4, delay: lessonIdx * 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
                       whileHover={{ y: -4, transition: { duration: 0.2 } }}
                       onClick={() => {
-                        const { isSubscribed } = useAppStore.getState()
-                        const hasAccess = free || isSubscribed
+                        const hasAccess = free || useAppStore.getState().hasFullAccess()
                         if (hasAccess) {
                           useAppStore.getState().openFreeLesson(lesson.num)
                         } else {
@@ -661,6 +661,21 @@ export default function Landing() {
           >
             ↑
           </motion.button>
+        )}
+      </AnimatePresence>
+
+      {/* ─── ADMIN BADGE ─── */}
+      <AnimatePresence>
+        {isAdmin && (
+          <motion.div
+            className="nv-admin-badge"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            transition={{ duration: 0.3 }}
+          >
+            🔓 ADMIN
+          </motion.div>
         )}
       </AnimatePresence>
 

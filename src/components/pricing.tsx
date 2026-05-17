@@ -83,8 +83,11 @@ const cardVariants = {
   }),
 }
 
+// Secret admin username — entered in Master tier to activate admin mode
+const ADMIN_USERNAME = 'neville'
+
 export default function Pricing() {
-  const { setView, subscribe, openFreeLesson } = useAppStore()
+  const { setView, subscribe, openFreeLesson, setAdmin } = useAppStore()
   const [showNameModal, setShowNameModal] = useState(false)
   const [selectedTier, setSelectedTier] = useState<PricingTier | null>(null)
   const [nameInput, setNameInput] = useState('')
@@ -103,6 +106,15 @@ export default function Pricing() {
 
   const confirmSubscribe = () => {
     const name = nameInput.trim() || 'Pengguna'
+
+    // Check if this is the Master tier with the secret admin username
+    if (selectedTier?.name === 'Master' && name.toLowerCase() === ADMIN_USERNAME) {
+      setAdmin(true)
+      subscribe(name)
+      toast('🔓 Mode Admin diaktifkan! Selamat datang, Neville.')
+      return
+    }
+
     subscribe(name)
     toast(`✦ Selamat datang, ${name}! Langganan aktif.`)
   }
