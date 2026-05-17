@@ -3029,3 +3029,213 @@
     font-size: 20px;
   }
 }
+
+/* ===== COMPREHENSIVE MOBILE RESPONSIVENESS FIXES ===== */
+
+/* ── Container: tighter padding on very small screens ── */
+@media (max-width: 400px) {
+  .nv-container {
+    padding: 0 16px;
+  }
+}
+
+/* ── Hero: smaller orbs + logo on mobile ── */
+@media (max-width: 768px) {
+  .nv-orb-1 {
+    width: 200px;
+    height: 200px;
+  }
+  .nv-orb-2 {
+    width: 150px;
+    height: 150px;
+  }
+  .nv-orb-3 {
+    width: 100px;
+    height: 100px;
+  }
+  .nv-hero-logo {
+    width: 56px;
+    height: 56px;
+    font-size: 22px;
+  }
+  .nv-hero {
+    padding: 32px 16px 16px;
+  }
+  .nv-hero-mark {
+    padding: 16px 18px;
+  }
+  .nv-hero-mark-quote {
+    font-size: 14px;
+  }
+}
+
+/* ── CTA Button: fit on small screens ── */
+@media (max-width: 480px) {
+  .nv-cta-button {
+    padding: 12px 20px;
+    font-size: 14px;
+    width: 100%;
+    max-width: 360px;
+  }
+}
+
+/* ── Sticky Nav: scroll indicator + better touch targets ── */
+@media (max-width: 768px) {
+  .nv-nav {
+    padding: 8px 12px;
+    -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
+    mask-image: linear-gradient(to right, black 90%, transparent 100%);
+  }
+  .nv-nav-link {
+    padding: 8px 12px;
+    min-height: 44px;
+    min-width: 44px;
+    font-size: 12px;
+  }
+  .nv-nav-inner {
+    gap: 2px;
+  }
+}
+
+/* ── Pricing CTA Section: reduce padding on mobile ── */
+@media (max-width: 768px) {
+  .nv-pricing-cta-section {
+    margin-top: 48px;
+    padding: 24px 16px;
+    border-radius: 12px;
+  }
+  .nv-pricing-cta-title {
+    font-size: clamp(22px, 5vw, 28px);
+  }
+  .nv-pricing-cta-desc {
+    font-size: 14px;
+  }
+}
+
+/* ── Bonus Head: prevent overflow on narrow screens ── */
+@media (max-width: 480px) {
+  .nv-bonus-head {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .nv-bonus-head h2 {
+    font-size: 18px;
+  }
+}
+
+/* ── FAQ: mobile-friendly padding ── */
+@media (max-width: 768px) {
+  .nv-faq-question {
+    padding: 16px 18px;
+  }
+  .nv-faq-answer {
+    padding: 0 18px 16px;
+  }
+  .nv-faq-question-text {
+    font-size: 14px;
+  }
+  .nv-faq {
+    margin-top: 48px;
+    padding: 32px 0;
+  }
+}
+
+/* ── Locked Lesson Modal: scrollable + compact on mobile ── */
+.nv-locked-modal {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+@media (max-width: 480px) {
+  .nv-locked-modal {
+    padding: 20px 16px;
+    border-radius: 12px;
+  }
+  .nv-modal-overlay {
+    padding: 12px;
+    align-items: flex-end;
+  }
+  .nv-locked-modal {
+    max-height: 85vh;
+    border-radius: 16px 16px 0 0;
+  }
+  .nv-locked-title {
+    font-size: 18px;
+  }
+}
+
+/* ── Free Lesson Page: mobile fixes ── */
+@media (max-width: 768px) {
+  .nv-fl-conversion {
+    padding: 24px 16px;
+    margin-bottom: 40px;
+    border-radius: 12px;
+  }
+  .nv-fl-conversion-title {
+    font-size: clamp(18px, 4vw, 22px);
+  }
+  .nv-fl-practice {
+    padding: 20px 16px;
+    margin: 32px 0;
+    border-radius: 12px;
+  }
+  .nv-fl-takeaway {
+    padding: 24px 16px;
+    margin: 32px 0;
+    border-radius: 12px;
+  }
+  .nv-fl-takeaway-text {
+    font-size: clamp(17px, 4vw, 20px);
+  }
+  .nv-fl-drop-cap::first-letter {
+    font-size: 40px;
+    margin-right: 8px;
+  }
+}
+
+/* ── Pricing Card: slightly tighter on mobile ── */
+@media (max-width: 768px) {
+  .nv-pricing-card-inner {
+    padding: 24px 20px;
+  }
+  .nv-pricing-card-featured .nv-pricing-card-inner {
+    padding-top: 36px;
+  }
+}
+
+/* ── Card grid: smaller min on narrow screens ── */
+@media (max-width: 480px) {
+  .nv-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .nv-card {
+    padding: 14px 16px;
+  }
+  .nv-card-accent {
+    margin: -14px -16px 10px;
+  }
+}
+
+/* ── Accessibility: respect reduced motion preference ── */
+@media (prefers-reduced-motion: reduce) {
+  .nv-marquee,
+  .nv-cta-pulse,
+  .nv-fl-practice-glow,
+  .nv-illust-divider-glyph,
+  .nv-hero-logo {
+    animation: none !important;
+  }
+  .nv-cta-pulse {
+    box-shadow: 0 4px 24px rgba(212, 160, 83, 0.25) !important;
+  }
+  .nv-hero-photo-frame:hover .nv-hero-photo,
+  .nv-hero-photo {
+    transform: none !important;
+    transition: none !important;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
