@@ -375,8 +375,8 @@ export default function Landing() {
                       transition={{ duration: 0.4, delay: lessonIdx * 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
                       whileHover={{ y: -4, transition: { duration: 0.2 } }}
                       onClick={() => {
-                        const { isAdmin, isSubscribed } = useAppStore.getState()
-                        const hasAccess = free || isAdmin || isSubscribed
+                        const { isSubscribed } = useAppStore.getState()
+                        const hasAccess = free || isSubscribed
                         if (hasAccess) {
                           useAppStore.getState().openFreeLesson(lesson.num)
                         } else {

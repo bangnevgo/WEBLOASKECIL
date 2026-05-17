@@ -16,10 +16,7 @@ interface AppState {
   isSubscribed: boolean
   subscribe: (name: string) => void
   unsubscribe: () => void
-  // Admin bypass — unlocks all content without subscription
-  isAdmin: boolean
-  toggleAdmin: () => void
-  /** Check if user has full access (either subscribed or admin) */
+  /** Check if user has full access (subscribed via any tier) */
   hasFullAccess: () => boolean
   // Freemium lesson state
   freeLessonNum: string | null
@@ -43,7 +40,7 @@ function loadPersistedState() {
   }
 }
 
-function persistState(state: { userName: string; isSubscribed: boolean; isAdmin: boolean; completedLessons: string[] }) {
+function persistState(state: { userName: string; isSubscribed: boolean; completedLessons: string[] }) {
   if (typeof window === 'undefined') return
   try {
     localStorage.setItem('nv-app-state', JSON.stringify(state))
@@ -61,7 +58,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   userName: persisted?.userName || '',
   setUserName: (name) => {
     set({ userName: name })
-    persistState({ userName: name, isSubscribed: get().isSubscribed, isAdmin: get().isAdmin, completedLessons: [...get().completedLessons] })
+    persistState({ userName: name, isSubscribed: get().isSubscribed, completedLessons: [...get().completedLessons] })
   },
   activePartId: null,
   activeLessonNum: null,
@@ -78,13 +75,13 @@ export const useAppStore = create<AppState>((set, get) => ({
       } else {
         next.add(lessonNum)
       }
-      persistState({ userName: state.userName, isSubscribed: state.isSubscribed, isAdmin: state.isAdmin, completedLessons: [...next] })
+      persistState({ userName: state.userName, isSubscribed: state.isSubscribed, completedLessons: [...next] })
       return { completedLessons: next }
     }),
   isSubscribed: persisted?.isSubscribed || false,
   subscribe: (name) => {
     set({ isSubscribed: true, userName: name, view: 'dashboard' })
-    persistState({ userName: name, isSubscribed: true, isAdmin: get().isAdmin, completedLessons: [...get().completedLessons] })
+    persistState({ userName: name, isSubscribed: true, completedLessons: [...get().completedLessons] })
   },
   unsubscribe: () => {
     set({
@@ -93,16 +90,9 @@ export const useAppStore = create<AppState>((set, get) => ({
       view: 'landing',
       completedLessons: new Set<string>(),
     })
-    persistState({ userName: '', isSubscribed: false, isAdmin: get().isAdmin, completedLessons: [] })
+    persistState({ userName: '', isSubscribed: false, completedLessons: [] })
   },
-  // Admin bypass
-  isAdmin: persisted?.isAdmin || false,
-  toggleAdmin: () => {
-    const next = !get().isAdmin
-    set({ isAdmin: next })
-    persistState({ userName: get().userName, isSubscribed: get().isSubscribed, isAdmin: next, completedLessons: [...get().completedLessons] })
-  },
-  hasFullAccess: () => get().isSubscribed || get().isAdmin,
+  hasFullAccess: () => get().isSubscribed,
   // Freemium
   freeLessonNum: null,
   openFreeLesson: (lessonNum) =>

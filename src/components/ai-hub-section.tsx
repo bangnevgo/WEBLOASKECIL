@@ -55,12 +55,12 @@ const cardVariant = {
 }
 
 export default function AiHubSection() {
-  const { setView, isSubscribed, isAdmin } = useAppStore()
+  const { setView, isSubscribed } = useAppStore()
 
   const handleCardClick = (feature: typeof FEATURES[0]) => {
     if (feature.badgeType === 'free') {
       setView(feature.view)
-    } else if (isSubscribed || isAdmin) {
+    } else if (isSubscribed) {
       setView(feature.view)
     } else {
       setView('pricing')
