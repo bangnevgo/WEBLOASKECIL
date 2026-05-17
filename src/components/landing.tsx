@@ -463,33 +463,6 @@ export default function Landing() {
         {/* ─── AI HUB after Part 10 ─── */}
         <AiHubSection />
 
-        {/* ─── PRICING CTA SECTION ─── */}
-        <motion.div
-          className="nv-pricing-cta-section nv-glass"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="nv-pricing-cta-glow" />
-          <div className="nv-pricing-cta-content">
-            <span className="nv-pricing-cta-badge">AKSES PENUH</span>
-            <h2 className="nv-pricing-cta-title">Buka Kurikulum Lengkap</h2>
-            <p className="nv-pricing-cta-desc">
-              Berlangganan untuk mendapatkan akses ke seluruh 49 pelajaran terperinci dengan ajaran lengkap, kutipan bersumber, praktik harian, dan poin-poin penting dari seluruh karya Neville Goddard.
-            </p>
-            <motion.button
-              className="nv-cta-button nv-cta-pulse"
-              onClick={() => setView('pricing')}
-              whileHover={{ scale: 1.03, y: -2 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              <span className="nv-cta-icon">✦</span>
-              Lihat Paket Berlangganan →
-            </motion.button>
-          </div>
-        </motion.div>
-
         {/* ─── EBOOK ETALASE (MARQUEE) ─── */}
         <div className="nv-ebook-etalase-section">
           <motion.div
@@ -526,6 +499,33 @@ export default function Landing() {
             </div>
           </div>
         </div>
+
+        {/* ─── PRICING CTA SECTION ─── */}
+        <motion.div
+          className="nv-pricing-cta-section nv-glass"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="nv-pricing-cta-glow" />
+          <div className="nv-pricing-cta-content">
+            <span className="nv-pricing-cta-badge">AKSES PENUH</span>
+            <h2 className="nv-pricing-cta-title">Buka Kurikulum Lengkap</h2>
+            <p className="nv-pricing-cta-desc">
+              Berlangganan untuk mendapatkan akses ke seluruh 49 pelajaran terperinci dengan ajaran lengkap, kutipan bersumber, praktik harian, dan poin-poin penting dari seluruh karya Neville Goddard.
+            </p>
+            <motion.button
+              className="nv-cta-button nv-cta-pulse"
+              onClick={() => setView('pricing')}
+              whileHover={{ scale: 1.03, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              <span className="nv-cta-icon">✦</span>
+              Lihat Paket Berlangganan →
+            </motion.button>
+          </div>
+        </motion.div>
 
         {/* ─── BONUS SECTION ─── */}
         <div id="bonus" className="nv-part" style={{ marginTop: 64 }}>
