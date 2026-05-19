@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-type View = 'landing' | 'dashboard' | 'lesson' | 'pricing' | 'free-lesson' | 'ai-manifestation' | 'ai-limiting-belief' | 'ai-shadow' | 'ai-private-session'
+type View = 'landing' | 'dashboard' | 'lesson' | 'pricing' | 'free-lesson' | 'ai-manifestation' | 'ai-limiting-belief' | 'ai-shadow' | 'ai-private-session' | 'admin'
 
 interface AppState {
   view: View

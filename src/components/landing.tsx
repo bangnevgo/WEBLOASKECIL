@@ -692,6 +692,11 @@ export default function Landing() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.3 }}
+            onClick={() => setView('admin')}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            style={{ cursor: 'pointer' }}
+            title="Buka Panel Admin"
           >
             🔓 ADMIN
           </motion.div>

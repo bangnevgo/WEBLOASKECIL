@@ -4696,3 +4696,475 @@
     gap: 12px;
   }
 }
+
+/* ===== Activation & Payment Flow ===== */
+.nv-activation-how {
+  max-width: 700px;
+  margin: 48px auto 0;
+  padding: 32px;
+  position: relative;
+  z-index: 1;
+}
+
+.nv-activation-how-title {
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0 0 24px;
+  text-align: center;
+}
+
+.nv-activation-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.nv-activation-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.nv-activation-step-num {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--nv-gold), var(--nv-gold-2));
+  color: var(--nv-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 14px;
+  flex-shrink: 0;
+  font-family: var(--font-geist-mono), monospace;
+}
+
+.nv-activation-step-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--nv-text);
+  margin-bottom: 2px;
+}
+
+.nv-activation-step-desc {
+  font-size: 13px;
+  color: var(--nv-muted);
+  line-height: 1.5;
+}
+
+.nv-activation-step-connector {
+  width: 2px;
+  height: 16px;
+  background: var(--nv-gold);
+  opacity: 0.3;
+  margin-left: 17px;
+}
+
+.nv-activation-have-code {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--nv-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.nv-activation-have-code span {
+  font-size: 13px;
+  color: var(--nv-muted);
+}
+
+.nv-activation-enter-code-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: rgba(212, 160, 83, 0.1);
+  border: 1px solid rgba(212, 160, 83, 0.25);
+  color: var(--nv-gold);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  transition: all 0.2s;
+}
+
+.nv-activation-enter-code-btn:hover {
+  background: rgba(212, 160, 83, 0.15);
+  border-color: rgba(212, 160, 83, 0.4);
+}
+
+/* Activation Code Input */
+.nv-activation-code-input {
+  font-family: var(--font-geist-mono), monospace !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase;
+  font-size: 16px !important;
+  text-align: center;
+  padding: 14px !important;
+}
+
+.nv-activation-error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.nv-activation-lynk-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--nv-gold);
+  font-size: 13px;
+  text-decoration: none;
+  padding: 6px;
+  transition: color 0.2s;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+.nv-activation-lynk-link:hover {
+  color: var(--nv-gold-2);
+  text-decoration: underline;
+}
+
+/* Locked lesson - have code link */
+.nv-locked-have-code-link {
+  display: block;
+  margin-top: 8px;
+  background: none;
+  border: none;
+  color: var(--nv-gold);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  transition: color 0.2s;
+}
+
+.nv-locked-have-code-link:hover {
+  color: var(--nv-gold-2);
+  text-decoration: underline;
+}
+
+/* ===== Admin Panel ===== */
+.nv-admin-page {
+  min-height: 100vh;
+  background: var(--nv-bg);
+  color: var(--nv-text);
+  padding: 40px 24px 60px;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+.nv-admin-stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  max-width: 800px;
+  margin: 0 auto 32px;
+}
+
+@media (max-width: 768px) {
+  .nv-admin-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.nv-admin-stat-card {
+  padding: 16px;
+  text-align: center;
+}
+
+.nv-admin-stat-num {
+  display: block;
+  font-size: 28px;
+  font-weight: 900;
+  font-family: var(--font-geist-mono), monospace;
+}
+
+.nv-admin-stat-available { color: var(--nv-gold); }
+.nv-admin-stat-used { color: var(--nv-muted); }
+
+.nv-admin-stat-label {
+  display: block;
+  font-size: 11px;
+  color: var(--nv-dim);
+  margin-top: 4px;
+  font-family: var(--font-geist-mono), monospace;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.nv-admin-generate {
+  max-width: 800px;
+  margin: 0 auto 32px;
+  padding: 24px;
+}
+
+.nv-admin-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0 0 8px;
+}
+
+.nv-admin-section-desc {
+  font-size: 13px;
+  color: var(--nv-muted);
+  margin: 0 0 20px;
+  line-height: 1.6;
+}
+
+.nv-admin-generate-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.nv-admin-generate-field {
+  flex: 1;
+  min-width: 140px;
+}
+
+.nv-admin-tier-toggle {
+  display: flex;
+  gap: 8px;
+}
+
+.nv-admin-tier-btn {
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: var(--nv-glass);
+  border: 1px solid var(--nv-glass-border);
+  color: var(--nv-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  transition: all 0.2s;
+}
+
+.nv-admin-tier-btn-active {
+  background: rgba(212, 160, 83, 0.1);
+  border-color: rgba(212, 160, 83, 0.4);
+  color: var(--nv-gold);
+}
+
+/* New codes section */
+.nv-admin-new-codes {
+  overflow: hidden;
+}
+
+.nv-admin-new-codes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--nv-border);
+}
+
+.nv-admin-new-codes-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--nv-gold);
+}
+
+.nv-admin-copy-all-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: rgba(212, 160, 83, 0.1);
+  border: 1px solid rgba(212, 160, 83, 0.25);
+  color: var(--nv-gold);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  transition: all 0.2s;
+}
+
+.nv-admin-copy-all-btn:hover {
+  background: rgba(212, 160, 83, 0.15);
+}
+
+/* Codes list */
+.nv-admin-codes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nv-admin-codes-list-all {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.nv-admin-code-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--nv-glass);
+  border: 1px solid var(--nv-glass-border);
+}
+
+.nv-admin-code-new {
+  border-color: rgba(212, 160, 83, 0.25);
+  background: rgba(212, 160, 83, 0.04);
+}
+
+.nv-admin-code-available {
+  border-color: var(--nv-glass-border);
+}
+
+.nv-admin-code-used {
+  opacity: 0.5;
+}
+
+.nv-admin-code-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nv-admin-code-text {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.nv-admin-code-tier {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: var(--font-geist-mono), monospace;
+  letter-spacing: 1px;
+  font-weight: 800;
+}
+
+.nv-admin-code-tier-pelajar {
+  background: rgba(52, 211, 153, 0.1);
+  color: #34d399;
+}
+
+.nv-admin-code-tier-master {
+  background: rgba(167, 139, 250, 0.1);
+  color: #a78bfa;
+}
+
+.nv-admin-code-right {
+  display: flex;
+  align-items: center;
+}
+
+.nv-admin-code-copy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: none;
+  border: 1px solid var(--nv-glass-border);
+  color: var(--nv-dim);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nv-admin-code-copy:hover {
+  color: var(--nv-gold);
+  border-color: rgba(212, 160, 83, 0.3);
+}
+
+.nv-admin-code-status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--nv-dim);
+  font-family: var(--font-geist-mono), monospace;
+}
+
+.nv-admin-code-status-used {
+  color: var(--nv-muted);
+}
+
+.nv-admin-lynk-hint {
+  margin-top: 12px;
+  padding: 12px;
+  background: rgba(212, 160, 83, 0.05);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--nv-muted);
+  line-height: 1.6;
+}
+
+/* All codes section */
+.nv-admin-all-codes-section {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.nv-admin-all-codes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.nv-admin-filter-group {
+  display: flex;
+  gap: 4px;
+}
+
+.nv-admin-filter-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: var(--nv-glass);
+  border: 1px solid var(--nv-glass-border);
+  color: var(--nv-muted);
+  font-size: 12px;
+  cursor: pointer;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  transition: all 0.2s;
+}
+
+.nv-admin-filter-btn-active {
+  background: rgba(212, 160, 83, 0.1);
+  border-color: rgba(212, 160, 83, 0.3);
+  color: var(--nv-gold);
+}
+
+.nv-admin-loading, .nv-admin-empty {
+  text-align: center;
+  padding: 40px;
+  color: var(--nv-dim);
+  font-size: 14px;
+}
+
+/* Spinning animation */
+@keyframes nv-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.nv-spin {
+  animation: nv-spin 1s linear infinite;
+}

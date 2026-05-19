@@ -2,6 +2,9 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
+import { ExternalLink } from 'lucide-react'
+
+const LYNK_ID_URL = 'https://lynk.id/bangnevgo'
 
 export default function LockedLessonModal() {
   const { lockedLesson, closeLockedLesson, setView, openFreeLesson } = useAppStore()
@@ -16,6 +19,12 @@ export default function LockedLessonModal() {
   const handleTryFree = () => {
     closeLockedLesson()
     openFreeLesson('1.1')
+  }
+
+  const handleLynkPay = () => {
+    window.open(LYNK_ID_URL, '_blank', 'noopener')
+    closeLockedLesson()
+    setView('pricing')
   }
 
   return (
@@ -63,18 +72,23 @@ export default function LockedLessonModal() {
           <div className="nv-locked-cta">
             <motion.button
               className="nv-cta-button nv-cta-pulse"
-              onClick={handleSubscribe}
+              onClick={handleLynkPay}
               whileHover={{ scale: 1.03, y: -2 }}
               whileTap={{ scale: 0.97 }}
               style={{ width: '100%' }}
             >
+              <ExternalLink style={{ width: 16, height: 16 }} />
               <span className="nv-cta-icon">✦</span>
-              Buka Pelajaran Ini — Berlangganan
+              Buka Pelajaran — Bayar via Lynk.id
             </motion.button>
           </div>
 
           <button className="nv-locked-free-link" onClick={handleTryFree}>
             Atau coba 3 pelajaran gratis →
+          </button>
+
+          <button className="nv-locked-have-code-link" onClick={handleSubscribe}>
+            Sudah punya kode aktivasi? Masukkan di sini →
           </button>
         </motion.div>
       </motion.div>

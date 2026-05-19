@@ -11,6 +11,7 @@ import AiManifestation from '@/components/ai-manifestation'
 import AiLimitingBelief from '@/components/ai-limiting-belief'
 import AiShadow from '@/components/ai-shadow'
 import AiPrivateSession from '@/components/ai-private-session'
+import AdminPanel from '@/components/admin-panel'
 
 export default function Home() {
   const { view } = useAppStore()
@@ -47,6 +48,8 @@ export default function Home() {
             return <AiShadow />
           case 'ai-private-session':
             return <AiPrivateSession />
+          case 'admin':
+            return <AdminPanel />
           default:
             return <Landing />
         }
