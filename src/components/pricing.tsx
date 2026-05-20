@@ -98,21 +98,56 @@ export default function Pricing() {
   const [isActivating, setIsActivating] = useState(false)
   const [activationError, setActivationError] = useState('')
 
-  const handleSubscribe = (tier: PricingTier) => {
+  const handleSubscribe = async (tier: PricingTier) => {
     // Free tier: go directly to free lesson 1.1
     if (tier.name === 'Penggemar') {
       openFreeLesson('1.1')
       toast('✦ Mulai jelajahi pelajaran gratis!')
       return
     }
-    // Paid tier: open Lynk.id in new tab, then show activation modal
-    window.open(LYNK_ID_URL, '_blank', 'noopener')
-    setSelectedTier(tier)
-    setActivationCode('')
-    setNameInput('')
-    setActivationError('')
-    setShowActivationModal(true)
+
+    try {
+      setIsActivating(true)
+      const res = await fetch('/api/payment/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tier: tier.tierKey,
+          email: 'user@example.com', // In a real app, get this from user input or auth
+          name: 'Pengguna',
+        }),
+      })
+      const data = await res.json()
+
+      if (!res.ok) throw new Error(data.error || 'Gagal membuat transaksi')
+
+      // Trigger Midtrans Snap
+      if (window.snap) {
+        window.snap.pay(data.token, {
+          onSuccess: (result: any) => {
+            toast.success('Pembayaran Berhasil! Kode aktivasi akan dikirim ke email Anda.')
+            setShowActivationModal(true)
+          },
+          onPending: (result: any) => {
+            toast.info('Menunggu pembayaran Anda...')
+          },
+          onError: (result: any) => {
+            toast.error('Pembayaran gagal. Silakan coba lagi.')
+          },
+          onClose: () => {
+            toast.info('Pembayaran dibatalkan.')
+          },
+        })
+      } else {
+        toast.error('Midtrans SDK tidak terload. Silakan refresh halaman.')
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Terjadi kesalahan')
+    } finally {
+      setIsActivating(false)
+    }
   }
+
 
   const handleActivate = async () => {
     if (!activationCode.trim()) {

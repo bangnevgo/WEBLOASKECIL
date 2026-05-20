@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import CookieConsent from "@/components/cookie-consent";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -57,6 +58,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className="dark" suppressHydrationWarning>
+      <head>
+        <Script
+          src="https://app.midtrans.com/snap/snap.js"
+          strategy="afterInteractive"
+          data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
+          crossOrigin="anonymous"
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
