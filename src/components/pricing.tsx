@@ -3,10 +3,9 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
-import { Check, Sparkles, Crown, BookOpen, X, Key, ExternalLink } from 'lucide-react'
+import { Check, Sparkles, Crown, BookOpen, X, Key } from 'lucide-react'
 import { toast } from 'sonner'
 
-const LYNK_ID_URL = 'https://lynk.id/bangnevgo'
 
 interface PricingTier {
   name: string
@@ -299,7 +298,7 @@ export default function Pricing() {
                 ) : (
                   <>
                     <span className="nv-cta-icon">✦</span>
-                    {tier.cta} via Lynk.id
+                    {tier.cta} Sekarang
                   </>
                 )}
               </motion.button>
@@ -328,8 +327,8 @@ export default function Pricing() {
           <div className="nv-activation-step">
             <div className="nv-activation-step-num">2</div>
             <div>
-              <div className="nv-activation-step-label">Bayar di Lynk.id</div>
-              <div className="nv-activation-step-desc">Anda akan diarahkan ke halaman pembayaran</div>
+              <div className="nv-activation-step-label">Bayar via Midtrans Snap</div>
+              <div className="nv-activation-step-desc">Pembayaran langsung di popup aman</div>
             </div>
           </div>
           <div className="nv-activation-step-connector" />
@@ -376,7 +375,7 @@ export default function Pricing() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8, duration: 0.5 }}
       >
-        Pembayaran melalui Lynk.id · Kode aktivasi otomatis · Akses langsung aktif
+        Pembayaran via Midtrans Snap · Kode aktivasi otomatis · Akses langsung aktif
       </motion.p>
 
       {/* Activation Code Modal */}
@@ -414,7 +413,7 @@ export default function Pricing() {
                 {selectedTier ? `Aktivasi Paket ${selectedTier.name}` : 'Masukkan Kode Aktivasi'}
               </h3>
               <p className="nv-modal-desc">
-                Masukkan kode aktivasi yang Anda terima setelah pembayaran di Lynk.id
+                Masukkan kode aktivasi yang Anda terima setelah pembayaran
               </p>
 
               {/* Activation code input */}
@@ -479,17 +478,6 @@ export default function Pricing() {
                 >
                   {isActivating ? 'Memverifikasi...' : '✦ Aktivasi Sekarang'}
                 </motion.button>
-
-                {/* Lynk.id link */}
-                <a
-                  href={LYNK_ID_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="nv-activation-lynk-link"
-                >
-                  <ExternalLink style={{ width: 14, height: 14 }} />
-                  Belum punya kode? Bayar di Lynk.id
-                </a>
 
                 <button
                   className="nv-modal-cancel"
