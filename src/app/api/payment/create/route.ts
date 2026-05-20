@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import MidtransClient from 'midtrans-client'
-import { crypto } from 'node:crypto'
 
 const midclient = new MidtransClient.Snap({
   isProduction: process.env.MIDTRANS_IS_PRODUCTION === 'true',
   serverKey: process.env.MIDTRANS_SERVER_KEY,
-  clientKey: process.env.MIDTRANS_CLIENT_KEY,
+  clientKey: process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY,
 })
 
 export async function POST(req: NextRequest) {
@@ -16,25 +15,25 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Tier dan email diperlukan' }, { status: 400 })
     }
 
-    // Tentukan harga berdasarkan tier
     const pricing: Record<string, number> = {
-      'pelajar': 150000, // Contoh harga
-      'master': 500000,  // Contoh harga
+      pelajar: 150000,
+      master: 500000,
     }
 
     const amount = pricing[tier] || 150000
 
-    const transactionDetails = {
-      order_id: `ORDER-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-      gross_amount: amount,
+    const parameter = {
+      transaction_details: {
+        order_id: `ORDER-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+        gross_amount: amount,
+      },
+      customer_details: {
+        first_name: name || 'User',
+        email: email,
+      },
     }
 
-    const customerDetails = {
-      first_name: name || 'User',
-      email: email,
-    }
-
-    const snapToken = await midclient.createTransaction(transactionDetails, customerDetails)
+    const snapToken = await midclient.createTransaction(parameter)
 
     return NextResponse.json({
       success: true,
