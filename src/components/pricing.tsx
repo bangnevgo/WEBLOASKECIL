@@ -139,7 +139,15 @@ export default function Pricing() {
           },
         })
       } else {
-        toast.error('Midtrans SDK tidak terload. Silakan refresh halaman.')
+        // Fallback: Redirect to Midtrans redirect_url if snap is not available
+        if (data.redirectUrl) {
+          window.location.href = data.redirectUrl
+        } else {
+          toast.error('Midtrans SDK tidak tersedia. Mengalihkan ke halaman pembayaran...')
+          setTimeout(() => {
+            if (data.redirectUrl) window.location.href = data.redirectUrl
+          }, 2000)
+        }
       }
     } catch (err: any) {
       toast.error(err.message || 'Terjadi kesalahan')

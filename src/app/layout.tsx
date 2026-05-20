@@ -62,7 +62,6 @@ export default function RootLayout({
         <Script
           src="https://app.midtrans.com/snap/snap.js"
           strategy="afterInteractive"
-          data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
           crossOrigin="anonymous"
         />
       </head>
