@@ -16,8 +16,8 @@ export async function POST(req: NextRequest) {
     }
 
     const pricing: Record<string, number> = {
-      pelajar: 150000,
-      master: 500000,
+      pelajar: 99000,
+      master: 299000,
     }
 
     const amount = pricing[tier] || 150000
