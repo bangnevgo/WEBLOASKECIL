@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 
 const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzfZgwtmdFd5SYeNWQ5wquN4zjwzreEUB1vwXhT-pKgK4yts9Y-B3NYsUHUMq7FHY-9/exec'
-const TELEGRAM_BOT_TOKEN = '8294932959:***'
+const TELEGRAM_BOT_TOKEN = '8294932959:AAHhZods2iZIsuMaAGC1kkzLTB5VVA_F0kA'
 const TELEGRAM_ADMIN_CHAT_ID = '5729835979'
 
 async function sendToGoogleSheet(data: any) {
