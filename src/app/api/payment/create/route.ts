@@ -9,10 +9,10 @@ const midclient = new MidtransClient.Snap({
 
 export async function POST(req: NextRequest) {
   try {
-    const { tier, email, name } = await req.json()
+    const { tier, email, name, phone } = await req.json()
 
-    if (!tier || !email) {
-      return NextResponse.json({ error: 'Tier dan email diperlukan' }, { status: 400 })
+    if (!tier || !email || !phone) {
+      return NextResponse.json({ error: 'Tier, email, dan nomor HP diperlukan' }, { status: 400 })
     }
 
     const pricing: Record<string, number> = {
@@ -21,9 +21,6 @@ export async function POST(req: NextRequest) {
     }
 
     const amount = pricing[tier] || 150000
-    
-    // Use a structured order_id that allows the webhook to identify the tier
-    // Format: ORDER-{timestamp}-{tier}-{random}
     const orderId = `ORDER-${Date.now()}-${tier.toUpperCase()}-${Math.floor(Math.random() * 1000)}`
 
     const parameter = {
@@ -34,6 +31,7 @@ export async function POST(req: NextRequest) {
       customer_details: {
         first_name: name || 'User',
         email: email,
+        phone: phone,
       },
     }
 

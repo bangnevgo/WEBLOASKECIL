@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
-import { Check, Sparkles, Crown, BookOpen, X, Key, Mail, User } from 'lucide-react'
+import { Check, Sparkles, Crown, BookOpen, X, Mail, User, Phone } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface PricingTier {
@@ -89,10 +89,11 @@ const cardVariants = {
 }
 
 export default function Pricing() {
-  const { setView, subscribe, openFreeLesson, setAdmin } = useAppStore()
+  const { setView, subscribe, openFreeLesson } = useAppStore()
   const [selectedTier, setSelectedTier] = useState<PricingTier | null>(null)
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
+  const [phone, setPhone] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
 
   const handleSubscribe = async (tier: PricingTier) => {
@@ -101,16 +102,14 @@ export default function Pricing() {
       toast('✦ Mulai jelajahi pelajaran gratis!')
       return
     }
-
     setSelectedTier(tier)
   }
 
   const processPayment = async () => {
-    if (!email || !name) {
-      toast.error('Mohon lengkapi nama dan email Anda')
+    if (!email || !name || !phone) {
+      toast.error('Mohon lengkapi nama, email dan nomor WhatsApp Anda')
       return
     }
-
     if (!selectedTier) return
 
     try {
@@ -122,29 +121,22 @@ export default function Pricing() {
           tier: selectedTier.tierKey,
           email: email,
           name: name,
+          phone: phone,
         }),
       })
       const data = await res.json()
-
       if (!res.ok) throw new Error(data.error || 'Gagal membuat transaksi')
 
       if (window.snap) {
         window.snap.pay(data.token, {
           onSuccess: () => {
             toast.success('Pembayaran Berhasil! Akses Anda akan aktif secara otomatis.')
-            // In a real app, we would check payment status or redirect to dashboard
             subscribe(name) 
             setView('dashboard')
           },
-          onPending: () => {
-            toast.info('Menunggu pembayaran Anda...')
-          },
-          onError: () => {
-            toast.error('Pembayaran gagal. Silakan coba lagi.')
-          },
-          onClose: () => {
-            toast.info('Pembayaran dibatalkan.')
-          },
+          onPending: () => toast.info('Menunggu pembayaran Anda...'),
+          onError: () => toast.error('Pembayaran gagal. Silakan coba lagi.'),
+          onClose: () => toast.info('Pembayaran dibatalkan.'),
         })
       } else if (data.redirectUrl) {
         window.location.href = data.redirectUrl
@@ -284,6 +276,20 @@ export default function Pricing() {
                 </div>
               </div>
 
+              <div className="nv-modal-input-group">
+                <label className="nv-modal-label">NOMOR WHATSAPP</label>
+                <div className="nv-modal-input-wrapper" style={{position: 'relative', display: 'flex', alignItems: 'center'}}>
+                  <Phone style={{position: 'absolute', left: 10, width: 16, height: 16, opacity: 0.5}} />
+                  <input 
+                    className="nv-modal-input" 
+                    style={{paddingLeft: '35px'}}
+                    placeholder="Contoh: 08123456789" 
+                    value={phone} 
+                    onChange={(e) => setPhone(e.target.value)} 
+                  />
+                </div>
+              </div>
+
               <div className="nv-modal-actions" style={{marginTop: '30px'}}>
                 <motion.button
                   className="nv-cta-button nv-pricing-cta nv-pricing-cta-featured"
@@ -320,7 +326,7 @@ export default function Pricing() {
             <div className="nv-activation-step-num">2</div>
             <div>
               <div className="nv-activation-step-label">Isi Data & Bayar</div>
-              <div className="nv-activation-step-desc">Lengkapi email & bayar via Midtrans Snap yang aman</div>
+              <div className="nv-activation-step-desc">Lengkapi email, WA & bayar via Midtrans Snap yang aman</div>
             </div>
           </div>
           <div className="nv-activation-step-connector" />
