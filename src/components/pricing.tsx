@@ -1,11 +1,10 @@
-'use client'
+ 'use client'
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
-import { Check, Sparkles, Crown, BookOpen, X, Key } from 'lucide-react'
+import { Check, Sparkles, Crown, BookOpen, X, Key, Mail, User } from 'lucide-react'
 import { toast } from 'sonner'
-
 
 interface PricingTier {
   name: string
@@ -17,7 +16,7 @@ interface PricingTier {
   cta: string
   featured: boolean
   icon: React.ReactNode
-  tierKey: string // key for activation code lookup
+  tierKey: string
 }
 
 const TIERS: PricingTier[] = [
@@ -64,6 +63,7 @@ const TIERS: PricingTier[] = [
     features: [
       'Semua fitur Pelajar',
       'Sesi panduan audio (segera hadir)',
+      'Akses Rekaman Webinar Eksklusif',
       'Jurnal praktik harian',
       'Akses komunitas privat (segera hadir)',
       'Mendukung pengembangan konten',
@@ -90,121 +90,77 @@ const cardVariants = {
 
 export default function Pricing() {
   const { setView, subscribe, openFreeLesson, setAdmin } = useAppStore()
-  const [showActivationModal, setShowActivationModal] = useState(false)
   const [selectedTier, setSelectedTier] = useState<PricingTier | null>(null)
-  const [activationCode, setActivationCode] = useState('')
-  const [nameInput, setNameInput] = useState('')
-  const [isActivating, setIsActivating] = useState(false)
-  const [activationError, setActivationError] = useState('')
+  const [email, setEmail] = useState('')
+  const [name, setName] = useState('')
+  const [isProcessing, setIsProcessing] = useState(false)
 
   const handleSubscribe = async (tier: PricingTier) => {
-    // Free tier: go directly to free lesson 1.1
     if (tier.name === 'Penggemar') {
       openFreeLesson('1.1')
       toast('✦ Mulai jelajahi pelajaran gratis!')
       return
     }
 
+    setSelectedTier(tier)
+  }
+
+  const processPayment = async () => {
+    if (!email || !name) {
+      toast.error('Mohon lengkapi nama dan email Anda')
+      return
+    }
+
+    if (!selectedTier) return
+
     try {
-      setIsActivating(true)
+      setIsProcessing(true)
       const res = await fetch('/api/payment/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          tier: tier.tierKey,
-          email: 'user@example.com', // In a real app, get this from user input or auth
-          name: 'Pengguna',
+          tier: selectedTier.tierKey,
+          email: email,
+          name: name,
         }),
       })
       const data = await res.json()
 
       if (!res.ok) throw new Error(data.error || 'Gagal membuat transaksi')
 
-      // Trigger Midtrans Snap
       if (window.snap) {
         window.snap.pay(data.token, {
-          onSuccess: (result: any) => {
-            toast.success('Pembayaran Berhasil! Kode aktivasi akan dikirim ke email Anda.')
-            setShowActivationModal(true)
+          onSuccess: () => {
+            toast.success('Pembayaran Berhasil! Akses Anda akan aktif secara otomatis.')
+            // In a real app, we would check payment status or redirect to dashboard
+            subscribe(name) 
+            setView('dashboard')
           },
-          onPending: (result: any) => {
+          onPending: () => {
             toast.info('Menunggu pembayaran Anda...')
           },
-          onError: (result: any) => {
+          onError: () => {
             toast.error('Pembayaran gagal. Silakan coba lagi.')
           },
           onClose: () => {
             toast.info('Pembayaran dibatalkan.')
           },
         })
-      } else {
-        // Fallback: Redirect to Midtrans redirect_url if snap is not available
-        if (data.redirectUrl) {
-          window.location.href = data.redirectUrl
-        } else {
-          toast.error('Midtrans SDK tidak tersedia. Mengalihkan ke halaman pembayaran...')
-          setTimeout(() => {
-            if (data.redirectUrl) window.location.href = data.redirectUrl
-          }, 2000)
-        }
+      } else if (data.redirectUrl) {
+        window.location.href = data.redirectUrl
       }
     } catch (err: any) {
       toast.error(err.message || 'Terjadi kesalahan')
     } finally {
-      setIsActivating(false)
-    }
-  }
-
-
-  const handleActivate = async () => {
-    if (!activationCode.trim()) {
-      setActivationError('Masukkan kode aktivasi Anda')
-      return
-    }
-
-    setIsActivating(true)
-    setActivationError('')
-
-    try {
-      const res = await fetch('/api/activation', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          code: activationCode.trim(),
-          userName: nameInput.trim() || 'Pengguna',
-        }),
-      })
-
-      const data = await res.json()
-
-      if (!res.ok) {
-        setActivationError(data.error || 'Kode tidak valid')
-        return
-      }
-
-      // Check admin bypass — if name is "neville" in Master tier
-      if (selectedTier?.name === 'Master' && nameInput.trim().toLowerCase() === 'neville') {
-        setAdmin(true)
-      }
-
-      const name = nameInput.trim() || 'Pengguna'
-      subscribe(name)
-      toast(`✦ Selamat datang, ${name}! Akses penuh telah aktif.`)
-      setShowActivationModal(false)
-    } catch {
-      setActivationError('Terjadi kesalahan jaringan. Silakan coba lagi.')
-    } finally {
-      setIsActivating(false)
+      setIsProcessing(false)
     }
   }
 
   return (
     <div className="nv-pricing-page">
-      {/* Background decorative elements */}
       <div className="nv-pricing-bg-orb nv-pricing-bg-orb-1" />
       <div className="nv-pricing-bg-orb nv-pricing-bg-orb-2" />
 
-      {/* Header */}
       <motion.header
         className="nv-pricing-header"
         initial={{ opacity: 0, y: -20 }}
@@ -227,7 +183,6 @@ export default function Pricing() {
         </div>
       </motion.header>
 
-      {/* Pricing Grid */}
       <div className="nv-pricing-grid">
         {TIERS.map((tier, i) => (
           <motion.div
@@ -239,37 +194,19 @@ export default function Pricing() {
             animate="visible"
             whileHover={{ y: -6, transition: { duration: 0.25 } }}
           >
-            {/* Featured badge */}
-            {tier.featured && (
-              <div className="nv-pricing-badge">POPULER</div>
-            )}
-
-            {/* Card content */}
+            {tier.featured && <div className="nv-pricing-badge">POPULER</div>}
             <div className="nv-pricing-card-inner">
-              {/* Icon */}
               <div className={`nv-pricing-icon ${tier.featured ? 'nv-pricing-icon-featured' : ''}`}>
                 {tier.icon}
               </div>
-
-              {/* Tier name */}
               <div className="nv-pricing-card-name">{tier.name}</div>
               <div className="nv-pricing-card-name-en">{tier.nameEn}</div>
-
-              {/* Price */}
               <div className="nv-pricing-price-row">
                 <span className="nv-pricing-card-price">{tier.price}</span>
-                {tier.period && (
-                  <span className="nv-pricing-card-period">{tier.period}</span>
-                )}
+                {tier.period && <span className="nv-pricing-card-period">{tier.period}</span>}
               </div>
-
-              {/* Description */}
               <p className="nv-pricing-card-desc">{tier.description}</p>
-
-              {/* Divider */}
               <div className="nv-pricing-divider" />
-
-              {/* Features */}
               <ul className="nv-pricing-card-features">
                 {tier.features.map((feature, fi) => (
                   <motion.li
@@ -284,30 +221,85 @@ export default function Pricing() {
                   </motion.li>
                 ))}
               </ul>
-
-              {/* CTA Button */}
               <motion.button
                 className={`nv-cta-button nv-pricing-cta ${tier.featured ? 'nv-pricing-cta-featured' : ''}`}
                 onClick={() => handleSubscribe(tier)}
                 whileHover={{ scale: 1.03, y: -2 }}
                 whileTap={{ scale: 0.97 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
               >
-                {tier.name === 'Penggemar' ? (
-                  tier.cta
-                ) : (
-                  <>
-                    <span className="nv-cta-icon">✦</span>
-                    {tier.cta} Sekarang
-                  </>
-                )}
+                {tier.name === 'Penggemar' ? tier.cta : <><span className="nv-cta-icon">✦</span> {tier.cta} Sekarang</>}
               </motion.button>
             </div>
           </motion.div>
         ))}
       </div>
 
-      {/* How it works section */}
+      <AnimatePresence>
+        {selectedTier && (
+          <motion.div 
+            className="nv-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedTier(null)}
+          >
+            <motion.div 
+              className="nv-modal-content nv-glass" 
+              onClick={(e) => e.stopPropagation()}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+            >
+              <button className="nv-modal-close" onClick={() => setSelectedTier(null)}>
+                <X style={{ width: 18, height: 18 }} />
+              </button>
+              <h3 className="nv-modal-title">Konfirmasi Langganan</h3>
+              <p className="nv-modal-desc">Lengkapi data Anda untuk melanjutkan ke pembayaran aman via Midtrans.</p>
+              
+              <div className="nv-modal-input-group" style={{marginTop: '20px'}}>
+                <label className="nv-modal-label">NAMA LENGKAP</label>
+                <div className="nv-modal-input-wrapper" style={{position: 'relative', display: 'flex', alignItems: 'center'}}>
+                  <User style={{position: 'absolute', left: 10, width: 16, height: 16, opacity: 0.5}} />
+                  <input 
+                    className="nv-modal-input" 
+                    style={{paddingLeft: '35px'}}
+                    placeholder="Nama panggilan Anda" 
+                    value={name} 
+                    onChange={(e) => setName(e.target.value)} 
+                  />
+                </div>
+              </div>
+
+              <div className="nv-modal-input-group">
+                <label className="nv-modal-label">ALAMAT EMAIL</label>
+                <div className="nv-modal-input-wrapper" style={{position: 'relative', display: 'flex', alignItems: 'center'}}>
+                  <Mail style={{position: 'absolute', left: 10, width: 16, height: 16, opacity: 0.5}} />
+                  <input 
+                    className="nv-modal-input" 
+                    style={{paddingLeft: '35px'}}
+                    type="email" 
+                    placeholder="email@anda.com" 
+                    value={email} 
+                    onChange={(e) => setEmail(e.target.value)} 
+                  />
+                </div>
+              </div>
+
+              <div className="nv-modal-actions" style={{marginTop: '30px'}}>
+                <motion.button
+                  className="nv-cta-button nv-pricing-cta nv-pricing-cta-featured"
+                  onClick={processPayment}
+                  disabled={isProcessing}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  {isProcessing ? 'Memproses...' : `Selesaikan Pembayaran ${selectedTier.price}`}
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <motion.div
         className="nv-activation-how nv-glass"
         initial={{ opacity: 0, y: 24 }}
@@ -317,179 +309,47 @@ export default function Pricing() {
         <h3 className="nv-activation-how-title">Cara Berlangganan</h3>
         <div className="nv-activation-steps">
           <div className="nv-activation-step">
-            <div className="nv-activation-step-num">1</div>
+            <div className="nv-activation-step-num">1</div >
             <div>
               <div className="nv-activation-step-label">Pilih Paket</div>
-              <div className="nv-activation-step-desc">Klik &quot;Berlangganan&quot; pada paket yang diinginkan</div>
+              <div className="nv-activation-step-desc">Klik "Berlangganan" pada paket yang diinginkan</div>
             </div>
           </div>
           <div className="nv-activation-step-connector" />
           <div className="nv-activation-step">
             <div className="nv-activation-step-num">2</div>
             <div>
-              <div className="nv-activation-step-label">Bayar via Midtrans Snap</div>
-              <div className="nv-activation-step-desc">Pembayaran langsung di popup aman</div>
+              <div className="nv-activation-step-label">Isi Data & Bayar</div>
+              <div className="nv-activation-step-desc">Lengkapi email & bayar via Midtrans Snap yang aman</div>
             </div>
           </div>
           <div className="nv-activation-step-connector" />
           <div className="nv-activation-step">
             <div className="nv-activation-step-num">3</div>
             <div>
-              <div className="nv-activation-step-label">Masukkan Kode Aktivasi</div>
-              <div className="nv-activation-step-desc">Setelah bayar, masukkan kode yang Anda terima</div>
+              <div className="nv-activation-step-label">Akses Langsung Aktif</div>
+              <div className="nv-activation-step-desc">Setelah bayar, akun Anda langsung terbuka otomatis</div>
             </div>
           </div>
           <div className="nv-activation-step-connector" />
           <div className="nv-activation-step">
             <div className="nv-activation-step-num">✦</div>
             <div>
-              <div className="nv-activation-step-label">Akses Penuh Aktif!</div>
-              <div className="nv-activation-step-desc">Selamat menikmati seluruh kurikulum</div>
+              <div className="nv-activation-step-label">Mulai Transformasi</div>
+              <div className="nv-activation-step-desc">Nikmati seluruh kurikulum Hukum Asumsi</div>
             </div>
           </div>
         </div>
-
-        {/* Already have a code? */}
-        <div className="nv-activation-have-code">
-          <span>Sudah punya kode aktivasi?</span>
-          <button
-            className="nv-activation-enter-code-btn"
-            onClick={() => {
-              setSelectedTier(null)
-              setActivationCode('')
-              setNameInput('')
-              setActivationError('')
-              setShowActivationModal(true)
-            }}
-          >
-            <Key style={{ width: 14, height: 14 }} />
-            Masukkan Kode di Sini
-          </button>
-        </div>
       </motion.div>
 
-      {/* Footer note */}
       <motion.p
         className="nv-pricing-footer-note"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8, duration: 0.5 }}
       >
-        Pembayaran via Midtrans Snap · Kode aktivasi otomatis · Akses langsung aktif
+        Pembayaran via Midtrans Snap · Aktivasi Otomatis · Akses instan tanpa kode
       </motion.p>
-
-      {/* Activation Code Modal */}
-      <AnimatePresence>
-        {showActivationModal && (
-          <motion.div
-            className="nv-modal-overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            onClick={() => setShowActivationModal(false)}
-          >
-            <motion.div
-              className="nv-modal-content nv-activation-modal"
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                className="nv-modal-close"
-                onClick={() => setShowActivationModal(false)}
-                aria-label="Close"
-              >
-                <X style={{ width: 18, height: 18 }} />
-              </button>
-
-              <div className="nv-modal-icon nv-activation-modal-icon">
-                <Key style={{ width: 22, height: 22 }} />
-              </div>
-
-              <h3 className="nv-modal-title">
-                {selectedTier ? `Aktivasi Paket ${selectedTier.name}` : 'Masukkan Kode Aktivasi'}
-              </h3>
-              <p className="nv-modal-desc">
-                Masukkan kode aktivasi yang Anda terima setelah pembayaran
-              </p>
-
-              {/* Activation code input */}
-              <div className="nv-modal-input-group">
-                <label className="nv-modal-label" htmlFor="activation-code">
-                  KODE AKTIVASI
-                </label>
-                <input
-                  id="activation-code"
-                  type="text"
-                  className="nv-modal-input nv-activation-code-input"
-                  placeholder="NVG-PEL-XXXX-XXXX"
-                  value={activationCode}
-                  onChange={(e) => {
-                    setActivationCode(e.target.value.toUpperCase())
-                    setActivationError('')
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleActivate()
-                  }}
-                  autoFocus
-                />
-              </div>
-
-              {/* Name input */}
-              <div className="nv-modal-input-group">
-                <label className="nv-modal-label" htmlFor="name-input">
-                  NAMA ANDA
-                </label>
-                <input
-                  id="name-input"
-                  type="text"
-                  className="nv-modal-input"
-                  placeholder="Nama panggilan Anda"
-                  value={nameInput}
-                  onChange={(e) => setNameInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleActivate()
-                  }}
-                />
-              </div>
-
-              {/* Error message */}
-              {activationError && (
-                <motion.div
-                  className="nv-activation-error"
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  {activationError}
-                </motion.div>
-              )}
-
-              <div className="nv-modal-actions">
-                <motion.button
-                  className="nv-cta-button nv-pricing-cta nv-pricing-cta-featured"
-                  onClick={handleActivate}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.97 }}
-                  disabled={isActivating}
-                  style={{ opacity: isActivating ? 0.7 : 1 }}
-                >
-                  {isActivating ? 'Memverifikasi...' : '✦ Aktivasi Sekarang'}
-                </motion.button>
-
-                <button
-                  className="nv-modal-cancel"
-                  onClick={() => setShowActivationModal(false)}
-                >
-                  Batal
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   )
 }

@@ -21,10 +21,14 @@ export async function POST(req: NextRequest) {
     }
 
     const amount = pricing[tier] || 150000
+    
+    // Use a structured order_id that allows the webhook to identify the tier
+    // Format: ORDER-{timestamp}-{tier}-{random}
+    const orderId = `ORDER-${Date.now()}-${tier.toUpperCase()}-${Math.floor(Math.random() * 1000)}`
 
     const parameter = {
       transaction_details: {
-        order_id: `ORDER-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+        order_id: orderId,
         gross_amount: amount,
       },
       customer_details: {
@@ -39,6 +43,7 @@ export async function POST(req: NextRequest) {
       success: true,
       token: snapToken.token,
       redirectUrl: snapToken.redirect_url,
+      orderId: orderId
     })
   } catch (error: any) {
     console.error('Midtrans Create Error:', error)
