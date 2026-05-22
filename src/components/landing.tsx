@@ -135,8 +135,10 @@ export default function Landing() {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.shiftKey && e.key === 'A') {
         e.preventDefault()
+        console.log('Admin shortcut triggered!')
         const currentState = useAppStore.getState()
         const newState = !currentState.isAdmin
+        console.log('Current admin state:', currentState.isAdmin, 'New state:', newState)
         useAppStore.setAdmin(newState)
         toast.success(newState ? 'Admin mode enabled' : 'Admin mode disabled')
         setTimeout(() => location.reload(), 1000)
