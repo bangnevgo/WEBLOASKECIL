@@ -27,7 +27,25 @@ interface Stats {
 const ADMIN_SECRET = 'neville'
 
 export default function AdminPanel() {
-  const { setView } = useAppStore()
+  const { setView, isAdmin } = useAppStore()
+
+  // Check if user has admin access
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">🔒 Akses Ditolak</h1>
+          <p className="text-muted mb-4">Anda tidak memiliki akses ke panel admin</p>
+          <button
+            onClick={() => setView('landing')}
+            className="px-4 py-2 bg-primary text-primary-foreground rounded"
+          >
+            Kembali ke Beranda
+          </button>
+        </div>
+      </div>
+    )
+  }
   const [codes, setCodes] = useState<ActivationCodeEntry[]>([])
   const [stats, setStats] = useState<Stats | null>(null)
   const [isLoading, setIsLoading] = useState(true)
