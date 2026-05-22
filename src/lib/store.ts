@@ -137,7 +137,11 @@ export const useAppStore = create<AppState>((set, get) => ({
   // Admin mode
   isAdmin: persisted?.isAdmin || false,
   setAdmin: (admin) => {
-    set({ isAdmin: admin })
+    set({
+      isAdmin: admin,
+      // Jika admin, otomatis set ke master tier
+      subscriptionTier: admin ? 'master' : get().subscriptionTier
+    })
     persistState({
       userName: get().userName,
       subscriptionTier: get().subscriptionTier,
