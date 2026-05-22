@@ -4,6 +4,7 @@ import "./globals.css";
 import "@/styles/community.css";
 import { Toaster } from "sonner";
 import CookieConsent from "@/components/cookie-consent";
+import AdminShortcut from "@/components/admin-shortcut";
 import Script from "next/script";
 
 const geistSans = Geist({
@@ -70,6 +71,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
         {children}
+        <AdminShortcut />
         <Toaster
           position="top-center"
           toastOptions={{
