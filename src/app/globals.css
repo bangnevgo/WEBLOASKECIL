@@ -3140,6 +3140,48 @@
   color: var(--nv-muted);
 }
 
+/* ===== Footer Admin Access ===== */
+.nv-footer-admin {
+  padding: 16px 0;
+  border-top: 1px solid var(--nv-border);
+  background: var(--nv-bg-secondary);
+}
+
+.nv-footer-admin-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.nv-footer-admin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--nv-glass);
+  border: 1px solid var(--nv-glass-border);
+  border-radius: 8px;
+  color: var(--nv-muted);
+  font-size: 12px;
+  font-family: var(--font-geist-mono), monospace;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.nv-footer-admin-btn:hover {
+  background: var(--nv-glass-hover);
+  border-color: var(--nv-gold);
+  color: var(--nv-gold);
+  transform: translateY(-1px);
+}
+
+.nv-footer-admin-btn:active {
+  transform: translateY(0);
+}
+
 @media (max-width: 768px) {
   .nv-footer-bottom {
     flex-direction: column;

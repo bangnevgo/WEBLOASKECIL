@@ -4,6 +4,8 @@ import { useEffect, useRef, useState, useCallback, useSyncExternalStore } from '
 import Image from 'next/image'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
+import { toast } from 'sonner'
+import { Key } from 'lucide-react'
 import { ALL_PARTS, BONUS_ITEMS, MARQUEE_ITEMS, isLessonFree } from '@/lib/curriculum-data'
 
 const EBOOK_ITEMS = [
@@ -695,6 +697,28 @@ export default function Landing() {
         <div className="nv-footer-bottom">
           <span>© {new Date().getFullYear()} Hukum Asumsi. Seluruh hak dilindungi.</span>
           <span className="nv-footer-bottom-accent">Dibuat dengan ✦ untuk pencari kebenaran</span>
+        </div>
+
+        {/* ─── ADMIN ACCESS ─── */}
+        <div className="nv-footer-admin">
+          <div className="nv-footer-admin-content">
+            <button
+              onClick={() => {
+                const password = prompt('Masukkan password admin:')
+                if (password === 'neville22') {
+                  useAppStore.setAdmin(true)
+                  toast.success('Admin mode enabled')
+                  setTimeout(() => location.reload(), 1000)
+                } else if (password !== null) {
+                  toast.error('Password salah')
+                }
+              }}
+              className="nv-footer-admin-btn"
+              title="Akses Panel Admin"
+            >
+              <Key size={14} /> Admin Panel
+            </button>
+          </div>
         </div>
       </footer>
 
