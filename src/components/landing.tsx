@@ -706,8 +706,9 @@ export default function Landing() {
               onClick={() => {
                 const password = prompt('Masukkan password admin:')
                 if (password === 'neville22') {
+                  useAppStore.setSubscriptionTier('master', 'Admin User')
                   useAppStore.setAdmin(true)
-                  toast.success('Admin mode enabled')
+                  toast.success('Admin mode enabled - Full access granted')
                   setTimeout(() => location.reload(), 1000)
                 } else if (password !== null) {
                   toast.error('Password salah')

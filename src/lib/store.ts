@@ -120,13 +120,19 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
   /** Check if user has full curriculum access (Pelajar tier or higher OR admin) */
   hasCurriculumAccess: () => {
-    const tier = get().subscriptionTier
-    return tier === 'pelajar' || tier === 'premium' || tier === 'master' || get().isAdmin
+    const state = get()
+    // Admin gets full access regardless of subscription tier
+    if (state.isAdmin) return true
+    // Regular users need appropriate tier
+    return state.subscriptionTier === 'pelajar' || state.subscriptionTier === 'premium' || state.subscriptionTier === 'master'
   },
   /** Check if user has community access (Premium tier or higher OR admin) */
   hasCommunityAccess: () => {
-    const tier = get().subscriptionTier
-    return tier === 'premium' || tier === 'master' || get().isAdmin
+    const state = get()
+    // Admin gets community access regardless of subscription tier
+    if (state.isAdmin) return true
+    // Regular users need premium or master
+    return state.subscriptionTier === 'premium' || state.subscriptionTier === 'master'
   },
   // Admin mode
   isAdmin: persisted?.isAdmin || false,
