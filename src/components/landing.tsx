@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback, useSyncExternalStore } from '
 import Image from 'next/image'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
+import { toast } from 'sonner'
 import { ALL_PARTS, BONUS_ITEMS, MARQUEE_ITEMS, isLessonFree } from '@/lib/curriculum-data'
 
 const EBOOK_ITEMS = [
@@ -128,6 +129,23 @@ export default function Landing() {
 
   const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
   const heroScale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95])
+
+  // Admin mode toggle with keyboard shortcut (Ctrl+Shift+A)
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+        e.preventDefault()
+        const currentState = useAppStore.getState()
+        const newState = !currentState.isAdmin
+        useAppStore.setAdmin(newState)
+        toast.success(newState ? 'Admin mode enabled' : 'Admin mode disabled')
+        setTimeout(() => location.reload(), 1000)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyPress)
+    return () => window.removeEventListener('keydown', handleKeyPress)
+  }, [])
 
   // Scroll spy for active nav
   useEffect(() => {
