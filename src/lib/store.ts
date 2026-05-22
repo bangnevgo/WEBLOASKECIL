@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 
-type View = 'landing' | 'dashboard' | 'lesson' | 'pricing' | 'free-lesson' | 'ai-manifestation' | 'ai-limiting-belief' | 'ai-shadow' | 'ai-private-session' | 'admin'
+type View = 'landing' | 'dashboard' | 'lesson' | 'pricing' | 'free-lesson' | 'ai-manifestation' | 'ai-limiting-belief' | 'ai-shadow' | 'ai-private-session' | 'admin' | 'community'
+export type SubscriptionTier = 'free' | 'pelajar' | 'premium' | 'master'
 
 interface AppState {
   view: View
@@ -13,11 +14,13 @@ interface AppState {
   closeLesson: () => void
   completedLessons: Set<string>
   toggleCompleted: (lessonNum: string) => void
-  isSubscribed: boolean
-  subscribe: (name: string) => void
+  subscriptionTier: SubscriptionTier
+  setSubscriptionTier: (tier: SubscriptionTier, name: string) => void
   unsubscribe: () => void
-  /** Check if user has full access (subscribed OR admin) */
-  hasFullAccess: () => boolean
+  /** Check if user has full curriculum access (Pelajar tier or higher OR admin) */
+  hasCurriculumAccess: () => boolean
+  /** Check if user has community access (Premium tier or higher OR admin) */
+  hasCommunityAccess: () => boolean
   // Admin mode
   isAdmin: boolean
   setAdmin: (admin: boolean) => void
@@ -43,7 +46,7 @@ function loadPersistedState() {
   }
 }
 
-function persistState(state: { userName: string; isSubscribed: boolean; isAdmin: boolean; completedLessons: string[] }) {
+function persistState(state: { userName: string; subscriptionTier: SubscriptionTier; isAdmin: boolean; completedLessons: string[] }) {
   if (typeof window === 'undefined') return
   try {
     localStorage.setItem('nv-app-state', JSON.stringify(state))
@@ -61,7 +64,12 @@ export const useAppStore = create<AppState>((set, get) => ({
   userName: persisted?.userName || '',
   setUserName: (name) => {
     set({ userName: name })
-    persistState({ userName: name, isSubscribed: get().isSubscribed, isAdmin: get().isAdmin, completedLessons: [...get().completedLessons] })
+    persistState({
+      userName: name,
+      subscriptionTier: get().subscriptionTier,
+      isAdmin: get().isAdmin,
+      completedLessons: [...get().completedLessons]
+    })
   },
   activePartId: null,
   activeLessonNum: null,
@@ -78,37 +86,66 @@ export const useAppStore = create<AppState>((set, get) => ({
       } else {
         next.add(lessonNum)
       }
-      persistState({ userName: state.userName, isSubscribed: state.isSubscribed, isAdmin: state.isAdmin, completedLessons: [...next] })
+      persistState({
+        userName: state.userName,
+        subscriptionTier: state.subscriptionTier,
+        isAdmin: state.isAdmin,
+        completedLessons: [...next]
+      })
       return { completedLessons: next }
     }),
-  isSubscribed: persisted?.isSubscribed || false,
-  subscribe: (name) => {
-    set({ isSubscribed: true, userName: name, view: 'dashboard' })
-    persistState({ userName: name, isSubscribed: true, isAdmin: get().isAdmin, completedLessons: [...get().completedLessons] })
+  subscriptionTier: (persisted?.subscriptionTier || 'free') as SubscriptionTier,
+  setSubscriptionTier: (tier: SubscriptionTier, name: string) => {
+    set({ subscriptionTier: tier, userName: name, view: 'dashboard' })
+    persistState({
+      userName: name,
+      subscriptionTier: tier,
+      isAdmin: get().isAdmin,
+      completedLessons: [...get().completedLessons]
+    })
   },
   unsubscribe: () => {
     set({
-      isSubscribed: false,
+      subscriptionTier: 'free',
       userName: '',
       view: 'landing',
       completedLessons: new Set<string>(),
     })
-    persistState({ userName: '', isSubscribed: false, isAdmin: false, completedLessons: [] })
+    persistState({
+      userName: '',
+      subscriptionTier: 'free',
+      isAdmin: false,
+      completedLessons: []
+    })
   },
-  hasFullAccess: () => get().isSubscribed || get().isAdmin,
-  // Admin
+  /** Check if user has full curriculum access (Pelajar tier or higher OR admin) */
+  hasCurriculumAccess: () => {
+    const tier = get().subscriptionTier
+    return tier === 'pelajar' || tier === 'premium' || tier === 'master' || get().isAdmin
+  },
+  /** Check if user has community access (Premium tier or higher OR admin) */
+  hasCommunityAccess: () => {
+    const tier = get().subscriptionTier
+    return tier === 'premium' || tier === 'master' || get().isAdmin
+  },
+  // Admin mode
   isAdmin: persisted?.isAdmin || false,
   setAdmin: (admin) => {
     set({ isAdmin: admin })
-    persistState({ userName: get().userName, isSubscribed: get().isSubscribed, isAdmin: admin, completedLessons: [...get().completedLessons] })
+    persistState({
+      userName: get().userName,
+      subscriptionTier: get().subscriptionTier,
+      isAdmin: admin,
+      completedLessons: [...get().completedLessons]
+    })
   },
-  // Freemium
+  // Freemium lesson state
   freeLessonNum: null,
   openFreeLesson: (lessonNum) =>
     set({ freeLessonNum: lessonNum, view: 'free-lesson' }),
   closeFreeLesson: () =>
     set({ freeLessonNum: null, view: 'landing' }),
-  // Locked modal
+  // Locked lesson modal
   lockedLesson: null,
   openLockedLesson: (info) =>
     set({ lockedLesson: info }),

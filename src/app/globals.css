@@ -1230,17 +1230,25 @@
 
 .nv-pricing-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  max-width: 1000px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  max-width: 1200px;
   margin: 0 auto;
   position: relative; z-index: 1;
+}
+
+@media (max-width: 1024px) {
+  .nv-pricing-grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 600px;
+  }
 }
 
 @media (max-width: 768px) {
   .nv-pricing-grid {
     grid-template-columns: 1fr;
     max-width: 400px;
+    gap: 24px;
   }
 }
 
@@ -1251,6 +1259,8 @@
   border-radius: 16px;
   overflow: hidden;
   transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
 }
 
 .nv-pricing-card:hover {
@@ -1285,6 +1295,7 @@
   padding: 32px 24px;
   display: flex; flex-direction: column;
   align-items: center; text-align: center;
+  flex: 1;
 }
 
 .nv-pricing-card-featured .nv-pricing-card-inner {

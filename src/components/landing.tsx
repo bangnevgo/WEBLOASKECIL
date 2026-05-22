@@ -391,7 +391,7 @@ export default function Landing() {
                       transition={{ duration: 0.4, delay: lessonIdx * 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
                       whileHover={{ y: -4, transition: { duration: 0.2 } }}
                       onClick={() => {
-                        const hasAccess = free || useAppStore.getState().hasFullAccess()
+                        const hasAccess = free || useAppStore.getState().hasCurriculumAccess()
                         if (hasAccess) {
                           useAppStore.getState().openFreeLesson(lesson.num)
                         } else {
@@ -462,6 +462,39 @@ export default function Landing() {
 
         {/* ─── AI HUB after Part 10 ─── */}
         <AiHubSection />
+
+        {/* Community CTA Section */}
+        <motion.section
+          className="nv-community-cta-section nv-glass"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="nv-community-cta-glow" />
+          <div className="nv-community-cta-content">
+            <h2 className="nv-community-cta-title">
+              Join <span className="nv-gold">Komunitas Privat</span> Kami
+            </h2>
+            <p className="nv-community-cta-desc">
+              2,400+ builder sudah bergabung. Dapatkan support system, exclusive sessions,
+              dan tersambung dengan sesama pencari kebenaran.
+            </p>
+            <div className="nv-community-cta-stats">
+              <div><span className="nv-stat-num">2.4K+</span> Members</div>
+              <div><span className="nv-stat-num">156</span> Discussions</div>
+              <div><span className="nv-stat-num">320</span> Success Stories</div>
+            </div>
+            <motion.button
+              className="nv-cta-button nv-community-cta-btn"
+              onClick={() => setView('pricing')}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              Lihat Paket Premium →
+            </motion.button>
+          </div>
+        </motion.section>
 
         {/* ─── EBOOK ETALASE (MARQUEE) ─── */}
         <div className="nv-ebook-etalase-section">

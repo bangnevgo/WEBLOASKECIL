@@ -28,7 +28,7 @@ const staggerItem = {
 
 export default function AiLimitingBelief() {
   const { setView } = useAppStore()
-  const hasFullAccess = useAppStore((s) => s.hasFullAccess())
+  const hasAccess = useAppStore((s) => s.hasCurriculumAccess())
   const [step, setStep] = useState<1 | 2>(1)
   const [currentQ, setCurrentQ] = useState(0)
   const [answers, setAnswers] = useState<Record<number, string | number>>({})
@@ -120,8 +120,8 @@ export default function AiLimitingBelief() {
     setTimeout(() => setCopiedIdx(null), 2000)
   }
 
-  // Premium lock overlay
-  if (!hasFullAccess) {
+  // Access lock overlay
+  if (!hasAccess) {
     return (
       <div className="nv-ai-page">
         <header className="nv-ai-header">

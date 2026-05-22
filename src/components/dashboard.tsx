@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
 import { ALL_PARTS } from '@/lib/curriculum-data'
+import { Users } from 'lucide-react'
 
 const partImages = [
   '/images/parts/part-1.png',
@@ -20,7 +21,7 @@ const partImages = [
 ]
 
 export default function Dashboard() {
-  const { userName, openLesson, completedLessons, unsubscribe } = useAppStore()
+  const { userName, openLesson, completedLessons, unsubscribe, hasCurriculumAccess, hasCommunityAccess, setView } = useAppStore()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const totalLessons = ALL_PARTS.reduce((acc, p) => acc + p.lessons.length, 0)
@@ -142,6 +143,36 @@ export default function Dashboard() {
               <div style={{ fontSize: 10, color: 'var(--nv-dim)', fontFamily: 'var(--font-geist-mono), monospace' }}>SISA</div>
             </motion.div>
           </div>
+
+          {/* Community Quick Access */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            style={{ marginTop: 20 }}
+          >
+            <button
+              onClick={() => setView('community')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                width: '100%',
+                padding: '12px 16px',
+                background: 'linear-gradient(135deg, rgba(212, 160, 83, 0.15), rgba(167, 139, 250, 0.15))',
+                border: '1px solid rgba(212, 160, 83, 0.3)',
+                borderRadius: '12px',
+                color: 'var(--nv-text)',
+                fontWeight: 600,
+                fontSize: '14px',
+                cursor: 'pointer',
+                marginTop: '16px',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <Users size={18} /> Komunitas
+            </button>
+          </motion.div>
 
           {/* Nav */}
           <nav className="nv-dash-nav">

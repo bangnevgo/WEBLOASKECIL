@@ -14,6 +14,14 @@ async function getZAI() {
   if (!zaiInstance) {
     zaiInstance = await ZAI.create()
   }
+  import ZAI from 'z-ai-web-dev-sdk'
+
+let zaiInstance: Awaited<ReturnType<typeof ZAI.create>> | null = null
+
+async function getZAI() {
+  if (!zaiInstance) {
+    zaiInstance = await ZAI.create()
+  }
   return zaiInstance
 }
 
@@ -122,6 +130,7 @@ async function callWithRetry(messages: Array<{ role: 'system' | 'assistant' | 'u
     try {
       const zai = await getZAI()
       const completion = await zai.chat.completions.create({
+        model: "nvidia/nemotron-3-super-120b-a12b:free",
         messages,
         thinking: { type: 'disabled' },
       })

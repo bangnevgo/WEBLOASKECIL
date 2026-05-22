@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useAppStore } from '@/lib/store'
-import { Check, Sparkles, Crown, BookOpen, X, Mail, User, Phone } from 'lucide-react'
+import { useAppStore, SubscriptionTier } from '@/lib/store'
+import { Check, Sparkles, Crown, BookOpen, X, Mail, User, Phone, Users } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface PricingTier {
@@ -55,18 +55,39 @@ const TIERS: PricingTier[] = [
     tierKey: 'pelajar',
   },
   {
+    name: 'Premium',
+    nameEn: 'Premium',
+    price: 'Rp 149K',
+    period: '/bulan',
+    description: 'Kurikulum lengkap + akses komunitas privat aktif',
+    features: [
+      'Semua 49 pelajaran',
+      'Konten lengkap & kutipan bersumber',
+      'Praktik harian',
+      'Poin-poin penting',
+      'Pembaruan materi baru',
+      'Akses komunitas privat aktif',
+      'Profil anggota dan koneksi dengan sesama peserta',
+    ],
+    cta: 'Berlangganan',
+    featured: false,
+    icon: <Users className="nv-pricing-icon-svg" />,
+    tierKey: 'premium',
+  },
+  {
     name: 'Master',
     nameEn: 'Master',
     price: 'Rp 299K',
     period: '/bulan',
-    description: 'Perjalanan transformasi mendalam',
+    description: 'Perjalanan transformasi lengkap dengan dukungan eksklusif',
     features: [
-      'Semua fitur Pelajar',
-      'Sesi panduan audio (segera hadir)',
-      'Akses Rekaman Webinar Eksklusif',
-      'Jurnal praktik harian',
-      'Akses komunitas privat (segera hadir)',
-      'Mendukung pengembangan konten',
+      'Semua fitur Premium',
+      'Sesi panduan audio eksklusif',
+      'Akses Rekaman Webinar VIP',
+      'Jurnal praktik harian pribadi',
+      'Konsultasi bulanan dengan ahli',
+      'Akses awal ke konten baru',
+      'BadgeMaster dan sertifikat akhir',
     ],
     cta: 'Berlangganan',
     featured: false,
@@ -89,7 +110,7 @@ const cardVariants = {
 }
 
 export default function Pricing() {
-  const { setView, subscribe, openFreeLesson } = useAppStore()
+  const { setView, setSubscriptionTier, openFreeLesson } = useAppStore()
   const [selectedTier, setSelectedTier] = useState<PricingTier | null>(null)
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
@@ -102,7 +123,8 @@ export default function Pricing() {
       toast('✦ Mulai jelajahi pelajaran gratis!')
       return
     }
-    setSelectedTier(tier)
+    // For paid tiers, call setSubscriptionTier with the tier key and collect user info
+    setSelectedTier(tier) // This will show the modal to collect name, email, phone
   }
 
   const processPayment = async () => {
@@ -131,7 +153,7 @@ export default function Pricing() {
         window.snap.pay(data.token, {
           onSuccess: () => {
             toast.success('Pembayaran Berhasil! Akses Anda akan aktif secara otomatis.')
-            subscribe(name) 
+            setSubscriptionTier(selectedTier.tierKey as SubscriptionTier, name)
             setView('dashboard')
           },
           onPending: () => toast.info('Menunggu pembayaran Anda...'),
