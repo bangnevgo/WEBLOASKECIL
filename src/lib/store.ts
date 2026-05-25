@@ -61,7 +61,7 @@ interface AppState {
   login: (email: string, password: string) => Promise<boolean>
   registerUser: (name: string, email: string, password: string) => Promise<boolean>
   logoutUser: () => Promise<void>
-  redeemCode: (code: string) => { success: boolean; tier?: SubscriptionTier; message: string }
+  redeemCode: (code: string) => Promise<{ success: boolean; tier?: SubscriptionTier; message: string }>
 }
 
 // Load persisted state from localStorage
@@ -337,48 +337,45 @@ export const useAppStore = create<AppState>((set, get) => ({
     }
     get().unsubscribe()
   },
-  redeemCode: (code) => {
+  redeemCode: async (code) => {
     const upperCode = code.trim().toUpperCase()
-    
-    // Check code patterns
-    let tier: SubscriptionTier | null = null
-    let message = ''
-    
-    if (upperCode.startsWith('BASIC') || upperCode.startsWith('PELAJAR') || upperCode === 'NEVILLE99') {
-      tier = 'basic'
-      message = 'Berhasil mengaktifkan Paket Basic! Kurikulum lengkap Anda sekarang terbuka.'
-    } else if (upperCode.startsWith('PREMIUM') || upperCode === 'NEVILLE149') {
-      tier = 'premium'
-      message = 'Berhasil mengaktifkan Paket Premium! Kurikulum lengkap dan forum komunitas sekarang terbuka.'
-    } else if (upperCode.startsWith('MASTER') || upperCode === 'NEVILLE299') {
-      tier = 'master'
-      message = 'Berhasil mengaktifkan Paket Master! Semua materi, meditasi audio, dan webinar VIP sekarang terbuka.'
-    }
-    
-    if (tier) {
-      set({ subscriptionTier: tier })
-      
-      // Update simulated user database
-      if (get().isAuthenticated && get().userEmail) {
-        const users = getSimulatedUsers()
-        if (users[get().userEmail]) {
-          users[get().userEmail].tier = tier
-          saveSimulatedUsers(users)
-        }
-      }
-      
-      persistState({
-        userName: get().userName,
-        userEmail: get().userEmail,
-        isAuthenticated: get().isAuthenticated,
-        subscriptionTier: tier,
-        isAdmin: get().isAdmin,
-        completedLessons: [...get().completedLessons]
+    try {
+      const res = await fetch('/api/activation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: upperCode, userName: get().userName || 'Pengguna' })
       })
+      const data = await res.json()
       
-      return { success: true, tier, message }
+      if (res.ok && data.success) {
+        const tier = data.tier as SubscriptionTier
+        set({ subscriptionTier: tier })
+        
+        // Update simulated user database
+        if (get().isAuthenticated && get().userEmail) {
+          const users = getSimulatedUsers()
+          if (users[get().userEmail]) {
+            users[get().userEmail].tier = tier
+            saveSimulatedUsers(users)
+          }
+        }
+        
+        persistState({
+          userName: get().userName,
+          userEmail: get().userEmail,
+          isAuthenticated: get().isAuthenticated,
+          subscriptionTier: tier,
+          isAdmin: get().isAdmin,
+          completedLessons: [...get().completedLessons]
+        })
+        
+        return { success: true, tier, message: data.message || 'Aktivasi berhasil!' }
+      } else {
+        return { success: false, message: data.error || 'Kode aktivasi tidak valid atau telah kedaluwarsa.' }
+      }
+    } catch (error) {
+      console.error('Activation API error:', error)
+      return { success: false, message: 'Gagal terhubung ke server aktivasi.' }
     }
-    
-    return { success: false, message: 'Kode aktivasi tidak valid atau telah kedaluwarsa.' }
   }
 }))

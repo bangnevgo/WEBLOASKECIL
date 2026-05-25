@@ -102,14 +102,14 @@ export default function Dashboard() {
   const strokeDashoffset = circumference - (progressPct / 100) * circumference
   const ringOffset = strokeDashoffset / 2
 
-  const handleActivation = (e: React.FormEvent) => {
+  const handleActivation = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!activationCode.trim()) {
       toast.error('Mohon masukkan kode aktivasi')
       return
     }
 
-    const res = redeemCode(activationCode)
+    const res = await redeemCode(activationCode)
     if (res.success) {
       toast.success(res.message)
       setActivationCode('')
@@ -268,9 +268,7 @@ export default function Dashboard() {
                   Aktifkan
                 </button>
               </form>
-              <div className="text-[9px] text-neutral-500 mt-2 font-mono leading-none">
-                Petunjuk: Masukkan kode <span className="text-[#d4a053] font-bold">MASTER123</span> untuk mencoba.
-              </div>
+
             </motion.div>
           )}
 
