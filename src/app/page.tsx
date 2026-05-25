@@ -17,7 +17,12 @@ import RegisterView from '@/components/auth/register'
 import CommunityPage from '@/components/community/CommunityPage'
 
 export default function Home() {
-  const { view } = useAppStore()
+  const { view, checkSession } = useAppStore()
+
+  // Sync session on mount (checks if user has paid and updates local tier)
+  useEffect(() => {
+    checkSession()
+  }, [checkSession])
 
   // Scroll to top when view changes
   useEffect(() => {

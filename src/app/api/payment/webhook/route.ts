@@ -61,21 +61,30 @@ export async function POST(req: NextRequest) {
         tier = 'premium'
       }
 
-      // 1. Local DB Activation
-      const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
-      let code = ''
-      for (let i = 0; i < 12; i++) {
-        code += characters.charAt(Math.floor(Math.random() * characters.length))
-      }
-
-      await db.activationCode.create({
-        data: {
-          code: code,
-          tier: tier,
-          used: false,
-          usedBy: email,
-        },
+      // Direct DB user tier activation
+      const targetEmail = email.trim().toLowerCase()
+      const existingUser = await db.user.findUnique({
+        where: { email: targetEmail }
       })
+
+      if (existingUser) {
+        await db.user.update({
+          where: { id: existingUser.id },
+          data: { tier }
+        })
+        console.log(`Upgraded existing user ${targetEmail} directly to ${tier}`)
+      } else {
+        // Pre-create user so that when they register with this email, they immediately have this tier
+        await db.user.create({
+          data: {
+            email: targetEmail,
+            name: name || 'Customer',
+            passwordHash: 'pending_payment_registration',
+            tier
+          }
+        })
+        console.log(`Pre-created pending user ${targetEmail} with tier ${tier}`)
+      }
 
       // 2. Send to Google Sheet
       await sendToGoogleSheet({

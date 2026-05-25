@@ -61,6 +61,7 @@ interface AppState {
   login: (email: string, password: string) => Promise<boolean>
   registerUser: (name: string, email: string, password: string) => Promise<boolean>
   logoutUser: () => Promise<void>
+  checkSession: () => Promise<void>
   redeemCode: (code: string) => Promise<{ success: boolean; tier?: SubscriptionTier; message: string }>
 }
 
@@ -376,6 +377,41 @@ export const useAppStore = create<AppState>((set, get) => ({
     } catch (error) {
       console.error('Activation API error:', error)
       return { success: false, message: 'Gagal terhubung ke server aktivasi.' }
+    }
+  },
+  checkSession: async () => {
+    try {
+      const res = await fetch('/api/auth/check')
+      if (res.ok) {
+        const data = await res.json()
+        if (data.authenticated) {
+          const state = get()
+          if (state.subscriptionTier !== data.user.tier) {
+            set({ subscriptionTier: data.user.tier })
+            toast.success(`Selamat! Status keanggotaan Anda telah diaktifkan menjadi ${data.user.tier.toUpperCase()} 💎`)
+          }
+          
+          // Sync completion list
+          const completedSet = new Set<string>(data.user.completedLessons || [])
+          set({
+            userName: data.user.name,
+            userEmail: data.user.email,
+            isAuthenticated: true,
+            completedLessons: completedSet
+          })
+          
+          persistState({
+            userName: data.user.name,
+            userEmail: data.user.email,
+            isAuthenticated: true,
+            subscriptionTier: data.user.tier,
+            isAdmin: data.user.tier === 'master',
+            completedLessons: [...completedSet]
+          })
+        }
+      }
+    } catch (e) {
+      console.error('Error checking session:', e)
     }
   }
 }))

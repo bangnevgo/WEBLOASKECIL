@@ -14,27 +14,41 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    const targetEmail = email.trim().toLowerCase()
     const existingUser = await db.user.findUnique({
-      where: { email },
+      where: { email: targetEmail },
     })
-
-    if (existingUser) {
-      return NextResponse.json(
-        { error: "Email ini sudah terdaftar. Silakan login." },
-        { status: 400 }
-      )
-    }
 
     const hashedPassword = hashPassword(password)
+    let user
 
-    const user = await db.user.create({
-      data: {
-        name,
-        email,
-        passwordHash: hashedPassword,
-        tier: "free", // Default to free tier
-      },
-    })
+    if (existingUser) {
+      if (existingUser.passwordHash === "pending_payment_registration") {
+        // User paid first, now registering. Complete registration.
+        user = await db.user.update({
+          where: { id: existingUser.id },
+          data: {
+            name,
+            passwordHash: hashedPassword,
+          }
+        })
+      } else {
+        return NextResponse.json(
+          { error: "Email ini sudah terdaftar. Silakan login." },
+          { status: 400 }
+        )
+      }
+    } else {
+      // Create new standard free user
+      user = await db.user.create({
+        data: {
+          name,
+          email: targetEmail,
+          passwordHash: hashedPassword,
+          tier: "free",
+        },
+      })
+    }
 
     // Sign session
     const sessionToken = signSession({
