@@ -19,6 +19,8 @@ const EBOOK_ITEMS = [
 import LockedLessonModal from '@/components/locked-lesson-modal'
 import AdminLoginModal from '@/components/admin-login-modal'
 import AiHubSection from '@/components/ai-hub-section'
+import FreeDownloadsSection from '@/components/free-downloads-section'
+import KnowledgeBank from '@/components/knowledge-bank'
 
 const staggerContainer = {
   animate: { transition: { staggerChildren: 0.06 } }
@@ -111,7 +113,7 @@ const partImageAspectRatios = [
 ]
 
 export default function Landing() {
-  const { setView, setAdmin } = useAppStore()
+  const { setView, setAdmin, isAuthenticated } = useAppStore()
   const isAdmin = useAppStore((s) => s.isAdmin)
   const [activeSection, setActiveSection] = useState<string | null>(null)
   const [showBackTop, setShowBackTop] = useState(false)
@@ -168,6 +170,44 @@ export default function Landing() {
 
   return (
     <div className="nv-page" ref={mainRef}>
+      {/* Floating Header */}
+      <header className="w-full bg-[#0a0a0c]/80 backdrop-blur-md border-b border-neutral-900 fixed top-0 left-0 right-0 z-[100] px-6 py-4">
+        <div className="max-w-[1200px] mx-auto flex justify-between items-center">
+          <div className="flex items-center gap-2 cursor-pointer" onClick={scrollToTop}>
+            <div className="w-8 h-8 rounded-full bg-[#d4a053] flex items-center justify-center text-black font-extrabold shadow-md">✦</div>
+            <span className="font-outfit font-extrabold text-sm sm:text-base text-[#e8e4dc]">HUKUM ASUMSI</span>
+          </div>
+          <div className="flex items-center gap-4">
+            {isAuthenticated ? (
+              <button 
+                className="px-4 py-1.5 bg-[#d4a053]/10 hover:bg-[#d4a053]/20 border border-[#d4a053]/30 text-[#d4a053] text-xs font-bold rounded-lg transition cursor-pointer"
+                onClick={() => setView('dashboard')}
+              >
+                Dasbor Saya ✦
+              </button>
+            ) : (
+              <>
+                <button 
+                  className="text-xs text-neutral-400 hover:text-white transition bg-transparent border-none cursor-pointer"
+                  onClick={() => setView('login')}
+                >
+                  Masuk
+                </button>
+                <button 
+                  className="px-4 py-1.5 bg-[#d4a053] hover:bg-[#c4883a] text-black text-xs font-bold rounded-lg transition cursor-pointer"
+                  onClick={() => setView('register')}
+                >
+                  Daftar
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* Spacer for header */}
+      <div className="h-16 w-full" />
+
       {/* ─── HERO ─── */}
       <div className="nv-container">
         <motion.section
@@ -425,7 +465,11 @@ export default function Landing() {
                       onClick={() => {
                         const hasAccess = free || useAppStore.getState().hasCurriculumAccess()
                         if (hasAccess) {
-                          useAppStore.getState().openFreeLesson(lesson.num)
+                          if (free) {
+                            useAppStore.getState().openFreeLesson(lesson.num)
+                          } else {
+                            useAppStore.getState().openLesson(part.id, lesson.num)
+                          }
                         } else {
                           useAppStore.getState().openLockedLesson({
                             num: lesson.num,
@@ -527,8 +571,16 @@ export default function Landing() {
             </motion.button>
           </div>
         </motion.section>
+      </div>
 
-        {/* ─── EBOOK ETALASE (MARQUEE) ─── */}
+      {/* ─── FREE DOWNLOADS SECTION ─── */}
+      <FreeDownloadsSection />
+
+      {/* ─── KNOWLEDGE BANK SECTION ─── */}
+      <KnowledgeBank />
+
+      {/* ─── EBOOK ETALASE (MARQUEE) ─── */}
+      <div className="nv-container">
         <div className="nv-ebook-etalase-section">
           <motion.div
             className="nv-ebook-etalase-header"
@@ -654,8 +706,8 @@ export default function Landing() {
                 a: 'Tidak. Ajaran Neville bersifat universal dan dapat diterapkan oleh siapa saja tanpa memandang latar belakang agama atau keyakinan. Meskipun Neville menggunakan bahasa alkitabiah dalam kuliahnya, prinsip-prinsipnya bersifat praktis dan psikologis.',
               },
               {
-                q: 'Apa perbedaan paket Pelajar dan Master?',
-                a: 'Paket Pelajar memberikan akses ke seluruh 49 pelajaran terperinci dengan ajaran lengkap, kutipan bersumber, dan praktik harian. Paket Master menambahkan akses ke arsip 200+ kuliah asli, panduan praktik lanjutan, dan pembaruan materi secara berkala.',
+                q: 'Apa perbedaan antara paket Basic, Premium, dan Master?',
+                a: 'Paket Basic memberikan akses penuh ke 49 pelajaran kurikulum dan Bank Knowledge dasar (non-VIP). Paket Premium menambahkan akses ke forum komunitas privat yang interaktif dan webinar pendukung. Paket Master menyempurnakan perjalanan Anda dengan meditasi audio premium, webinar VIP, dan workbook pemrograman batin harian pribadi.',
               },
               {
                 q: 'Bagaimana teknik SATS bekerja?',

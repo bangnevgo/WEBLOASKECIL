@@ -20,7 +20,7 @@ interface Stats {
   total: number
   used: number
   available: number
-  pelajar: number
+  basic: number
   master: number
 }
 
@@ -50,7 +50,7 @@ export default function AdminPanel() {
   const [stats, setStats] = useState<Stats | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isGenerating, setIsGenerating] = useState(false)
-  const [generateTier, setGenerateTier] = useState<'pelajar' | 'master'>('pelajar')
+  const [generateTier, setGenerateTier] = useState<'basic' | 'master'>('basic')
   const [generateCount, setGenerateCount] = useState(5)
   const [newlyGenerated, setNewlyGenerated] = useState<string[]>([])
   const [filter, setFilter] = useState<'all' | 'available' | 'used'>('all')
@@ -162,8 +162,8 @@ export default function AdminPanel() {
             <span className="nv-admin-stat-label">Digunakan</span>
           </div>
           <div className="nv-admin-stat-card nv-glass">
-            <span className="nv-admin-stat-num">{stats.pelajar}</span>
-            <span className="nv-admin-stat-label">Pelajar</span>
+            <span className="nv-admin-stat-num">{stats.basic}</span>
+            <span className="nv-admin-stat-label">Basic</span>
           </div>
           <div className="nv-admin-stat-card nv-glass">
             <span className="nv-admin-stat-num">{stats.master}</span>
@@ -186,10 +186,10 @@ export default function AdminPanel() {
             <label className="nv-modal-label">PAKET</label>
             <div className="nv-admin-tier-toggle">
               <button
-                className={`nv-admin-tier-btn ${generateTier === 'pelajar' ? 'nv-admin-tier-btn-active' : ''}`}
-                onClick={() => setGenerateTier('pelajar')}
+                className={`nv-admin-tier-btn ${generateTier === 'basic' ? 'nv-admin-tier-btn-active' : ''}`}
+                onClick={() => setGenerateTier('basic')}
               >
-                Pelajar (Rp 99K)
+                Basic (Rp 99K)
               </button>
               <button
                 className={`nv-admin-tier-btn ${generateTier === 'master' ? 'nv-admin-tier-btn-active' : ''}`}
@@ -303,7 +303,7 @@ export default function AdminPanel() {
                 <div className="nv-admin-code-left">
                   <span className="nv-admin-code-text">{entry.code}</span>
                   <span className={`nv-admin-code-tier nv-admin-code-tier-${entry.tier}`}>
-                    {entry.tier === 'pelajar' ? 'PELAJAR' : 'MASTER'}
+                    {entry.tier.toUpperCase()}
                   </span>
                 </div>
                 <div className="nv-admin-code-right">

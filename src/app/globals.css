@@ -325,7 +325,7 @@
 /* ===== Sticky Nav ===== */
 .nv-nav {
   position: sticky; top: 0; z-index: 50;
-  display: flex; gap: 4px; padding: 10px 24px;
+  display: block; padding: 10px 24px;
   background: rgba(10, 10, 12, 0.85);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--nv-border);
@@ -1649,9 +1649,11 @@
 
 .nv-nav-inner {
   display: flex;
-  gap: 4px;
+  gap: 6px;
   max-width: 1200px;
   margin: 0 auto;
+  justify-content: center;
+  align-items: center;
 }
 
 .nv-nav-text {
@@ -3377,6 +3379,7 @@
   }
   .nv-nav-inner {
     gap: 2px;
+    justify-content: flex-start;
   }
 }
 
@@ -5169,9 +5172,15 @@
   font-weight: 800;
 }
 
+.nv-admin-code-tier-basic,
 .nv-admin-code-tier-pelajar {
   background: rgba(52, 211, 153, 0.1);
   color: #34d399;
+}
+
+.nv-admin-code-tier-premium {
+  background: rgba(251, 191, 36, 0.1);
+  color: #fbbf24;
 }
 
 .nv-admin-code-tier-master {

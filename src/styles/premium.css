@@ -1,0 +1,664 @@
+/* ===== Typography Overrides ===== */
+.nv-page, 
+body, 
+input, 
+button, 
+textarea, 
+select {
+  font-family: var(--font-inter), var(--font-sans), system-ui, sans-serif !important;
+}
+
+h1, h2, h3, h4, h5, h6,
+.nv-hero-top,
+.nv-hero-main,
+.nv-hero-sub,
+.nv-part-num,
+.nv-part-info h2,
+.nv-card-title,
+.nv-pricing-title,
+.nv-pricing-card-name,
+.nv-modal-title,
+.nv-activation-step-label,
+.nv-dash-brand,
+.nv-dash-logo,
+.nv-fl-title,
+.nv-fl-num,
+.nv-locked-title,
+.nv-community-header-name,
+.nv-audio-title,
+.nv-webinar-title,
+.nv-auth-title {
+  font-family: var(--font-outfit), sans-serif !important;
+  font-weight: 700;
+}
+
+/* ===== Premium Glassmorphic Theme ===== */
+.nv-premium-glass {
+  background: rgba(18, 18, 22, 0.45) !important;
+  backdrop-filter: blur(16px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(120%) !important;
+  border: 1px solid rgba(212, 160, 83, 0.1) !important;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
+  border-radius: 16px;
+}
+
+.nv-premium-glass-hover:hover {
+  border-color: rgba(212, 160, 83, 0.25) !important;
+  box-shadow: 0 12px 40px 0 rgba(212, 160, 83, 0.08) !important;
+  transform: translateY(-2px);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ===== Waveform Animation ===== */
+.nv-waveform {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 24px;
+  padding: 0 4px;
+}
+
+.nv-wave-bar {
+  width: 3px;
+  background: var(--nv-gold);
+  border-radius: 2px;
+  transition: height 0.2s ease;
+}
+
+.nv-waveform.playing .nv-wave-bar {
+  animation: nv-wave-bounce 1.2s ease-in-out infinite alternate;
+}
+
+.nv-waveform.playing .nv-wave-bar:nth-child(1) { animation-delay: 0.1s; height: 18px; }
+.nv-waveform.playing .nv-wave-bar:nth-child(2) { animation-delay: 0.4s; height: 24px; }
+.nv-waveform.playing .nv-wave-bar:nth-child(3) { animation-delay: 0.2s; height: 14px; }
+.nv-waveform.playing .nv-wave-bar:nth-child(4) { animation-delay: 0.6s; height: 20px; }
+.nv-waveform.playing .nv-wave-bar:nth-child(5) { animation-delay: 0.3s; height: 16px; }
+
+@keyframes nv-wave-bounce {
+  0% { transform: scaleY(0.3); }
+  100% { transform: scaleY(1); }
+}
+
+/* ===== Audio Player Component UI ===== */
+.nv-audio-player-container {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.nv-audio-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.nv-audio-main-btns {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nv-audio-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--nv-glass-border);
+  color: var(--nv-text);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nv-audio-btn:hover {
+  background: rgba(212, 160, 83, 0.1);
+  color: var(--nv-gold);
+  border-color: rgba(212, 160, 83, 0.3);
+}
+
+.nv-audio-btn-play {
+  width: 48px;
+  height: 48px;
+  background: var(--nv-gold);
+  color: var(--nv-bg);
+  border: none;
+}
+
+.nv-audio-btn-play:hover {
+  background: #e2b36e;
+  color: var(--nv-bg);
+  transform: scale(1.05);
+}
+
+.nv-audio-progress-bar-wrap {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  font-family: var(--font-geist-mono), monospace;
+  color: var(--nv-muted);
+}
+
+.nv-audio-slider-track {
+  flex: 1;
+  height: 4px;
+  background: var(--nv-faint);
+  border-radius: 2px;
+  position: relative;
+  cursor: pointer;
+}
+
+.nv-audio-slider-fill {
+  height: 100%;
+  background: var(--nv-gold);
+  border-radius: 2px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.nv-audio-slider-thumb {
+  width: 10px;
+  height: 10px;
+  background: #ffffff;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+  transition: scale 0.15s;
+}
+
+.nv-audio-slider-track:hover .nv-audio-slider-thumb {
+  scale: 1.3;
+}
+
+.nv-audio-extra-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: flex-end;
+}
+
+.nv-audio-badge-btn {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--nv-glass-border);
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: var(--nv-muted);
+  cursor: pointer;
+  font-family: var(--font-geist-mono), monospace;
+  transition: all 0.2s;
+}
+
+.nv-audio-badge-btn.active, .nv-audio-badge-btn:hover {
+  background: rgba(212, 160, 83, 0.1);
+  color: var(--nv-gold);
+  border-color: rgba(212, 160, 83, 0.3);
+}
+
+/* ===== PDF Downloads Grid Section ===== */
+.nv-pdf-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.nv-pdf-card {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.nv-pdf-card-glow {
+  position: absolute;
+  top: -20px; right: -20px;
+  width: 80px; height: 80px;
+  background: radial-gradient(circle, rgba(212, 160, 83, 0.15), transparent 70%);
+  pointer-events: none;
+}
+
+.nv-pdf-icon-wrap {
+  width: 44px;
+  height: 44px;
+  background: rgba(212, 160, 83, 0.08);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--nv-gold);
+  border: 1px solid rgba(212, 160, 83, 0.2);
+}
+
+.nv-pdf-meta {
+  font-size: 11px;
+  color: var(--nv-dim);
+  font-family: var(--font-geist-mono), monospace;
+  letter-spacing: 0.5px;
+}
+
+.nv-pdf-download-btn {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: rgba(212, 160, 83, 0.05);
+  border: 1px solid rgba(212, 160, 83, 0.2);
+  color: var(--nv-gold);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nv-pdf-download-btn:hover {
+  background: var(--nv-gold);
+  color: var(--nv-bg);
+  border-color: var(--nv-gold);
+}
+
+/* ===== WebinarVIP Grid Section ===== */
+.nv-webinar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.nv-webinar-card {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.nv-webinar-thumbnail-frame {
+  width: 100%;
+  aspect-ratio: 16/9;
+  position: relative;
+  background: #000;
+  border-bottom: 1px solid var(--nv-glass-border);
+}
+
+.nv-webinar-thumbnail-image {
+  object-fit: cover;
+  opacity: 0.65;
+  transition: opacity 0.3s;
+}
+
+.nv-webinar-card:hover .nv-webinar-thumbnail-image {
+  opacity: 0.85;
+}
+
+.nv-webinar-play-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.nv-webinar-play-btn-circle {
+  width: 54px;
+  height: 54px;
+  background: rgba(10, 10, 12, 0.7);
+  border: 2px solid var(--nv-gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--nv-gold);
+  box-shadow: 0 0 20px rgba(212, 160, 83, 0.3);
+  transition: all 0.3s;
+}
+
+.nv-webinar-card:hover .nv-webinar-play-btn-circle {
+  background: var(--nv-gold);
+  color: var(--nv-bg);
+  scale: 1.08;
+  box-shadow: 0 0 30px rgba(212, 160, 83, 0.5);
+}
+
+.nv-webinar-duration-badge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 11px;
+  background: rgba(0,0,0,0.8);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.1);
+  z-index: 3;
+}
+
+.nv-webinar-card-info {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.nv-webinar-chapters-badge {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  color: var(--nv-gold);
+  text-transform: uppercase;
+}
+
+/* ===== Custom Video Player Modal ===== */
+.nv-video-modal-container {
+  width: 95%;
+  max-width: 900px;
+  overflow: hidden;
+  background: #0a0a0c !important;
+  border: 1px solid rgba(212, 160, 83, 0.2) !important;
+  border-radius: 20px;
+}
+
+.nv-video-player-frame {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: #000;
+  position: relative;
+}
+
+.nv-video-mock-element {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.nv-video-player-controls {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 5;
+}
+
+/* ===== Tabs System ===== */
+.nv-tab-nav {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--nv-border);
+  padding-bottom: 1px;
+  margin-bottom: 24px;
+}
+
+.nv-tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--nv-muted);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nv-tab-btn:hover {
+  color: var(--nv-text);
+}
+
+.nv-tab-btn.active {
+  color: var(--nv-gold);
+  border-bottom-color: var(--nv-gold);
+}
+
+/* ===== Auth Forms (Login / Register) ===== */
+.nv-auth-container {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  position: relative;
+}
+
+.nv-auth-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+}
+
+.nv-auth-logo-badge {
+  width: 54px;
+  height: 54px;
+  background: rgba(212, 160, 83, 0.08);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--nv-gold);
+  border: 1px solid rgba(212, 160, 83, 0.25);
+  margin: 0 auto 8px;
+  box-shadow: 0 0 20px rgba(212, 160, 83, 0.15);
+}
+
+.nv-auth-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nv-auth-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.nv-auth-input-icon {
+  position: absolute;
+  left: 14px;
+  color: var(--nv-muted);
+}
+
+.nv-auth-input {
+  width: 100%;
+  padding: 12px 16px 12px 42px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--nv-glass-border);
+  color: var(--nv-text);
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.nv-auth-input:focus {
+  border-color: var(--nv-gold);
+  box-shadow: 0 0 0 2px rgba(212, 160, 83, 0.15);
+}
+
+.nv-auth-submit-btn {
+  width: 100%;
+  padding: 12px 24px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--nv-gold), var(--nv-gold-2));
+  color: var(--nv-bg);
+  border: none;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(212, 160, 83, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.nv-auth-submit-btn:hover {
+  box-shadow: 0 6px 24px rgba(212, 160, 83, 0.35);
+  transform: translateY(-1px);
+}
+
+.nv-auth-switch-link {
+  text-align: center;
+  font-size: 13px;
+  color: var(--nv-muted);
+}
+
+.nv-auth-switch-link button {
+  background: none;
+  border: none;
+  color: var(--nv-gold);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 4px;
+}
+
+.nv-auth-switch-link button:hover {
+  text-decoration: underline;
+}
+
+/* ===== Code Activation Input Widget ===== */
+.nv-activation-widget {
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px dashed rgba(212, 160, 83, 0.3) !important;
+  background: rgba(212, 160, 83, 0.02) !important;
+  margin-bottom: 24px;
+}
+
+.nv-activation-widget-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.nv-activation-widget-input {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--nv-glass-border);
+  color: var(--nv-text);
+  font-size: 14px;
+  text-transform: uppercase;
+  font-family: var(--font-geist-mono), monospace;
+  outline: none;
+}
+
+.nv-activation-widget-input:focus {
+  border-color: var(--nv-gold);
+}
+
+.nv-activation-widget-btn {
+  padding: 10px 20px;
+  background: var(--nv-gold);
+  color: var(--nv-bg);
+  border-radius: 8px;
+  border: none;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nv-activation-widget-btn:hover {
+  background: #e2b36e;
+}
+
+/* ===== Sacred Scroll Lesson Detail Styling ===== */
+.nv-scroll-container {
+  max-width: 760px !important;
+  margin: 40px auto !important;
+  padding: 0 24px;
+}
+
+.nv-fl-highlight {
+  background: linear-gradient(120deg, rgba(212,160,83,0.15) 0%, rgba(212,160,83,0.2) 100%);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border-bottom: 1px dashed var(--nv-gold);
+  color: var(--nv-text);
+  font-weight: 500;
+}
+
+.nv-fl-drop-cap::first-letter {
+  font-family: var(--font-outfit), sans-serif;
+  float: left;
+  font-size: 3.5rem;
+  line-height: 2.8rem;
+  padding-top: 4px;
+  padding-right: 8px;
+  padding-left: 3px;
+  font-weight: 800;
+  color: var(--nv-gold);
+}
+
+.nv-lesson-download-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--nv-glass-border);
+  color: var(--nv-gold);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+.nv-lesson-download-badge:hover {
+  background: rgba(212, 160, 83, 0.1);
+  border-color: rgba(212, 160, 83, 0.3);
+}
+
+.nv-meditation-section-embed {
+  margin-top: 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(212, 160, 83, 0.15);
+  background: linear-gradient(135deg, rgba(212, 160, 83, 0.04), rgba(167, 139, 250, 0.02));
+  overflow: hidden;
+}
+
+.nv-meditation-section-header {
+  padding: 14px 20px;
+  background: rgba(255, 255, 255, 0.01);
+  border-bottom: 1px solid rgba(212, 160, 83, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: var(--nv-gold);
+  font-size: 13px;
+}

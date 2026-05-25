@@ -1,14 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Outfit, Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "@/styles/community.css";
+import "@/styles/premium.css";
 import { Toaster } from "sonner";
 import CookieConsent from "@/components/cookie-consent";
 import AdminShortcut from "@/components/admin-shortcut";
 import Script from "next/script";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
 });
 
@@ -68,7 +74,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
+        className={`${inter.variable} ${outfit.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
         {children}
         <AdminShortcut />

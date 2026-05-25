@@ -14,9 +14,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Akses ditolak' }, { status: 403 })
     }
 
-    const validTiers = ['pelajar', 'master']
+    const validTiers = ['basic', 'premium', 'master', 'pelajar']
     if (!tier || !validTiers.includes(tier)) {
-      return NextResponse.json({ error: 'Tier tidak valid. Gunakan "pelajar" atau "master"' }, { status: 400 })
+      return NextResponse.json({ error: 'Tier tidak valid. Gunakan "basic", "premium", atau "master"' }, { status: 400 })
     }
 
     const codeCount = Math.min(Math.max(count || 1, 1), 50) // 1-50 codes at a time
@@ -24,8 +24,11 @@ export async function POST(req: NextRequest) {
     const codes: string[] = []
 
     for (let i = 0; i < codeCount; i++) {
-      // Generate code like: NVG-PEL-XXXX-XXXX or NVG-MAS-XXXX-XXXX
-      const prefix = tier === 'pelajar' ? 'PEL' : 'MAS'
+      // Generate code like: NVG-BAS-XXXX-XXXX, NVG-PRE-XXXX-XXXX, or NVG-MAS-XXXX-XXXX
+      let prefix = 'BAS'
+      if (tier === 'master') prefix = 'MAS'
+      else if (tier === 'premium') prefix = 'PRE'
+      else if (tier === 'pelajar') prefix = 'PEL'
       const randomPart = () => Math.random().toString(36).substring(2, 6).toUpperCase()
       const code = `NVG-${prefix}-${randomPart()}-${randomPart()}`
 

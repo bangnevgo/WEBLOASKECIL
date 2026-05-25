@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
       total: codes.length,
       used: codes.filter(c => c.used).length,
       available: codes.filter(c => !c.used).length,
-      pelajar: codes.filter(c => c.tier === 'pelajar').length,
+      basic: codes.filter(c => c.tier === 'basic' || c.tier === 'pelajar').length,
       master: codes.filter(c => c.tier === 'master').length,
     }
 

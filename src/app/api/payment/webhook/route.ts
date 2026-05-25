@@ -54,7 +54,12 @@ export async function POST(req: NextRequest) {
     console.log(`Midtrans Webhook Received: ${orderId} - Status: ${transactionStatus}`)
 
     if (transactionStatus === 'settlement' || transactionStatus === 'capture') {
-      const tier = orderId.includes('MASTER') ? 'master' : 'pelajar'
+      let tier = 'basic'
+      if (orderId.includes('MASTER')) {
+        tier = 'master'
+      } else if (orderId.includes('PREMIUM')) {
+        tier = 'premium'
+      }
 
       // 1. Local DB Activation
       const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'

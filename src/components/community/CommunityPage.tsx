@@ -1,12 +1,74 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
-import { MessageCircle, Heart, Users, UserPlus, BookOpen, Shield, Star, Info } from 'lucide-react'
+import { 
+  MessageCircle, 
+  Heart, 
+  Users, 
+  UserPlus, 
+  BookOpen, 
+  Shield, 
+  Star, 
+  Info, 
+  Calendar as CalendarIcon, 
+  Trophy, 
+  Plus, 
+  Send, 
+  Search, 
+  SlidersHorizontal,
+  ExternalLink,
+  ChevronRight,
+  Flame,
+  Award,
+  X,
+  Pin
+} from 'lucide-react'
+import { toast } from 'sonner'
+import Image from 'next/image'
+import { ALL_PARTS } from '@/lib/curriculum-data'
+import KnowledgeBank from '@/components/knowledge-bank'
+
+// ── Types ──
+interface Post {
+  id: number
+  author: string
+  initials: string
+  colorIdx: number
+  role: string
+  time: string
+  category: string
+  title: string
+  content: string
+  likes: number
+  likedByUser?: boolean
+  commentsCount: number
+  comments: Comment[]
+}
+
+interface Comment {
+  id: number
+  author: string
+  initials: string
+  colorIdx: number
+  role: string
+  time: string
+  content: string
+}
+
+interface LeaderboardUser {
+  rank: number
+  name: string
+  initials: string
+  level: number
+  points: number
+  streak: number
+  colorIdx: number
+  isCurrentUser?: boolean
+}
 
 // ── Mock Data ──
-
 const AVATAR_COLORS = [
   'linear-gradient(135deg, #d4a053, #c4883a)',
   'linear-gradient(135deg, #a78bfa, #8b5cf6)',
@@ -20,15 +82,15 @@ const AVATAR_COLORS = [
   'linear-gradient(135deg, #fb923c, #f97316)',
 ]
 
-const MOCK_CATEGORIES = [
-  { id: 'all', label: 'All', emoji: '📋' },
-  { id: 'wins', label: 'Wins', emoji: '🏆' },
-  { id: 'qna', label: 'Q&A', emoji: '💬' },
+const CATEGORIES = [
+  { id: 'all', label: 'Semua', emoji: '📋' },
+  { id: 'wins', label: 'Kemenangan (Wins)', emoji: '🏆' },
+  { id: 'qna', label: 'Tanya Jawab', emoji: '💬' },
   { id: 'discussions', label: 'Diskusi', emoji: '🧠' },
-  { id: 'resources', label: 'Resources', emoji: '📚' },
+  { id: 'resources', label: 'Sumber Daya', emoji: '📚' },
 ]
 
-const MOCK_POSTS = [
+const INITIAL_POSTS: Post[] = [
   {
     id: 1,
     author: 'Toni Martin',
@@ -37,9 +99,15 @@ const MOCK_POSTS = [
     role: 'Premium',
     time: '2 jam lalu',
     category: 'wins',
-    content: 'Baru saja closed project £7.5k! Teknik SATS yang dipelajari di sini benar-benar works. Visualisasi setiap malam sebelum tidur, dan dalam 2 minggu hasilnya muncul. Percaya sama imajinasimu!',
-    likes: 24,
-    comments: 8,
+    title: 'Closed Project Rp 120 Juta! Bukti Nyata SATS',
+    content: 'Baru saja closing kontrak project Rp 120 juta! Teknik SATS yang saya pelajari di bagian 1 benar-benar works. Saya memvisualisasikan tanda tangan kontrak setiap malam sebelum tidur selama 2 minggu, sampai saya merasakan relief nyata (seolah sudah beres). Tiba-tiba klien lama menghubungi dan deal tanpa nego panjang. Percaya sama imajinasimu!',
+    likes: 48,
+    commentsCount: 3,
+    comments: [
+      { id: 101, author: 'Budi Santoso', initials: 'BS', colorIdx: 2, role: 'Premium', time: '1 jam lalu', content: 'Gokil mas! Selamat ya, menginspirasi banget.' },
+      { id: 102, author: 'Sarah Wijaya', initials: 'SW', colorIdx: 1, role: 'Master', time: '45 mnt lalu', content: 'Adegan visualisasi pas tanda tangan kerasa natural banget ya mas?' },
+      { id: 103, author: 'Toni Martin', initials: 'TM', colorIdx: 0, role: 'Premium', time: '30 mnt lalu', content: 'Iya mbak, kerasa pulpennya dingin sama kertasnya agak bertekstur.' }
+    ]
   },
   {
     id: 2,
@@ -49,9 +117,14 @@ const MOCK_POSTS = [
     role: 'Master',
     time: '5 jam lalu',
     category: 'discussions',
-    content: 'Ada yang pernah mengalami fenomena "bridge of incidents" setelah konsisten melakukan affirmasi? Ceritain dong pengalaman kamu gimana awalnya sampai akhirnya dapat tanda-tandanya.',
-    likes: 18,
-    comments: 15,
+    title: 'Bagaimana Menghadapi "Bridge of Incidents" yang Penuh Rintangan?',
+    content: 'Ada yang pernah mengalami fenomena "bridge of incidents" (jembatan peristiwa) setelah konsisten berasumsi, tapi jalan di tengahnya malah penuh drama? Saya sedang merevisi karir saya, tapi mendadak ada restrukturisasi divisi di kantor. Saya tahu ini bagian dari jembatan, tapi bagaimana kalian menjaga mental agar tetap berasumsi positif di situasi kacau?',
+    likes: 36,
+    commentsCount: 2,
+    comments: [
+      { id: 104, author: 'Dimas Pratama', initials: 'DP', colorIdx: 9, role: 'Master', time: '3 jam lalu', content: 'Anggap itu sebagai proses pembongkaran fondasi lama mbak. Neville bilang jangan campuri cara terwujudnya.' },
+      { id: 105, author: 'Sarah Wijaya', initials: 'SW', colorIdx: 1, role: 'Master', time: '2 jam lalu', content: 'Terima kasih mas Dimas, pengingat yang sangat bagus.' }
+    ]
   },
   {
     id: 3,
@@ -61,9 +134,13 @@ const MOCK_POSTS = [
     role: 'Premium',
     time: '1 hari lalu',
     category: 'qna',
-    content: 'Gimana caranya bedain antara intuition and wishful thinking? Kadang saya susah membedakan apakah ini "feeling" beneran atau cuma ekspektasi saya sendiri. Mohon pencerahan teman-teman.',
-    likes: 31,
-    comments: 22,
+    title: 'Bedanya "Merasa Puas" vs "Wishful Thinking" dalam Praktik?',
+    content: 'Gimana caranya membedakan antara "feeling" (mengalami kepuasan batin) dan "wishful thinking" (sekadar berkhayal)? Kadang saya merasa sudah berasumsi, tapi kalau dipikir lagi saya masih mendamba-dambakan di siang hari. Apakah ada tips praktis?',
+    likes: 29,
+    commentsCount: 1,
+    comments: [
+      { id: 106, author: 'Toni Martin', initials: 'TM', colorIdx: 0, role: 'Premium', time: '18 jam lalu', content: 'Kalau kamu masih mendamba di siang hari, berarti asumsimu belum mengeras di bawah sadar. SATS malamnya perlu diperdalam lagi mas sampai kerasa rilis.' }
+    ]
   },
   {
     id: 4,
@@ -73,411 +150,1265 @@ const MOCK_POSTS = [
     role: 'Premium',
     time: '2 hari lalu',
     category: 'wins',
-    content: 'Setelah 6 bulan konsisten, akhirnya berhasil me-manifestasi hubungan yang sehat! Dari yang penuh drama, sekarang komunikasi lancar dan saling support. Semua berawal dari mengubah asumsi dalam diri sendiri.',
-    likes: 56,
-    comments: 12,
-  },
-  {
-    id: 5,
-    author: 'Dimas Pratama',
-    initials: 'DP',
-    colorIdx: 9,
-    role: 'Master',
-    time: '3 hari lalu',
-    category: 'discussions',
-    content: 'Diskusi tentang Neville Goddard — interpretasi "Feeling is the Secret" menurut pengalaman pribadi. Bukan sekadar merasakan emosi, tapi benar-benar hidup dalam keadaan terkabul. Siapa yang punya perspektif berbeda?',
-    likes: 42,
-    comments: 28,
-  },
-  {
-    id: 6,
-    author: 'Rina Kartika',
-    initials: 'RK',
-    colorIdx: 4,
-    role: 'Premium',
-    time: '4 hari lalu',
-    category: 'resources',
-    content: 'Bagi yang nyari daftar bacaan Neville Goddard terjemahan Bahasa Indonesia, saya buatin list lengkap PDF-nya. DM ya nanti saya kirim linknya. Gratis untuk anggota komunitas!',
+    title: 'Manifestasi Hubungan Sehat & Harmonis',
+    content: 'Setelah 6 bulan konsisten shadow work dan mengubah konsep diri (self-concept), akhirnya berhasil merestorasi hubungan saya dengan pasangan. Dari yang penuh drama cemburu dan dingin, sekarang dia berubah drastis menjadi sangat perhatian dan suportif. Benar kata Neville: "No one to change but self."',
     likes: 67,
-    comments: 34,
+    commentsCount: 0,
+    comments: []
+  }
+]
+
+const UPCOMING_EVENTS = [
+  {
+    id: 1,
+    title: 'Weekly Live Group Meditation & SATS',
+    date: 'Setiap Kamis',
+    time: '21:00 - 22:00 WIB',
+    desc: 'Induksi kelompok masuk ke kondisi Theta dipandu langsung oleh Bang Nevgo. Kita memvisualisasikan keinginan masing-masing secara serentak.',
+    link: 'https://zoom.us/j/meet-sats',
+    type: 'Zoom Meeting'
   },
+  {
+    id: 2,
+    title: 'Sesi Q&A & Bedah Kasus Asumsi',
+    date: 'Sabtu, 30 Mei 2026',
+    time: '16:00 - 17:30 WIB',
+    desc: 'Ajukan rintangan praktik harian Anda. Kita bedah adegan imajinasi SATS dan cara melakukan revisi hari secara interaktif.',
+    link: 'https://zoom.us/j/meet-qa',
+    type: 'Zoom Meeting'
+  },
+  {
+    id: 3,
+    title: 'Masterclass: Reprogramming Inner Shadow',
+    date: 'Minggu, 14 Juni 2026',
+    time: '19:00 - 21:00 WIB',
+    desc: 'Khusus tier Master. Mengurai limiting belief terdalam dan mengintegrasikan aspek bayangan diri agar manifestasi tidak terhambat.',
+    link: 'https://zoom.us/j/meet-vip',
+    type: 'VIP Zoom Masterclass'
+  }
 ]
 
-const MOCK_MEMBERS = [
-  { name: 'Toni Martin', initials: 'TM', role: 'Premium', online: true, colorIdx: 0 },
-  { name: 'Sarah Wijaya', initials: 'SW', role: 'Master', online: true, colorIdx: 1 },
-  { name: 'Budi Santoso', initials: 'BS', role: 'Premium', online: true, colorIdx: 2 },
-  { name: 'Maya Devi', initials: 'MD', role: 'Premium', online: false, colorIdx: 3 },
-  { name: 'Dimas Pratama', initials: 'DP', role: 'Master', online: true, colorIdx: 9 },
-  { name: 'Rina Kartika', initials: 'RK', role: 'Premium', online: false, colorIdx: 4 },
-  { name: 'Agus Wijaya', initials: 'AW', role: 'Member', online: true, colorIdx: 5 },
-  { name: 'Dewi Lestari', initials: 'DL', role: 'Member', online: false, colorIdx: 6 },
-  { name: 'Fajar Nugroho', initials: 'FN', role: 'Premium', online: true, colorIdx: 7 },
-  { name: 'Indah Permata', initials: 'IP', role: 'Member', online: false, colorIdx: 8 },
-  { name: 'Joko Susilo', initials: 'JS', role: 'Master', online: true, colorIdx: 0 },
-  { name: 'Lina Marlina', initials: 'LM', role: 'Premium', online: false, colorIdx: 1 },
+const INITIAL_LEADERBOARD: LeaderboardUser[] = [
+  { rank: 1, name: 'Dimas Pratama', initials: 'DP', level: 6, points: 2450, streak: 12, colorIdx: 9 },
+  { rank: 2, name: 'Sarah Wijaya', initials: 'SW', level: 5, points: 1840, streak: 8, colorIdx: 1 },
+  { rank: 3, name: 'Toni Martin', initials: 'TM', level: 4, points: 1250, streak: 15, colorIdx: 0 },
+  { rank: 4, name: 'Maya Devi', initials: 'MD', level: 4, points: 1100, streak: 5, colorIdx: 3 },
+  { rank: 5, name: 'Budi Santoso', initials: 'BS', level: 3, points: 850, streak: 3, colorIdx: 2 },
+  { rank: 6, name: 'Rina Kartika', initials: 'RK', level: 3, points: 720, streak: 0, colorIdx: 4 },
+  { rank: 7, name: 'Fajar Nugroho', initials: 'FN', level: 2, points: 410, streak: 2, colorIdx: 7 }
 ]
 
-const ABOUT_FEATURES = [
-  { icon: <MessageCircle size={16} />, text: 'Diskusi eksklusif dengan sesama pencari kebenaran' },
-  { icon: <Star size={16} />, text: 'Sesi live Q&A mingguan dengan mentor berpengalaman' },
-  { icon: <Users size={16} />, text: 'Network dengan 885 anggota dari seluruh Indonesia' },
-  { icon: <BookOpen size={16} />, text: 'Akses ke resources eksklusif dan study guide' },
-  { icon: <Shield size={16} />, text: 'Lingkungan yang aman dan supportive tanpa judgment' },
+const LEVEL_REWARDS = [
+  { level: 1, name: 'Pengembara Kesadaran', pointsReq: 0, reward: 'Akses 3 Pelajaran Dasar & Buku Panduan Gratis' },
+  { level: 2, name: 'Asumtif Junior', pointsReq: 200, reward: 'Membuka Audio Meditasi SATS & Diagnosa Limiting Belief' },
+  { level: 3, name: 'Penyelaras Perasaan', pointsReq: 600, reward: 'Membuka Meditasi Kemakmuran & Reprogramming Diri' },
+  { level: 4, name: 'Guru Imajinasi', pointsReq: 1000, reward: 'Membuka Jurnal SATS PDF & Akses Shadow Work Diagnosa' },
+  { level: 5, name: 'Master Manifestasi', pointsReq: 1500, reward: 'Membuka Sesi Tanya Jawab Privat & 2 Rekaman Webinar VIP' },
+  { level: 6, name: 'Kesadaran Ilahi', pointsReq: 2200, reward: 'Membuka Seluruh Rekaman Webinar VIP & Prioritas Konsultasi' }
 ]
-
-const ABOUT_RULES = [
-  { icon: '🤝', text: 'Hormati setiap anggota, tidak ada bullying atau toxic behavior' },
-  { icon: '🔒', text: 'Jaga privasi anggota lain — apa yang dibahas di sini, stays here' },
-  { icon: '📖', text: 'Fokus pada topik hukum asumsi dan manifestasi' },
-  { icon: '🚫', text: 'Dilarang spam, promo, atau self-promotion tanpa izin' },
-  { icon: '💡', text: 'Bagikan pengalaman dan insight — setiap perspektif berharga' },
-]
-
-// ── Components ──
-
-function PostCard({ post, index }: { post: typeof MOCK_POSTS[0]; index: number }) {
-  return (
-    <motion.div
-      className="nv-community-post-card nv-glass"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: index * 0.05 }}
-    >
-      <div className="nv-community-post-header">
-        <div
-          className="nv-community-post-avatar"
-          style={{ background: AVATAR_COLORS[post.colorIdx] }}
-        >
-          {post.initials}
-        </div>
-        <div className="nv-community-post-author-info">
-          <div className="nv-community-post-author-row">
-            <span className="nv-community-post-author">{post.author}</span>
-            <span className="nv-community-post-role">{post.role}</span>
-          </div>
-          <span className="nv-community-post-time">{post.time}</span>
-        </div>
-      </div>
-
-      <div className="nv-community-post-category-badge">
-        {MOCK_CATEGORIES.find(c => c.id === post.category)?.emoji}{' '}
-        {MOCK_CATEGORIES.find(c => c.id === post.category)?.label}
-      </div>
-
-      <p className="nv-community-post-content">{post.content}</p>
-
-      <div className="nv-community-post-actions">
-        <button className="nv-community-post-action">
-          <Heart size={16} />
-          <span>{post.likes}</span>
-        </button>
-        <button className="nv-community-post-action">
-          <MessageCircle size={16} />
-          <span>{post.comments}</span>
-        </button>
-      </div>
-    </motion.div>
-  )
-}
-
-function MemberCard({ member, index }: { member: typeof MOCK_MEMBERS[0]; index: number }) {
-  return (
-    <motion.div
-      className="nv-community-member-card nv-glass"
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.3, delay: index * 0.03 }}
-    >
-      <div className="nv-community-member-avatar-wrap">
-        <img
-          src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${member.initials}`}
-          alt={member.name}
-          className="nv-community-member-avatar-img"
-          width={44}
-          height={44}
-        />
-        {member.online && <div className="nv-community-member-online" />}
-      </div>
-      <div className="nv-community-member-info">
-        <div className="nv-community-member-name">{member.name}</div>
-        <div className="nv-community-member-role-text">{member.role}</div>
-      </div>
-    </motion.div>
-  )
-}
-
-// ── Main Page ──
 
 export default function CommunityPage() {
-  const { setView, hasCommunityAccess } = useAppStore()
-  const [activeTab, setActiveTab] = useState<'feed' | 'members' | 'about'>('feed')
+  const { setView, hasCommunityAccess, userName, subscriptionTier } = useAppStore()
+  
+  // ── States ──
+  const [activeTab, setActiveTab] = useState<'feed' | 'classroom' | 'calendar' | 'leaderboard' | 'knowledge' | 'about'>('feed')
+  const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS)
   const [activeCategory, setActiveCategory] = useState('all')
-  const [memberSearch, setMemberSearch] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [sortBy, setSortBy] = useState<'active' | 'popular' | 'newest'>('newest')
+  
+  // Collapsible Pinned Welcome Video State
+  const [showWelcomeVideo, setShowWelcomeVideo] = useState(true)
+
+  useEffect(() => {
+    const isHidden = localStorage.getItem('nv-hide-welcome-video') === 'true'
+    if (isHidden) {
+      setShowWelcomeVideo(false)
+    }
+  }, [])
+
+  // Pricing/Upgrade modal state for non-premium users attempting interactions
+  const [showPricingModal, setShowPricingModal] = useState(false)
+  
+  // Lightbox state for flyer preview zoom
+  const [showFlyerLightbox, setShowFlyerLightbox] = useState(false)
+  
+  // Post Creator States
+  const [isCreatingPost, setIsCreatingPost] = useState(false)
+  const [newTitle, setNewTitle] = useState('')
+  const [newContent, setNewContent] = useState('')
+  const [newCategory, setNewCategory] = useState('discussions')
+
+  // Comment Dialog State
+  const [activePostComments, setActivePostComments] = useState<Post | null>(null)
+  const [commentText, setCommentText] = useState('')
+  
+  const handleClose = () => setActivePostComments(null)
+
+  // Simulated Current User Profile
+  const [userPoints, setUserPoints] = useState(380)
+  const [userLevel, setUserLevel] = useState(2)
+  const [userStreak, setUserStreak] = useState(4)
 
   const isAccessAllowed = hasCommunityAccess()
 
-  const filteredPosts = activeCategory === 'all'
-    ? MOCK_POSTS
-    : MOCK_POSTS.filter(p => p.category === activeCategory)
-
-  const filteredMembers = memberSearch
-    ? MOCK_MEMBERS.filter(m =>
-        m.name.toLowerCase().includes(memberSearch.toLowerCase())
-      )
-    : MOCK_MEMBERS
-
-  const onlineCount = MOCK_MEMBERS.filter(m => m.online).length
-  const totalLikes = MOCK_POSTS.reduce((acc, p) => acc + p.likes, 0)
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.05 },
-    },
+  // ── Handlers ──
+  const handleLikePost = (postId: number) => {
+    if (!isAccessAllowed) {
+      setShowPricingModal(true)
+      return
+    }
+    setPosts(prev => prev.map(post => {
+      if (post.id === postId) {
+        const liked = !post.likedByUser
+        return {
+          ...post,
+          likedByUser: liked,
+          likes: liked ? post.likes + 1 : post.likes - 1
+        }
+      }
+      return post
+    }))
+    // Gain points for interacting (simulate)
+    setUserPoints(prev => prev + 5)
+    toast('✦ Anda mendapatkan +5 Poin!')
   }
 
-  if (!isAccessAllowed) {
-    return (
-      <div className="nv-community-page">
-        <div className="nv-community-header">
-          <button className="nv-community-back-btn" onClick={() => setView('landing')}>
-            ← Kembali
-          </button>
-          <div className="nv-community-header-glow" />
-          <div className="nv-community-header-inner">
-            <div className="nv-community-logo"><img src="/community-logo.jpg" alt="AKU ANAK LOAS" /></div>
-            <div className="nv-community-header-info">
-              <h1 className="nv-community-header-name">AKU ANAK LOAS</h1>
-              <p className="nv-community-header-desc">Premium Member Area — akses komunitas eksklusif</p>
-            </div>
-          </div>
-          <div className="nv-community-stats-bar">
-            <div className="nv-community-stat-item">
-              <Users size={16} className="nv-community-stat-icon" />
-              <span className="nv-community-stat-value">885</span>
-              <span>members</span>
-            </div>
-            <div className="nv-community-stat-item">
-              <span className="nv-community-stat-dot" />
-              <span className="nv-community-stat-value">{onlineCount}</span>
-              <span>online sekarang</span>
-            </div>
-          </div>
-        </div>
+  const handleCreatePost = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newTitle || !newContent) {
+      toast.error('Mohon lengkapi judul dan konten postingan')
+      return
+    }
 
-        <div className="nv-community-content" style={{ textAlign: 'center', paddingTop: 80 }}>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div style={{ fontSize: 64, marginBottom: 16, opacity: 0.5 }}>🔒</div>
-            <h2 style={{ fontSize: 24, fontWeight: 900, margin: '0 0 8px' }}>
-              AKU ANAK LOAS
-            </h2>
-            <p style={{ fontSize: 15, color: 'var(--nv-muted)', lineHeight: 1.7, margin: '0 0 24px', maxWidth: 480, marginLeft: 'auto', marginRight: 'auto' }}>
-              Bergabung dengan 885 anggota dan dapatkan akses diskusi eksklusif, sesi live, dan network.
-            </p>
-            <motion.button
-              className="nv-cta-button nv-cta-pulse"
-              onClick={() => setView('pricing')}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <UserPlus size={18} /> Upgrade ke Premium — Rp 149K/bulan
-            </motion.button>
-          </motion.div>
-        </div>
-      </div>
+    const newPost: Post = {
+      id: Date.now(),
+      author: userName || 'Pengguna Baru',
+      initials: (userName || 'PB').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2),
+      colorIdx: Math.floor(Math.random() * AVATAR_COLORS.length),
+      role: subscriptionTier.toUpperCase(),
+      time: 'Baru saja',
+      category: newCategory,
+      title: newTitle,
+      content: newContent,
+      likes: 0,
+      commentsCount: 0,
+      comments: []
+    }
+
+    setPosts(prev => [newPost, ...prev])
+    setIsCreatingPost(false)
+    setNewTitle('')
+    setNewContent('')
+    setUserPoints(prev => prev + 25)
+    toast.success('Postingan diterbitkan! Anda mendapatkan +25 Poin! 🏆')
+  }
+
+  const handleAddComment = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!commentText.trim() || !activePostComments) return
+
+    const newComment: Comment = {
+      id: Date.now(),
+      author: userName || 'Pengguna Baru',
+      initials: (userName || 'PB').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2),
+      colorIdx: 2,
+      role: subscriptionTier.toUpperCase(),
+      time: 'Baru saja',
+      content: commentText
+    }
+
+    setPosts(prev => prev.map(p => {
+      if (p.id === activePostComments.id) {
+        return {
+          ...p,
+          commentsCount: p.commentsCount + 1,
+          comments: [...p.comments, newComment]
+        }
+      }
+      return p
+    }))
+
+    // Sync modal view
+    setActivePostComments(prev => prev ? {
+      ...prev,
+      commentsCount: prev.commentsCount + 1,
+      comments: [...prev.comments, newComment]
+    } : null)
+
+    setCommentText('')
+    setUserPoints(prev => prev + 10)
+    toast.success('Komentar ditambahkan! +10 Poin!')
+  }
+
+  // ── Filters & Sorting ──
+  const filteredPosts = posts
+    .filter(p => activeCategory === 'all' ? true : p.category === activeCategory)
+    .filter(p => 
+      p.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      p.content.toLowerCase().includes(searchTerm.toLowerCase())
     )
+    .sort((a, b) => {
+      if (sortBy === 'popular') return b.likes - a.likes
+      if (sortBy === 'active') return b.commentsCount - a.commentsCount
+      return b.id - a.id // newest
+    })
+
+  // ── Gamification Calculations ──
+  const currentLevelInfo = LEVEL_REWARDS.find(l => l.level === userLevel) || LEVEL_REWARDS[0]
+  const nextLevelInfo = LEVEL_REWARDS.find(l => l.level === userLevel + 1)
+  
+  // Auto-level up check
+  if (nextLevelInfo && userPoints >= nextLevelInfo.pointsReq) {
+    setUserLevel(userLevel + 1)
+    toast.success(`🎉 LEVEL UP! Selamat Anda sekarang Level ${userLevel + 1}: ${nextLevelInfo.name}!`)
   }
+
+  const pointsProgress = nextLevelInfo 
+    ? ((userPoints - currentLevelInfo.pointsReq) / (nextLevelInfo.pointsReq - currentLevelInfo.pointsReq)) * 100 
+    : 100
+
+  // Build simulated Leaderboard including current user
+  const leaderboardData: LeaderboardUser[] = [
+    ...INITIAL_LEADERBOARD,
+    {
+      rank: 0, // calculated dynamically below
+      name: `${userName || 'Anda'} (Kamu)`,
+      initials: (userName || 'PB').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2),
+      level: userLevel,
+      points: userPoints,
+      streak: userStreak,
+      colorIdx: 5,
+      isCurrentUser: true
+    }
+  ]
+  .sort((a, b) => b.points - a.points)
+  .map((user, idx) => ({ ...user, rank: idx + 1 }))
+
+  const currentUserRank = leaderboardData.find(u => u.isCurrentUser)?.rank || 8
 
   return (
-    <div className="nv-community-page">
-      {/* ── Header ── */}
+    <div className="nv-page min-h-screen bg-[#0a0a0c] text-[#e8e4dc] pb-12">
+      {/* Preview Mode Alert Banner */}
+      {!isAccessAllowed && (
+        <div className="bg-gradient-to-r from-amber-500/20 via-amber-500/10 to-transparent border-b border-amber-500/30 px-6 py-2.5 backdrop-blur-md">
+          <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
+            <p className="text-xs text-amber-500 font-bold m-0 flex items-center gap-1.5">
+              <span>🔒 Anda berada dalam Mode Pratinjau. Upgrade untuk berdiskusi, membuka Classroom, dan join Live Zoom.</span>
+            </p>
+            <button 
+              onClick={() => setView('pricing')} 
+              className="text-[10px] font-bold text-neutral-950 bg-amber-500 hover:bg-[#e2b36e] px-3 py-1.5 rounded-lg transition uppercase tracking-wider cursor-pointer"
+            >
+              Buka Akses Premium
+            </button>
+          </div>
+        </div>
+      )}
+      {/* ── Sub Header / Banner ── */}
       <section className="nv-community-header">
-        <button className="nv-community-back-btn" onClick={() => setView('landing')}>
-          ← Kembali
+        <button className="nv-community-back-btn" onClick={() => setView('dashboard')}>
+          ← Dasbor Pembelajaran
         </button>
         <div className="nv-community-header-glow" />
         <div className="nv-community-header-inner">
-          <div className="nv-community-logo"><img src="/community-logo.jpg" alt="AKU ANAK LOAS" /></div>
+          <div className="nv-community-logo">
+            <img src="/community-logo.jpg" alt="AKU ANAK LOAS Logo" />
+          </div>
           <div className="nv-community-header-info">
-            <h1 className="nv-community-header-name">AKU ANAK LOAS</h1>
-            <p className="nv-community-header-desc">Ruang diskusi eksklusif untuk anggota komunitas</p>
-          </div>
-        </div>
-        <div className="nv-community-stats-bar">
-          <div className="nv-community-stat-item">
-            <Users size={16} className="nv-community-stat-icon" />
-            <span className="nv-community-stat-value">885</span>
-            <span>members</span>
-          </div>
-          <div className="nv-community-stat-item">
-            <span className="nv-community-stat-dot" />
-            <span className="nv-community-stat-value">{onlineCount}</span>
-            <span>online sekarang</span>
-          </div>
-          <div className="nv-community-stat-item">
-            <MessageCircle size={16} className="nv-community-stat-icon" />
-            <span className="nv-community-stat-value">{MOCK_POSTS.length}</span>
-            <span>postingan hari ini</span>
-          </div>
-          <div className="nv-community-stat-item">
-            <Heart size={16} className="nv-community-stat-icon" />
-            <span className="nv-community-stat-value">{totalLikes}</span>
-            <span>total likes</span>
+            <h1 className="nv-community-header-name text-3xl sm:text-4xl md:text-5xl font-black tracking-wider uppercase bg-gradient-to-r from-[#d4a053] via-[#f5c67a] to-[#c4883a] bg-clip-text text-transparent drop-shadow-lg leading-tight">
+              AKU ANAK LOAS
+            </h1>
+            <p className="nv-community-header-desc text-xs sm:text-sm text-neutral-300 tracking-wide mt-1.5 font-medium">
+              Forum Komunitas Belajar Bersama Pure Teaching Neville Goddard - Law of Assumption
+            </p>
           </div>
         </div>
       </section>
 
-      {/* ── Tab Navigation (sticky) ── */}
-      <nav className="nv-community-tabs">
-        <div className="nv-community-tabs-inner">
-          {(['feed', 'members', 'about'] as const).map(tab => (
-            <button
-              key={tab}
-              className={`nv-community-tab ${activeTab === tab ? 'nv-community-tab-active' : ''}`}
-              onClick={() => setActiveTab(tab)}
+      {/* ── Skool Tabs bar ── */}
+      <nav className="nv-community-tabs bg-[#111114]/90 backdrop-blur-md sticky top-0 z-40 border-b border-neutral-900">
+        <div className="max-w-[1200px] mx-auto px-6 flex justify-between items-center h-14">
+          <div className="flex flex-nowrap gap-1 h-full overflow-x-auto whitespace-nowrap scrollbar-none max-w-full">
+            <button 
+              className={`nv-tab-btn h-full border-b-2 rounded-none px-4 flex items-center gap-2 text-sm font-bold shrink-0 ${activeTab === 'feed' ? 'border-[#d4a053] text-[#d4a053]' : 'border-transparent text-neutral-400'}`}
+              onClick={() => setActiveTab('feed')}
             >
-              {tab === 'feed' && <span className="nv-community-tab-icon">📋</span>}
-              {tab === 'members' && <Users size={16} />}
-              {tab === 'about' && <Info size={16} />}
-              {tab === 'feed' && 'Feed'}
-              {tab === 'members' && 'Members'}
-              {tab === 'about' && 'About'}
+              💬 Diskusi
             </button>
-          ))}
+            <button 
+              className={`nv-tab-btn h-full border-b-2 rounded-none px-4 flex items-center gap-2 text-sm font-bold shrink-0 ${activeTab === 'classroom' ? 'border-[#d4a053] text-[#d4a053]' : 'border-transparent text-neutral-400'}`}
+              onClick={() => setActiveTab('classroom')}
+            >
+              📚 Classroom
+            </button>
+            <button 
+              className={`nv-tab-btn h-full border-b-2 rounded-none px-4 flex items-center gap-2 text-sm font-bold shrink-0 ${activeTab === 'calendar' ? 'border-[#d4a053] text-[#d4a053]' : 'border-transparent text-neutral-400'}`}
+              onClick={() => setActiveTab('calendar')}
+            >
+              📅 Kalender Sesi
+            </button>
+            <button 
+              className={`nv-tab-btn h-full border-b-2 rounded-none px-4 flex items-center gap-2 text-sm font-bold shrink-0 ${activeTab === 'leaderboard' ? 'border-[#d4a053] text-[#d4a053]' : 'border-transparent text-neutral-400'}`}
+              onClick={() => setActiveTab('leaderboard')}
+            >
+              🏆 Leaderboard
+            </button>
+            <button 
+              className={`nv-tab-btn h-full border-b-2 rounded-none px-4 flex items-center gap-2 text-sm font-bold shrink-0 ${activeTab === 'knowledge' ? 'border-[#d4a053] text-[#d4a053]' : 'border-transparent text-neutral-400'}`}
+              onClick={() => setActiveTab('knowledge')}
+            >
+              🧠 Bank Knowledge
+            </button>
+            <button 
+              className={`nv-tab-btn h-full border-b-2 rounded-none px-4 flex items-center gap-2 text-sm font-bold shrink-0 ${activeTab === 'about' ? 'border-[#d4a053] text-[#d4a053]' : 'border-transparent text-neutral-400'}`}
+              onClick={() => setActiveTab('about')}
+            >
+              ℹ️ Tentang
+            </button>
+          </div>
+
+          {/* Points Progress Mini Card (Top Right) */}
+          <div className="hidden md:flex items-center gap-3 bg-neutral-900/60 border border-neutral-800/80 px-3 py-1.5 rounded-xl">
+            <div className="flex items-center gap-1.5 text-xs text-amber-500 font-bold">
+              <Award size={14} />
+              <span>Lv. {userLevel}</span>
+            </div>
+            <div className="w-20 bg-neutral-800 h-1.5 rounded-full overflow-hidden">
+              <div className="bg-amber-500 h-full rounded-full" style={{ width: `${pointsProgress}%` }} />
+            </div>
+            <span className="text-[10px] text-neutral-400 font-mono">{userPoints} pts</span>
+            
+            <div className="flex items-center gap-1 text-[#f87171] font-bold text-xs">
+              <Flame size={14} className="fill-current" />
+              <span>{userStreak} hari</span>
+            </div>
+          </div>
         </div>
       </nav>
 
-      {/* ── Content ── */}
-      <div className="nv-community-content">
-        <AnimatePresence mode="wait">
-          {activeTab === 'feed' && (
-            <motion.div
-              key="feed"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-            >
-              {/* Category Filters */}
-              <div className="nv-community-categories">
-                {MOCK_CATEGORIES.map(cat => (
-                  <button
-                    key={cat.id}
-                    className={`nv-community-chip ${activeCategory === cat.id ? 'nv-community-chip-active' : ''}`}
-                    onClick={() => setActiveCategory(cat.id)}
+      {/* ── Main Community Layout ── */}
+      <div className="max-w-[1200px] mx-auto px-6 py-6 flex flex-col lg:flex-row gap-6">
+        
+        {/* LEFT COLUMN: ACTIVE PAGE VIEW */}
+        <div className="flex-1 min-w-0">
+          <AnimatePresence mode="wait">
+            
+            {/* 1. DISCUSSIONS / FEED VIEW */}
+            {activeTab === 'feed' && (
+              <motion.div
+                key="feed"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex flex-col gap-4"
+              >
+                {/* Collapsible Welcome Pinned Video */}
+                {showWelcomeVideo ? (
+                  <motion.div 
+                    className="nv-premium-glass border border-amber-500/20 p-5 rounded-2xl relative overflow-hidden flex flex-col gap-4 shadow-xl"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
                   >
-                    {cat.emoji} {cat.label}
-                  </button>
-                ))}
-              </div>
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+                    
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-0.5 bg-amber-500/10 border border-amber-500/30 text-[#d4a053] font-mono text-[9px] font-bold rounded uppercase tracking-wider flex items-center gap-1">
+                          <Pin size={10} className="rotate-45" />
+                          <span>Pinned</span>
+                        </span>
+                        <h3 className="text-xs sm:text-sm font-bold text-white m-0">Selamat Datang & Panduan Batin (Wajib Tonton!) 🎬</h3>
+                      </div>
+                      
+                      <button 
+                        onClick={() => {
+                          setShowWelcomeVideo(false)
+                          localStorage.setItem('nv-hide-welcome-video', 'true')
+                          toast.info('Video panduan disembunyikan. Anda dapat membukanya kembali kapan saja.')
+                        }}
+                        className="text-neutral-500 hover:text-white p-1 rounded-lg bg-neutral-900/40 hover:bg-neutral-900 transition border border-neutral-800"
+                        title="Sembunyikan Video"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
 
-              {/* Feed */}
-              {filteredPosts.length > 0 ? (
-                <div className="nv-community-feed">
-                  {filteredPosts.map((post, idx) => (
-                    <PostCard key={post.id} post={post} index={idx} />
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
+                      <div className="md:col-span-7">
+                        <div className="relative w-full rounded-xl overflow-hidden border border-neutral-850 shadow-2xl bg-neutral-950" style={{ aspectRatio: '16/9' }}>
+                          <iframe
+                            className="absolute top-0 left-0 w-full h-full border-none"
+                            src="https://www.youtube.com/embed/LrklTcrYYFw"
+                            title="Panduan Neville Goddard Indonesia"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="md:col-span-5 flex flex-col gap-2">
+                        <h4 className="text-[10px] font-bold text-amber-500 font-outfit uppercase tracking-wider m-0">PESAN DARI BANG NEVGO</h4>
+                        <p className="text-[11px] text-neutral-400 leading-relaxed m-0">
+                          Video ini merangkum dasar melatih SATS (State Allied to Sleep), cara merevisi hari secara interaktif, dan cara berpartisipasi aktif untuk naik peringkat di leaderboard komunitas demi membuka hadiah materi VIP.
+                        </p>
+                        <div className="flex gap-2 mt-2">
+                          <button 
+                            onClick={() => setActiveTab('classroom')} 
+                            className="nv-activation-widget-btn py-1.5 px-3 rounded-lg text-[10px] w-auto font-bold flex items-center gap-1 shadow-md"
+                          >
+                            Jelajahi Classroom
+                          </button>
+                          <button 
+                            onClick={() => setActiveTab('calendar')} 
+                            className="bg-neutral-900 border border-neutral-800 text-neutral-300 hover:text-white hover:border-neutral-700 py-1.5 px-3 rounded-lg text-[10px] w-auto font-bold transition"
+                          >
+                            Jadwal Live Zoom
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ) : (
+                  <div className="flex justify-end">
+                    <button 
+                      onClick={() => {
+                        setShowWelcomeVideo(true)
+                        localStorage.removeItem('nv-hide-welcome-video')
+                      }}
+                      className="text-[10px] font-bold text-amber-500 hover:text-[#e2b36e] flex items-center gap-1.5 bg-[#d4a053]/10 border border-[#d4a053]/20 px-3 py-1.5 rounded-lg transition"
+                    >
+                      <Pin size={10} className="rotate-45" />
+                      Tampilkan Video Panduan Pinned 🎬
+                    </button>
+                  </div>
+                )}
+
+                {/* Search and Sort Toolbar */}
+                <div className="flex flex-col sm:flex-row gap-3 items-center justify-between bg-neutral-950/40 p-3 rounded-xl border border-neutral-900">
+                  <div className="relative w-full sm:w-64">
+                    <Search size={14} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500" />
+                    <input
+                      type="text"
+                      placeholder="Cari postingan..."
+                      className="w-full bg-neutral-900/60 border border-neutral-800 rounded-lg pl-9 pr-4 py-1.5 text-xs text-[#e8e4dc] outline-none focus:border-amber-500/50"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="flex gap-2 items-center w-full sm:w-auto justify-end">
+                    <SlidersHorizontal size={12} className="text-neutral-500" />
+                    <button 
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${sortBy === 'newest' ? 'bg-[#d4a053]/15 text-[#d4a053]' : 'text-neutral-400 hover:text-white'}`}
+                      onClick={() => setSortBy('newest')}
+                    >
+                      Terbaru
+                    </button>
+                    <button 
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${sortBy === 'popular' ? 'bg-[#d4a053]/15 text-[#d4a053]' : 'text-neutral-400 hover:text-white'}`}
+                      onClick={() => setSortBy('popular')}
+                    >
+                      Populer
+                    </button>
+                    <button 
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${sortBy === 'active' ? 'bg-[#d4a053]/15 text-[#d4a053]' : 'text-neutral-400 hover:text-white'}`}
+                      onClick={() => setSortBy('active')}
+                    >
+                      Aktif
+                    </button>
+                  </div>
+                </div>
+
+                {/* Categories Scrollbar */}
+                <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+                  {CATEGORIES.map(cat => (
+                    <button
+                      key={cat.id}
+                      className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap border transition ${
+                        activeCategory === cat.id 
+                          ? 'bg-[#d4a053] text-[#0a0a0c] border-[#d4a053]' 
+                          : 'bg-neutral-900/40 border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-700'
+                      }`}
+                      onClick={() => setActiveCategory(cat.id)}
+                    >
+                      {cat.emoji} {cat.label}
+                    </button>
                   ))}
                 </div>
-              ) : (
-                <div className="nv-community-empty">
-                  <span className="nv-community-empty-icon">📭</span>
-                  <p className="nv-community-empty-text">Belum ada postingan</p>
-                  <p className="nv-community-empty-sub">Tidak ada postingan di kategori ini. Coba kategori lain atau buat postingan baru!</p>
-                </div>
-              )}
-            </motion.div>
-          )}
 
-          {activeTab === 'members' && (
-            <motion.div
-              key="members"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-            >
-              <input
-                className="nv-community-member-search"
-                type="text"
-                placeholder="Cari anggota..."
-                value={memberSearch}
-                onChange={e => setMemberSearch(e.target.value)}
-              />
-              <div className="nv-community-member-grid">
-                {filteredMembers.map((member, idx) => (
-                  <MemberCard key={member.initials} member={member} index={idx} />
-                ))}
+                {/* Write Something trigger */}
+                {!isCreatingPost ? (
+                  <div 
+                    className="nv-premium-glass p-4 cursor-pointer flex items-center gap-3 border border-neutral-900 hover:border-amber-500/20 transition"
+                    onClick={() => {
+                      if (!isAccessAllowed) {
+                        setShowPricingModal(true)
+                      } else {
+                        setIsCreatingPost(true)
+                      }
+                    }}
+                  >
+                    <div className="w-8 h-8 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-500 font-bold text-xs">
+                      {(userName || 'U').charAt(0).toUpperCase()}
+                    </div>
+                    <span className="text-xs text-neutral-500 flex-1">Bagikan kemenangan asumsi atau tanyakan sesuatu...</span>
+                    <Plus size={16} className="text-neutral-400" />
+                  </div>
+                ) : (
+                  <motion.form 
+                    onSubmit={handleCreatePost}
+                    className="nv-premium-glass p-5 border border-amber-500/20 flex flex-col gap-4"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <div className="flex justify-between items-center border-b border-neutral-900 pb-3">
+                      <span className="text-xs font-bold text-amber-500">TULIS POSTINGAN BARU</span>
+                      <button 
+                        type="button" 
+                        className="text-neutral-500 hover:text-white text-xs"
+                        onClick={() => setIsCreatingPost(false)}
+                      >
+                        Batal
+                      </button>
+                    </div>
+
+                    <div className="flex flex-col gap-3">
+                      <input
+                        type="text"
+                        placeholder="Judul postingan..."
+                        required
+                        className="w-full bg-transparent border-none text-sm font-bold text-white outline-none placeholder:text-neutral-600"
+                        value={newTitle}
+                        onChange={(e) => setNewTitle(e.target.value)}
+                      />
+                      
+                      <textarea
+                        placeholder="Tuliskan pengalaman atau pertanyaan Anda secara mendalam disini..."
+                        required
+                        rows={5}
+                        className="w-full bg-transparent border-none text-xs text-neutral-300 outline-none resize-none placeholder:text-neutral-600 leading-relaxed"
+                        value={newContent}
+                        onChange={(e) => setNewContent(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-3 items-center justify-between border-t border-neutral-900 pt-3 mt-2">
+                      <div className="flex gap-2 items-center">
+                        <span className="text-[10px] text-neutral-500 uppercase font-mono">PILIH KATEGORI:</span>
+                        <select 
+                          className="bg-neutral-900 border border-neutral-800 rounded px-2.5 py-1 text-xs text-[#e8e4dc] outline-none"
+                          value={newCategory}
+                          onChange={(e) => setNewCategory(e.target.value)}
+                        >
+                          <option value="discussions">Diskusi 🧠</option>
+                          <option value="wins">Kemenangan (Wins) 🏆</option>
+                          <option value="qna">Tanya Jawab 💬</option>
+                          <option value="resources">Sumber Daya 📚</option>
+                        </select>
+                      </div>
+
+                      <button type="submit" className="nv-auth-submit-btn py-2 px-6 w-auto flex gap-1.5 items-center">
+                        <Send size={13} />
+                        <span>Kirim Post</span>
+                      </button>
+                    </div>
+                  </motion.form>
+                )}
+
+                {/* Posts Feed list */}
+                {filteredPosts.length > 0 ? (
+                  <div className="flex flex-col gap-4">
+                    {filteredPosts.map((post, idx) => (
+                      <motion.div
+                        key={post.id}
+                        className="nv-premium-glass p-5 flex flex-col gap-4 border border-neutral-900 hover:border-neutral-800/80 transition"
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.05 }}
+                      >
+                        {/* Header */}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div 
+                              className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-[#0a0a0c]"
+                              style={{ background: AVATAR_COLORS[post.colorIdx] }}
+                            >
+                              {post.initials}
+                            </div>
+                            <div className="flex flex-col">
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs font-bold text-neutral-200">{post.author}</span>
+                                <span className="text-[9px] font-mono px-1.5 py-0.5 bg-amber-500/10 border border-amber-500/30 text-amber-500 font-bold uppercase rounded">
+                                  {post.role}
+                                </span>
+                              </div>
+                              <span className="text-[10px] text-neutral-500 font-mono mt-0.5">{post.time}</span>
+                            </div>
+                          </div>
+                          
+                          <span className="text-xs bg-neutral-900/60 border border-neutral-800 px-2.5 py-0.5 rounded-full text-neutral-400 flex items-center gap-1 font-semibold">
+                            {CATEGORIES.find(c => c.id === post.category)?.emoji} {CATEGORIES.find(c => c.id === post.category)?.label}
+                          </span>
+                        </div>
+
+                        {/* Title & Content */}
+                        <div className="flex flex-col gap-1">
+                          <h3 className="text-sm sm:text-base font-bold text-[#e8e4dc] m-0 leading-snug">{post.title}</h3>
+                          <p className="text-xs text-neutral-300 leading-relaxed m-0 mt-2 whitespace-pre-wrap">{post.content}</p>
+                        </div>
+
+                        {/* Actions footer bar */}
+                        <div className="flex justify-between items-center border-t border-neutral-900/50 pt-3 mt-1">
+                          <div className="flex items-center gap-4">
+                            <button 
+                              className={`flex items-center gap-1.5 text-xs bg-transparent border-none cursor-pointer transition ${post.likedByUser ? 'text-red-500 font-bold' : 'text-neutral-400 hover:text-white'}`}
+                              onClick={() => handleLikePost(post.id)}
+                            >
+                              <Heart size={14} className={post.likedByUser ? 'fill-current' : ''} />
+                              <span>{post.likes}</span>
+                            </button>
+                            
+                            <button 
+                              className="flex items-center gap-1.5 text-xs text-neutral-400 hover:text-white bg-transparent border-none cursor-pointer"
+                              onClick={() => {
+                                if (!isAccessAllowed) {
+                                  setShowPricingModal(true)
+                                } else {
+                                  setActivePostComments(post)
+                                }
+                              }}
+                            >
+                              <MessageCircle size={14} />
+                              <span>{post.commentsCount} Komentar</span>
+                            </button>
+                          </div>
+                          
+                          <span className="text-[10px] text-neutral-600 font-mono">Dapatkan +5 pts untuk menyukai postingan</span>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-16 border border-dashed border-neutral-900 rounded-xl">
+                    <span className="text-4xl">📭</span>
+                    <p className="text-sm font-bold text-neutral-400 mt-2">Tidak ada diskusi ditemukan</p>
+                    <p className="text-xs text-neutral-500 mt-1 max-w-xs mx-auto">Coba cari dengan kata kunci lain atau pilih kategori yang sesuai.</p>
+                  </div>
+                )}
+              </motion.div>
+            )}
+
+            {/* 2. CLASSROOM VIEW (Nested structured 49 lessons catalog) */}
+            {activeTab === 'classroom' && (
+              <motion.div
+                key="classroom"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex flex-col gap-6"
+              >
+                <div>
+                  <h2 className="text-xl font-bold text-[#e8e4dc] leading-tight m-0">📚 Classroom: Kurikulum Asumsi</h2>
+                  <p className="text-xs text-neutral-400 m-0 mt-1">Gunakan tab ini untuk melompat langsung ke kurikulum pembelajaran 10 bagian.</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {ALL_PARTS.map((part, idx) => (
+                    <motion.div
+                      key={part.id}
+                      className="nv-pdf-card nv-premium-glass p-5 border border-neutral-900 hover:border-amber-500/20 transition flex flex-col justify-between"
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => {
+                        if (!isAccessAllowed) {
+                          setShowPricingModal(true)
+                        } else {
+                          setView('dashboard')
+                        }
+                      }}
+                      whileHover={{ y: -2 }}
+                    >
+                      <div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] text-amber-500 font-mono font-bold">{part.num}</span>
+                          <span className="text-[10px] text-neutral-500 font-mono">{part.lessons.length} Pelajaran</span>
+                        </div>
+                        <h3 className="text-sm font-bold text-[#e8e4dc] m-0 mt-1 line-clamp-1">{part.title}</h3>
+                        <p className="text-xs text-neutral-400 line-clamp-2 leading-relaxed m-0 mt-1.5">{part.description}</p>
+                      </div>
+                      <span className="text-[11px] text-[#d4a053] font-semibold mt-4 flex items-center gap-1">
+                        Buka di Dasbor <ChevronRight size={12} />
+                      </span>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {/* 3. CALENDAR SESSION EVENTS VIEW */}
+            {activeTab === 'calendar' && (
+              <motion.div
+                key="calendar"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex flex-col gap-6"
+              >
+                <div>
+                  <h2 className="text-xl font-bold text-[#e8e4dc] leading-tight m-0">📅 Jadwal Sesi Live Komunitas</h2>
+                  <p className="text-xs text-neutral-400 m-0 mt-1">Jangan lewatkan sesi meditasi serentak dan bedah kasus interaktif bersama praktisi lainnya.</p>
+                </div>
+
+                <div className="flex flex-col gap-4">
+                  {UPCOMING_EVENTS.map(event => (
+                    <div 
+                      key={event.id} 
+                      className="nv-pdf-card nv-premium-glass p-5 border border-neutral-900 flex flex-col md:flex-row justify-between md:items-center gap-4"
+                    >
+                      <div className="flex gap-4 items-start">
+                        <div className="w-12 h-12 bg-amber-500/10 border border-amber-500/20 rounded-xl flex flex-col items-center justify-center text-amber-500 shrink-0">
+                          <CalendarIcon size={16} />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] bg-neutral-900 border border-neutral-800 text-neutral-400 font-mono px-2 py-0.5 rounded">
+                              {event.type}
+                            </span>
+                            <span className="text-[10px] text-neutral-500 font-mono">{event.date} • {event.time}</span>
+                          </div>
+                          <h3 className="text-sm sm:text-base font-bold text-[#e8e4dc] m-0 mt-1">{event.title}</h3>
+                          <p className="text-xs text-neutral-400 leading-relaxed m-0 mt-1.5 max-w-xl">{event.desc}</p>
+                        </div>
+                      </div>
+                      
+                      {!isAccessAllowed ? (
+                        <button 
+                          onClick={() => setShowPricingModal(true)}
+                          className="nv-pdf-download-btn flex gap-1.5 items-center justify-center text-center py-2 px-5 shrink-0 cursor-pointer"
+                          style={{ height: 'max-content' }}
+                        >
+                          <span>Join Sesi</span>
+                          <ExternalLink size={12} />
+                        </button>
+                      ) : (
+                        <a 
+                          href={event.link} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="nv-pdf-download-btn flex gap-1.5 items-center justify-center text-center py-2 px-5 shrink-0"
+                          style={{ height: 'max-content' }}
+                        >
+                          <span>Join Sesi</span>
+                          <ExternalLink size={12} />
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {/* 4. LEADERBOARD / GAMIFICATION DETAILS VIEW */}
+            {activeTab === 'leaderboard' && (
+              <motion.div
+                key="leaderboard"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex flex-col gap-6"
+              >
+                {/* Current User rank banner */}
+                <div className="nv-pricing-cta-section p-6 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-6 text-left" style={{ margin: 0 }}>
+                  <div>
+                    <h3 className="text-sm font-bold text-amber-500 m-0 uppercase font-mono tracking-wider flex items-center gap-1.5">
+                      <Trophy size={14} /> Posisi Peringkat Anda
+                    </h3>
+                    <h2 className="text-xl font-black text-white m-0 mt-1">Peringkat #{currentUserRank} dari 885 Anggota</h2>
+                    <p className="text-xs text-neutral-300 leading-relaxed m-0 mt-1">
+                      Kumpulkan poin dengan membagikan kemenangan asumsi (+25), berkomentar (+10), atau disukai (+5) oleh anggota lainnya.
+                    </p>
+                  </div>
+                  
+                  <div className="bg-neutral-950/60 border border-neutral-900 rounded-xl px-5 py-3 flex flex-col items-center justify-center shrink-0 w-36 text-center">
+                    <span className="text-[10px] text-neutral-500 font-bold uppercase tracking-wider">Level Saat Ini</span>
+                    <span className="text-3xl font-black text-amber-500 mt-1">{userLevel}</span>
+                    <span className="text-[10px] text-neutral-400 font-semibold truncate w-full px-1">{currentLevelInfo.name}</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Top Members List */}
+                  <div className="md:col-span-2 flex flex-col gap-3">
+                    <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest border-b border-neutral-900 pb-2 m-0">
+                      🏆 KELAS UTAMA PERINGKAT (ALL TIME)
+                    </h3>
+                    <div className="flex flex-col gap-2">
+                      {leaderboardData.map((user) => (
+                        <div 
+                          key={user.name}
+                          className={`p-3 border rounded-xl flex items-center justify-between gap-3 ${
+                            user.isCurrentUser 
+                              ? 'border-amber-500/40 bg-amber-500/5' 
+                              : 'border-neutral-900 bg-neutral-900/10'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <span className={`w-6 text-center font-mono font-bold text-xs ${user.rank <= 3 ? 'text-amber-500' : 'text-neutral-500'}`}>
+                              {user.rank}
+                            </span>
+                            <div 
+                              className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-[#0a0a0c]"
+                              style={{ background: AVATAR_COLORS[user.colorIdx] }}
+                            >
+                              {user.initials}
+                            </div>
+                            <span className={`text-xs font-bold ${user.isCurrentUser ? 'text-amber-500' : 'text-neutral-200'}`}>
+                              {user.name}
+                            </span>
+                          </div>
+                          
+                          <div className="flex items-center gap-4 text-xs font-semibold">
+                            <span className="text-amber-500">Lv. {user.level}</span>
+                            <span className="text-neutral-400 font-mono">{user.points} pts</span>
+                            {user.streak > 0 && (
+                              <span className="text-[#f87171] font-mono flex items-center gap-0.5">
+                                <Flame size={12} className="fill-current" /> {user.streak}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Level Progression Rewards list */}
+                  <div className="flex flex-col gap-3">
+                    <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest border-b border-neutral-900 pb-2 m-0">
+                      🎁 UNLOCK REWARDS LEVEL
+                    </h3>
+                    <div className="flex flex-col gap-3">
+                      {LEVEL_REWARDS.map(reward => {
+                        const isUnlocked = userLevel >= reward.level
+                        return (
+                          <div 
+                            key={reward.level} 
+                            className={`p-3 rounded-xl border flex flex-col gap-1 transition ${
+                              isUnlocked 
+                                ? 'bg-amber-500/5 border-amber-500/20' 
+                                : 'border-neutral-900 bg-neutral-950/20 opacity-60'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between text-xs font-bold">
+                              <span className={isUnlocked ? 'text-amber-500' : 'text-neutral-400'}>
+                                Lv. {reward.level} — {reward.name}
+                              </span>
+                              {isUnlocked ? (
+                                <span className="text-[10px] text-green-500">✓ Terbuka</span>
+                              ) : (
+                                <span className="text-[10px] text-neutral-500 font-mono">{reward.pointsReq} pts</span>
+                              )}
+                            </div>
+                            <p className="text-[11px] text-neutral-400 leading-relaxed m-0 mt-1">
+                              {reward.reward}
+                            </p>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* 6. KNOWLEDGE BANK VIEW */}
+            {activeTab === 'knowledge' && (
+              <motion.div
+                key="knowledge"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex flex-col gap-6"
+              >
+                <div>
+                  <h2 className="text-xl font-bold text-[#e8e4dc] leading-tight m-0">🧠 Bank Knowledge: Repositori Keilmuan</h2>
+                  <p className="text-xs text-neutral-400 m-0 mt-1">Akses lengkap rekaman webinar, video live TikTok, dokumen PDF pendukung, serta audio meditasi.</p>
+                </div>
+                <KnowledgeBank isCommunityMode={true} />
+              </motion.div>
+            )}
+
+            {/* 5. ABOUT VIEW (Rules, guidelines, support) */}
+            {activeTab === 'about' && (
+              <motion.div
+                key="about"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex flex-col gap-6"
+              >
+                {/* Pinned Video in About */}
+                <div className="nv-community-about-card nv-premium-glass p-6 border border-neutral-900 flex flex-col gap-4">
+                  <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest flex items-center gap-2 m-0">
+                    🎬 Video Panduan & Orientasi Komunitas
+                  </h3>
+                  <div className="relative w-full rounded-xl overflow-hidden border border-neutral-850 shadow-2xl bg-neutral-950" style={{ aspectRatio: '16/9', maxWidth: '720px' }}>
+                    <iframe
+                      className="absolute top-0 left-0 w-full h-full border-none"
+                      src="https://www.youtube.com/embed/LrklTcrYYFw"
+                      title="Panduan Neville Goddard Indonesia"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                  <p className="text-xs text-neutral-400 leading-relaxed m-0">
+                    Tonton orientasi video ini untuk memahami bagaimana menggunakan platform ini secara maksimal. Kami membahas cara belajar di tab *Classroom*, berinteraksi di forum *Diskusi*, menghadiri sesi di *Kalender Sesi*, dan bersenang-senang mengumpulkan poin di *Leaderboard*.
+                  </p>
+                </div>
+
+                <div className="nv-community-about-card nv-premium-glass p-6 border border-neutral-900">
+                  <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest flex items-center gap-2 m-0 mb-3">
+                    <Info size={16} /> Tentang Komunitas AKU ANAK LOAS
+                  </h3>
+                  <p className="text-xs text-neutral-300 leading-relaxed m-0">
+                    Ini adalah tempat berkumpul eksklusif bagi praktisi Hukum Asumsi Neville Goddard di Indonesia. Di sini, setiap anggota berkomitmen untuk menghentikan pencarian metode instan di luar dan berfokus melatih batin ke dalam kesadaran diri. Komunitas ini mengintegrasikan leaderboard gamifikasi untuk memotivasi interaksi berkualitas.
+                  </p>
+                </div>
+                
+                <div className="nv-community-about-card nv-premium-glass p-6 border border-neutral-900">
+                  <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest flex items-center gap-2 m-0 mb-3">
+                    <Shield size={16} /> Panduan & Aturan Berlaku
+                  </h3>
+                  <ul className="list-none padding-0 margin-0 flex flex-col gap-3">
+                    <li className="text-xs text-neutral-300 leading-relaxed flex gap-2">
+                      <span className="text-amber-500">🤝</span>
+                      <span>Hormati perjalanan batin setiap orang. Dilarang mendebat kasar atau menyerang keyakinan anggota lain.</span>
+                    </li>
+                    <li className="text-xs text-neutral-300 leading-relaxed flex gap-2">
+                      <span className="text-amber-500">🔒</span>
+                      <span>Menjaga rahasia sharing. Apa yang diceritakan di forum internal tetap berada di forum ini.</span>
+                    </li>
+                    <li className="text-xs text-neutral-300 leading-relaxed flex gap-2">
+                      <span className="text-amber-500">🧠</span>
+                      <span>Semua postingan wajib berlandaskan pada materi Hukum Asumsi Neville Goddard. Postingan luar topik/iklan promosi akan langsung dihapus oleh moderator.</span>
+                    </li>
+                  </ul>
+                </div>
+              </motion.div>
+            )}
+
+          </AnimatePresence>
+        </div>
+
+        {/* RIGHT COLUMN: USER PROFILE & STATS PANEL (Desktop only, 300px) */}
+        <aside className="w-full lg:w-[300px] shrink-0 flex flex-col gap-6">
+          {/* User Skool Profile Card */}
+          <div className="nv-premium-glass p-5 border border-neutral-900 text-center flex flex-col items-center">
+            <div className="relative">
+              <div className="w-16 h-16 rounded-full bg-amber-500/10 border-2 border-[#d4a053] flex items-center justify-center text-amber-500 font-bold text-xl shadow-lg">
+                {(userName || 'U').charAt(0).toUpperCase()}
               </div>
-              {filteredMembers.length === 0 && (
-                <div className="nv-community-empty">
-                  <span className="nv-community-empty-icon">🔍</span>
-                  <p className="nv-community-empty-text">Anggota tidak ditemukan</p>
-                  <p className="nv-community-empty-sub">Coba kata kunci lain untuk mencari anggota</p>
-                </div>
-              )}
-            </motion.div>
-          )}
+              <div className="absolute -bottom-1 -right-1 bg-amber-500 border border-neutral-950 rounded-full p-1.5 text-neutral-950">
+                <Flame size={12} className="fill-current" />
+              </div>
+            </div>
+            
+            <h3 className="text-sm font-bold text-[#e8e4dc] mt-3 m-0 leading-tight">
+              {userName}
+            </h3>
+            <span className="text-[10px] text-amber-500 font-bold uppercase tracking-wider mt-1">{subscriptionTier} MEMBER</span>
+            
+            <div className="w-full border-t border-neutral-900/60 my-4" />
 
-          {activeTab === 'about' && (
-            <motion.div
-              key="about"
-              className="nv-community-about"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
+            {/* Streak & Points display */}
+            <div className="grid grid-cols-2 gap-4 w-full text-left mb-4">
+              <div className="bg-neutral-950/40 p-3 rounded-lg border border-neutral-900/50">
+                <span className="text-[9px] text-neutral-500 font-bold uppercase block">Streak Aktif</span>
+                <span className="text-sm font-bold text-[#f87171] mt-0.5 block flex items-center gap-1">
+                  <Flame size={14} className="fill-current" /> {userStreak} Hari
+                </span>
+              </div>
+              <div className="bg-neutral-950/40 p-3 rounded-lg border border-neutral-900/50">
+                <span className="text-[9px] text-neutral-500 font-bold uppercase block">Skor Poin</span>
+                <span className="text-sm font-bold text-[#e8e4dc] mt-0.5 block font-mono">
+                  {userPoints} Pts
+                </span>
+              </div>
+            </div>
+
+            {/* Progress to Next Level bar */}
+            {nextLevelInfo && (
+              <div className="w-full text-left">
+                <div className="flex justify-between items-center text-[10px] text-neutral-400 font-bold mb-1">
+                  <span>Progress Level {userLevel}</span>
+                  <span>{userPoints} / {nextLevelInfo.pointsReq} Pts</span>
+                </div>
+                <div className="w-full bg-neutral-900 h-2 rounded-full overflow-hidden border border-neutral-800">
+                  <div className="bg-gradient-to-r from-amber-500 to-[#e2b36e] h-full rounded-full" style={{ width: `${pointsProgress}%` }} />
+                </div>
+                <p className="text-[9px] text-neutral-500 mt-1 leading-normal italic">
+                  Berikutnya: **{nextLevelInfo.name}** (Hadiah: {nextLevelInfo.reward})
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Quick upcoming event countdown */}
+          <div className="nv-premium-glass p-5 border border-neutral-900 flex flex-col gap-3">
+            <h4 className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-2 border-b border-neutral-900 pb-2 m-0">
+              📅 SESI TERDEKAT
+            </h4>
+            
+            {/* Embedded Flyer Image with full-screen zoom handler */}
+            <div 
+              className="relative w-full rounded-lg overflow-hidden border border-neutral-800 shadow-md group cursor-zoom-in" 
+              style={{ aspectRatio: '1/1.4' }}
+              onClick={() => setShowFlyerLightbox(true)}
+              title="Klik untuk memperbesar flyer"
             >
-              <div className="nv-community-about-card nv-glass">
-                <h3 className="nv-community-about-card-title">
-                  <Info size={18} className="nv-community-stat-icon" />
-                  Tentang Komunitas
-                </h3>
-                <p className="nv-community-about-text">
-                  Komunitas Hukum Asumsi adalah ruang eksklusif bagi para pejuang manifestasi yang ingin memperdalam
-                  pemahaman tentang Neville Goddard&apos;s teachings. Di sini, kita saling support, berbagi pengalaman,
-                  dan bertumbuh bersama dalam perjalanan menguasai hukum asumsi.
+              <img 
+                src="/images/illustrations/webinar-flyer.jpg" 
+                alt="Flyer Webinar Bang Nevgo" 
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent opacity-60 pointer-events-none" />
+              <div className="absolute bottom-2 right-2 bg-neutral-950/70 border border-neutral-800 text-white rounded px-2 py-0.5 text-[9px] font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                🔍 Zoom
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <div className="text-[10px] bg-amber-500/10 border border-amber-500/30 text-amber-500 font-mono px-2 py-0.5 rounded w-max font-bold uppercase">
+                Webinar Spesial
+              </div>
+              <h5 className="text-xs font-bold text-neutral-200 m-0 leading-snug">Dimana Manifestku? Kenapa Belum Berhasil.</h5>
+              <p className="text-[10px] text-neutral-500 font-mono m-0">Minggu, 26 April 2026 • 18:00 WIB</p>
+              
+              {!isAccessAllowed ? (
+                <button 
+                  onClick={() => setShowPricingModal(true)} 
+                  className="nv-pdf-download-btn py-1.5 mt-1 flex items-center justify-center gap-1.5 text-xs text-center cursor-pointer font-bold w-full"
+                >
+                  <span>Daftar / Join Sesi</span>
+                  <ExternalLink size={10} />
+                </button>
+              ) : (
+                <a 
+                  href="https://zoom.us/j/meet-sats" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="nv-pdf-download-btn py-1.5 mt-1 flex items-center justify-center gap-1.5 text-xs text-center font-bold w-full"
+                >
+                  <span>Join Sesi Zoom</span>
+                  <ExternalLink size={10} />
+                </a>
+              )}
+            </div>
+          </div>
+
+          {/* Quick Knowledge Bank Shortcut widget */}
+          <div className="nv-premium-glass p-5 border border-neutral-900 flex flex-col gap-2">
+            <h4 className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-1 border-b border-neutral-900 pb-2 m-0 flex items-center gap-1">
+              <span>🧠 BANK KNOWLEDGE</span>
+            </h4>
+            <p className="text-[11px] text-neutral-400 leading-relaxed m-0 mt-1.5">
+              Akses materi tambahan: rekaman webinar VIP, video live TikTok, PDF materi, dan meditasi audio terbimbing.
+            </p>
+            <button 
+              onClick={() => setActiveTab('knowledge')} 
+              className="nv-pdf-download-btn py-1.5 mt-2 flex items-center justify-center gap-1.5 text-xs text-center cursor-pointer font-bold w-full"
+            >
+              <span>Buka Bank Knowledge</span>
+              <ChevronRight size={12} />
+            </button>
+          </div>
+        </aside>
+
+      </div>
+
+      {/* ── Comments Modal / Overlay ── */}
+      <AnimatePresence>
+        {activePostComments && (
+          <div className="nv-modal-overlay" onClick={handleClose}>
+            <motion.div
+              className="nv-modal-content nv-premium-glass"
+              style={{ maxWidth: '600px', display: 'flex', flexDirection: 'column', gap: '16px' }}
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="flex justify-between items-center border-b border-neutral-900 pb-3">
+                <span className="text-xs font-bold text-amber-500">KOMENTAR POSTINGAN</span>
+                <button className="text-neutral-400 hover:text-white" onClick={handleClose}>
+                  <X size={16} />
+                </button>
+              </div>
+
+              {/* Main Post details */}
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-3">
+                  <div 
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold text-[#0a0a0c]"
+                    style={{ background: AVATAR_COLORS[activePostComments.colorIdx] }}
+                  >
+                    {activePostComments.initials}
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-neutral-200 m-0">{activePostComments.author}</h4>
+                    <span className="text-[9px] text-neutral-500 font-mono mt-0.5">{activePostComments.time}</span>
+                  </div>
+                </div>
+                <h3 className="text-sm font-bold text-white m-0">{activePostComments.title}</h3>
+                <p className="text-xs text-neutral-400 leading-relaxed m-0 whitespace-pre-wrap">{activePostComments.content}</p>
+              </div>
+
+              <div className="border-t border-neutral-900/60 my-2" />
+
+              {/* Comments scroll area */}
+              <div className="flex flex-col gap-3 max-h-[250px] overflow-y-auto pr-2 nv-scroll-premium">
+                {activePostComments.comments.length > 0 ? (
+                  activePostComments.comments.map(comment => (
+                    <div key={comment.id} className="bg-neutral-950/30 border border-neutral-900 p-3 rounded-lg flex flex-col gap-1">
+                      <div className="flex items-center gap-2 justify-between">
+                        <div className="flex items-center gap-2">
+                          <div 
+                            className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-[#0a0a0c]"
+                            style={{ background: AVATAR_COLORS[comment.colorIdx] }}
+                          >
+                            {comment.initials}
+                          </div>
+                          <span className="text-xs font-bold text-neutral-300">{comment.author}</span>
+                          <span className="text-[8px] font-mono px-1 bg-neutral-800 text-neutral-400 rounded uppercase">
+                            {comment.role}
+                          </span>
+                        </div>
+                        <span className="text-[9px] text-neutral-500 font-mono">{comment.time}</span>
+                      </div>
+                      <p className="text-xs text-neutral-300 leading-normal m-0 pl-8">{comment.content}</p>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-6 text-xs text-neutral-500 font-mono">Belum ada komentar. Jadilah yang pertama berkomentar!</div>
+                )}
+              </div>
+
+              {/* Comment submission form */}
+              <form onSubmit={handleAddComment} className="flex gap-2 items-center mt-2 border-t border-neutral-900 pt-3">
+                <input
+                  type="text"
+                  placeholder="Ketik komentar Anda..."
+                  required
+                  className="flex-1 bg-neutral-900/60 border border-neutral-850 rounded-lg px-4 py-2 text-xs text-[#e8e4dc] outline-none focus:border-amber-500/40"
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                />
+                <button type="submit" className="nv-activation-widget-btn py-2 px-4 rounded-lg">
+                  Kirim
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Pricing / Upgrade Modal for Intercepted Actions ── */}
+      <AnimatePresence>
+        {showPricingModal && (
+          <div className="nv-modal-overlay" onClick={() => setShowPricingModal(false)}>
+            <motion.div
+              className="nv-modal-content nv-premium-glass"
+              style={{ maxWidth: '500px', display: 'flex', flexDirection: 'column', gap: '20px', border: '1px solid #d4a053' }}
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-center border-b border-neutral-900 pb-3">
+                <span className="text-xs font-bold text-amber-500 tracking-wider flex items-center gap-1">
+                  🔒 UNLOCK PREMIUM MEMBERSHIP
+                </span>
+                <button className="text-neutral-400 hover:text-white" onClick={() => setShowPricingModal(false)}>
+                  <X size={16} />
+                </button>
+              </div>
+
+              <div className="text-center py-4 flex flex-col items-center gap-3">
+                <div className="text-5xl drop-shadow-lg">👑</div>
+                <h3 className="text-lg font-bold text-white font-outfit m-0">Fitur Premium Terkunci</h3>
+                <p className="text-xs text-neutral-400 leading-relaxed max-w-sm m-0">
+                  Untuk menyukai, berkomentar, membuat postingan baru, membuka kurikulum Classroom, atau bergabung sesi Live Zoom, silakan tingkatkan akun Anda ke Premium.
                 </p>
               </div>
 
-              <div className="nv-community-about-card nv-glass">
-                <h3 className="nv-community-about-card-title">
-                  <Star size={18} className="nv-community-stat-icon" />
-                  Yang Kamu Dapatkan
-                </h3>
-                <ul className="nv-community-about-list">
-                  {ABOUT_FEATURES.map((f, i) => (
-                    <li key={i}>
-                      <span className="nv-community-about-list-icon">{f.icon}</span>
-                      <span>{f.text}</span>
-                    </li>
-                  ))}
-                </ul>
+              <div className="bg-neutral-950/60 border border-neutral-900 rounded-xl p-4 flex flex-col gap-3">
+                <div className="flex justify-between items-center">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-white">Tier Premium</span>
+                    <span className="text-[10px] text-neutral-500">Akses komunitas, meditasi, & 49 pelajaran</span>
+                  </div>
+                  <span className="text-xs font-bold text-amber-500 font-mono">Rp 149.000 / bln</span>
+                </div>
+                <div className="w-full border-t border-neutral-900" />
+                <div className="flex justify-between items-center">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-[#a78bfa]">Tier Master (VIP)</span>
+                    <span className="text-[10px] text-neutral-500">Semua benefit Premium + Webinar Eksklusif</span>
+                  </div>
+                  <span className="text-xs font-bold text-[#a78bfa] font-mono">Rp 299.000 / bln</span>
+                </div>
               </div>
 
-              <div className="nv-community-about-card nv-glass">
-                <h3 className="nv-community-about-card-title">
-                  <Shield size={18} className="nv-community-stat-icon" />
-                  Aturan Komunitas
-                </h3>
-                <ul className="nv-community-about-list">
-                  {ABOUT_RULES.map((r, i) => (
-                    <li key={i}>
-                      <span className="nv-community-about-list-icon" style={{ fontSize: 16 }}>{r.icon}</span>
-                      <span>{r.text}</span>
-                    </li>
-                  ))}
-                </ul>
+              <div className="flex flex-col gap-2 mt-2">
+                <button
+                  onClick={() => {
+                    setShowPricingModal(false)
+                    setView('pricing')
+                  }}
+                  className="nv-cta-button nv-cta-pulse w-full py-2.5 rounded-lg text-xs font-bold text-center flex items-center justify-center gap-2"
+                >
+                  <UserPlus size={14} />
+                  <span>Upgrade & Buka Akses Sekarang</span>
+                </button>
+                <button
+                  onClick={() => setShowPricingModal(false)}
+                  className="bg-neutral-900 border border-neutral-800 text-neutral-450 hover:text-white py-2 rounded-lg text-xs font-semibold"
+                >
+                  Kembali Menjelajah (Pratinjau)
+                </button>
               </div>
             </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Flyer Lightbox Modal ── */}
+      <AnimatePresence>
+        {showFlyerLightbox && (
+          <div className="nv-modal-overlay" style={{ zIndex: 999 }} onClick={() => setShowFlyerLightbox(false)}>
+            <motion.div
+              className="relative max-w-[90vw] max-h-[90vh] overflow-hidden rounded-2xl border border-amber-500/30 shadow-2xl bg-neutral-950/95"
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button 
+                className="absolute top-4 right-4 text-white bg-neutral-950/80 hover:bg-neutral-900 p-2 rounded-full border border-neutral-800 transition z-10 cursor-pointer shadow-lg" 
+                onClick={() => setShowFlyerLightbox(false)}
+              >
+                <X size={16} />
+              </button>
+              <img 
+                src="/images/illustrations/webinar-flyer.jpg" 
+                alt="Flyer Webinar Bang Nevgo" 
+                className="max-w-full max-h-[85vh] object-contain block rounded-2xl"
+              />
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

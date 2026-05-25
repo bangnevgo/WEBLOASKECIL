@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Shield, X } from 'lucide-react'
 
-const ADMIN_PASSWORD = 'admin123'
+const ADMIN_PASSWORD = 'neville22'
 
 export default function AdminLoginModal({ onLoginSuccess }: { onLoginSuccess: () => void }) {
   const [password, setPassword] = useState('')

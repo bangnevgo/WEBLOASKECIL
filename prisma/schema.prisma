@@ -16,9 +16,30 @@ datasource db {
 model ActivationCode {
   id        String    @id @default(cuid())
   code      String    @unique
-  tier      String    // "pelajar" or "master"
+  tier      String    // "basic", "premium" or "master"
   used      Boolean   @default(false)
-  usedBy    String?   // name of the user who used it
+  usedBy    String?   // email of the user who used it
   usedAt    DateTime?
   createdAt DateTime  @default(now())
+}
+
+model User {
+  id            String       @id @default(cuid())
+  email         String       @unique
+  name          String?
+  passwordHash  String
+  tier          String       @default("free") // "free" | "basic" | "premium" | "master"
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  completions   Completion[]
+}
+
+model Completion {
+  id          String   @id @default(cuid())
+  userId      String
+  lessonNum   String   // "1.1", "2.3", etc.
+  completedAt DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonNum])
 }

@@ -17,6 +17,8 @@ export async function POST(req: NextRequest) {
 
     const pricing: Record<string, number> = {
       pelajar: 99000,
+      basic: 99000,
+      premium: 149000,
       master: 299000,
     }
 

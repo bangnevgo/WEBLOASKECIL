@@ -1,12 +1,36 @@
 import { create } from 'zustand'
 
-type View = 'landing' | 'dashboard' | 'lesson' | 'pricing' | 'free-lesson' | 'ai-manifestation' | 'ai-limiting-belief' | 'ai-shadow' | 'ai-private-session' | 'admin' | 'community'
-export type SubscriptionTier = 'free' | 'pelajar' | 'premium' | 'master'
+type View = 
+  | 'landing' 
+  | 'dashboard' 
+  | 'lesson' 
+  | 'pricing' 
+  | 'free-lesson' 
+  | 'ai-manifestation' 
+  | 'ai-limiting-belief' 
+  | 'ai-shadow' 
+  | 'ai-private-session' 
+  | 'admin' 
+  | 'community'
+  | 'login'
+  | 'register'
+
+export type SubscriptionTier = 'free' | 'basic' | 'premium' | 'master'
+
+interface SimulatedUser {
+  name: string
+  email: string
+  passwordHash: string
+  tier: SubscriptionTier
+  completedLessons: string[]
+}
 
 interface AppState {
   view: View
   setView: (view: View) => void
   userName: string
+  userEmail: string
+  isAuthenticated: boolean
   setUserName: (name: string) => void
   activePartId: string | null
   activeLessonNum: string | null
@@ -32,6 +56,12 @@ interface AppState {
   lockedLesson: { num: string; title: string; bullets: string[]; partColor: string; partTitle: string } | null
   openLockedLesson: (info: { num: string; title: string; bullets: string[]; partColor: string; partTitle: string }) => void
   closeLockedLesson: () => void
+  
+  // Simulated Authentication & Activation
+  login: (email: string, password: string) => Promise<boolean>
+  registerUser: (name: string, email: string, password: string) => Promise<boolean>
+  logoutUser: () => Promise<void>
+  redeemCode: (code: string) => { success: boolean; tier?: SubscriptionTier; message: string }
 }
 
 // Load persisted state from localStorage
@@ -46,13 +76,39 @@ function loadPersistedState() {
   }
 }
 
-function persistState(state: { userName: string; subscriptionTier: SubscriptionTier; isAdmin: boolean; completedLessons: string[] }) {
+function persistState(state: { 
+  userName: string
+  userEmail: string
+  isAuthenticated: boolean
+  subscriptionTier: SubscriptionTier
+  isAdmin: boolean
+  completedLessons: string[]
+}) {
   if (typeof window === 'undefined') return
   try {
     localStorage.setItem('nv-app-state', JSON.stringify(state))
   } catch {
     // localStorage might be full or blocked
   }
+}
+
+// Get simulated users database from localStorage
+function getSimulatedUsers(): Record<string, SimulatedUser> {
+  if (typeof window === 'undefined') return {}
+  try {
+    const raw = localStorage.getItem('nv-users-db')
+    return raw ? JSON.parse(raw) : {}
+  } catch {
+    return {}
+  }
+}
+
+// Save simulated users database to localStorage
+function saveSimulatedUsers(users: Record<string, SimulatedUser>) {
+  if (typeof window === 'undefined') return
+  try {
+    localStorage.setItem('nv-users-db', JSON.stringify(users))
+  } catch {}
 }
 
 // Initialize from persisted state
@@ -62,10 +118,14 @@ export const useAppStore = create<AppState>((set, get) => ({
   view: 'landing',
   setView: (view) => set({ view }),
   userName: persisted?.userName || '',
+  userEmail: persisted?.userEmail || '',
+  isAuthenticated: persisted?.isAuthenticated || false,
   setUserName: (name) => {
     set({ userName: name })
     persistState({
       userName: name,
+      userEmail: get().userEmail,
+      isAuthenticated: get().isAuthenticated,
       subscriptionTier: get().subscriptionTier,
       isAdmin: get().isAdmin,
       completedLessons: [...get().completedLessons]
@@ -86,8 +146,20 @@ export const useAppStore = create<AppState>((set, get) => ({
       } else {
         next.add(lessonNum)
       }
+      
+      // Update in simulated user DB
+      if (state.isAuthenticated && state.userEmail) {
+        const users = getSimulatedUsers()
+        if (users[state.userEmail]) {
+          users[state.userEmail].completedLessons = [...next]
+          saveSimulatedUsers(users)
+        }
+      }
+
       persistState({
         userName: state.userName,
+        userEmail: state.userEmail,
+        isAuthenticated: state.isAuthenticated,
         subscriptionTier: state.subscriptionTier,
         isAdmin: state.isAdmin,
         completedLessons: [...next]
@@ -96,9 +168,36 @@ export const useAppStore = create<AppState>((set, get) => ({
     }),
   subscriptionTier: (persisted?.subscriptionTier || 'free') as SubscriptionTier,
   setSubscriptionTier: (tier: SubscriptionTier, name: string) => {
-    set({ subscriptionTier: tier, userName: name, view: 'dashboard' })
+    const email = get().userEmail || `${name.toLowerCase().replace(/\s+/g, '')}@simulated.com`
+    set({ 
+      subscriptionTier: tier, 
+      userName: name, 
+      userEmail: email,
+      isAuthenticated: true,
+      view: 'dashboard' 
+    })
+    
+    // Save to simulated user database
+    const users = getSimulatedUsers()
+    if (users[email]) {
+      users[email].tier = tier
+      users[email].name = name
+      saveSimulatedUsers(users)
+    } else {
+      users[email] = {
+        name,
+        email,
+        passwordHash: 'simulated',
+        tier,
+        completedLessons: [...get().completedLessons]
+      }
+      saveSimulatedUsers(users)
+    }
+
     persistState({
       userName: name,
+      userEmail: email,
+      isAuthenticated: true,
       subscriptionTier: tier,
       isAdmin: get().isAdmin,
       completedLessons: [...get().completedLessons]
@@ -108,30 +207,31 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({
       subscriptionTier: 'free',
       userName: '',
+      userEmail: '',
+      isAuthenticated: false,
       view: 'landing',
       completedLessons: new Set<string>(),
+      isAdmin: false
     })
     persistState({
       userName: '',
+      userEmail: '',
+      isAuthenticated: false,
       subscriptionTier: 'free',
       isAdmin: false,
       completedLessons: []
     })
   },
-  /** Check if user has full curriculum access (Pelajar tier or higher OR admin) */
+  /** Check if user has full curriculum access (Basic tier or higher OR admin) */
   hasCurriculumAccess: () => {
     const state = get()
-    // Admin gets full access regardless of subscription tier
     if (state.isAdmin) return true
-    // Regular users need appropriate tier
-    return state.subscriptionTier === 'pelajar' || state.subscriptionTier === 'premium' || state.subscriptionTier === 'master'
+    return state.subscriptionTier === 'basic' || state.subscriptionTier === 'premium' || state.subscriptionTier === 'master'
   },
   /** Check if user has community access (Premium tier or higher OR admin) */
   hasCommunityAccess: () => {
     const state = get()
-    // Admin gets community access regardless of subscription tier
     if (state.isAdmin) return true
-    // Regular users need premium or master
     return state.subscriptionTier === 'premium' || state.subscriptionTier === 'master'
   },
   // Admin mode
@@ -139,11 +239,12 @@ export const useAppStore = create<AppState>((set, get) => ({
   setAdmin: (admin) => {
     set({
       isAdmin: admin,
-      // Jika admin, otomatis set ke master tier
       subscriptionTier: admin ? 'master' : get().subscriptionTier
     })
     persistState({
       userName: get().userName,
+      userEmail: get().userEmail,
+      isAuthenticated: get().isAuthenticated,
       subscriptionTier: get().subscriptionTier,
       isAdmin: admin,
       completedLessons: [...get().completedLessons]
@@ -161,4 +262,123 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ lockedLesson: info }),
   closeLockedLesson: () =>
     set({ lockedLesson: null }),
+
+  // Simulated Authentication & Activation
+  login: async (email, password) => {
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      })
+      const data = await res.json()
+      if (res.ok && data.success) {
+        const completions = new Set<string>(data.user.completedLessons || [])
+        set({
+          userName: data.user.name,
+          userEmail: data.user.email,
+          subscriptionTier: data.user.tier,
+          isAuthenticated: true,
+          completedLessons: completions,
+          view: 'dashboard'
+        })
+        persistState({
+          userName: data.user.name,
+          userEmail: data.user.email,
+          isAuthenticated: true,
+          subscriptionTier: data.user.tier,
+          isAdmin: data.user.tier === 'master',
+          completedLessons: [...completions]
+        })
+        return true
+      }
+    } catch (error) {
+      console.error('Login error:', error)
+    }
+    return false
+  },
+  registerUser: async (name, email, password) => {
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      })
+      const data = await res.json()
+      if (res.ok && data.success) {
+        set({
+          userName: data.user.name,
+          userEmail: data.user.email,
+          subscriptionTier: 'free',
+          isAuthenticated: true,
+          completedLessons: new Set<string>(),
+          view: 'dashboard'
+        })
+        persistState({
+          userName: data.user.name,
+          userEmail: data.user.email,
+          isAuthenticated: true,
+          subscriptionTier: 'free',
+          isAdmin: false,
+          completedLessons: []
+        })
+        return true
+      }
+    } catch (error) {
+      console.error('Registration error:', error)
+    }
+    return false
+  },
+  logoutUser: async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' })
+    } catch (e) {
+      console.error('Logout API error:', e)
+    }
+    get().unsubscribe()
+  },
+  redeemCode: (code) => {
+    const upperCode = code.trim().toUpperCase()
+    
+    // Check code patterns
+    let tier: SubscriptionTier | null = null
+    let message = ''
+    
+    if (upperCode.startsWith('BASIC') || upperCode.startsWith('PELAJAR') || upperCode === 'NEVILLE99') {
+      tier = 'basic'
+      message = 'Berhasil mengaktifkan Paket Basic! Kurikulum lengkap Anda sekarang terbuka.'
+    } else if (upperCode.startsWith('PREMIUM') || upperCode === 'NEVILLE149') {
+      tier = 'premium'
+      message = 'Berhasil mengaktifkan Paket Premium! Kurikulum lengkap dan forum komunitas sekarang terbuka.'
+    } else if (upperCode.startsWith('MASTER') || upperCode === 'NEVILLE299') {
+      tier = 'master'
+      message = 'Berhasil mengaktifkan Paket Master! Semua materi, meditasi audio, dan webinar VIP sekarang terbuka.'
+    }
+    
+    if (tier) {
+      set({ subscriptionTier: tier })
+      
+      // Update simulated user database
+      if (get().isAuthenticated && get().userEmail) {
+        const users = getSimulatedUsers()
+        if (users[get().userEmail]) {
+          users[get().userEmail].tier = tier
+          saveSimulatedUsers(users)
+        }
+      }
+      
+      persistState({
+        userName: get().userName,
+        userEmail: get().userEmail,
+        isAuthenticated: get().isAuthenticated,
+        subscriptionTier: tier,
+        isAdmin: get().isAdmin,
+        completedLessons: [...get().completedLessons]
+      })
+      
+      return { success: true, tier, message }
+    }
+    
+    return { success: false, message: 'Kode aktivasi tidak valid atau telah kedaluwarsa.' }
+  }
 }))
