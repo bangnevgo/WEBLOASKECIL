@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 
 // Admin secret — same as the admin username for simplicity
-const ADMIN_SECRET = 'neville'
+const ADMIN_SECRET = 'neville2222'
 
 // POST /api/activation/generate — Generate activation codes (admin only)
 export async function POST(req: NextRequest) {

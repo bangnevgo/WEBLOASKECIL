@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 
-const ADMIN_SECRET = 'neville'
+const ADMIN_SECRET = 'neville2222'
 
 // GET /api/activation/list — List all activation codes (admin only)
 export async function GET(req: NextRequest) {

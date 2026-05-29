@@ -12,17 +12,10 @@ import AiLimitingBelief from '@/components/ai-limiting-belief'
 import AiShadow from '@/components/ai-shadow'
 import AiPrivateSession from '@/components/ai-private-session'
 import AdminPanel from '@/components/admin-panel'
-import LoginView from '@/components/auth/login'
-import RegisterView from '@/components/auth/register'
 import CommunityPage from '@/components/community/CommunityPage'
 
 export default function Home() {
-  const { view, checkSession } = useAppStore()
-
-  // Sync session on mount (checks if user has paid and updates local tier)
-  useEffect(() => {
-    checkSession()
-  }, [checkSession])
+  const { view } = useAppStore()
 
   // Scroll to top when view changes
   useEffect(() => {
@@ -58,14 +51,10 @@ export default function Home() {
             return <AiPrivateSession />
           case 'admin':
             return <AdminPanel />
-          case 'login':
-            return <LoginView />
-          case 'register':
-            return <RegisterView />
           case 'community':
             return <CommunityPage />
           default:
-            return <Landing />
+            return <Landing />;
         }
       })()}
     </>

@@ -24,7 +24,7 @@ interface Stats {
   master: number
 }
 
-const ADMIN_SECRET = 'neville'
+const ADMIN_SECRET = 'neville2222'
 
 export default function AdminPanel() {
   const { setView, isAdmin } = useAppStore()

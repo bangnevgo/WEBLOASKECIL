@@ -358,7 +358,7 @@ const P6_LESSONS: LessonFull[] = [
 ]
 
 const P7_TO_P10: PartFull[] = [
-  makePart('part-7', '07', 'Imajinasi Menciptakan Realitas', '5 Pelajaran · IMAJINASI → KRISTUS DALAM → PENCIPTAAN SELESAI',
+  makePart('part-7', '07', 'Imajinasi Menciptakan Realitas', '5 Pelajaran · IMAJINASI → TUHAN DIDALAM DIRI → PENCIPTAAN SELESAI',
     'var(--p7)', 'Imajinasi bukanlah fakultas pikiran — ia adalah kekuatan kreatif alam semesta itu sendiri. Neville mengidentifikasi Tuhan dengan imajinasi manusia, membuat klaim teologis paling radikal dalam kariernya: kekuatan kreatif Tuhan beroperasi dalam manusia melalui imajinasi. Ketika Anda membayangkan, Anda tidak membuat gambar di kepala Anda — Anda berpartisipasi dalam tindakan penciptaan ilahi.',
     { text: 'Tuhan di dalam Anda, harapan kemuliaan, adalah imajinasi Anda.', source: 'Awakened Imagination (1954)' },
     [
