@@ -1,62 +1,30 @@
-'use client'
+import { Metadata } from 'next';
+import HomeClient from '@/components/home-client';
 
-import { useEffect } from 'react'
-import { useAppStore } from '@/lib/store'
-import Landing from '@/components/landing'
-import Dashboard from '@/components/dashboard'
-import LessonDetail from '@/components/lesson-detail'
-import FreeLessonPage from '@/components/free-lesson-page'
-import Pricing from '@/components/pricing'
-import AiManifestation from '@/components/ai-manifestation'
-import AiLimitingBelief from '@/components/ai-limiting-belief'
-import AiShadow from '@/components/ai-shadow'
-import AiPrivateSession from '@/components/ai-private-session'
-import AdminPanel from '@/components/admin-panel'
-import CommunityPage from '@/components/community/CommunityPage'
+export const metadata: Metadata = {
+  title: 'Neville Goddard — Hukum Asumsi | Kurikulum Lengkap',
+  description:
+    'Pelajari Hukum Asumsi dari Neville Goddard melalui kurikulum terstruktur: 10 bagian, 49 pelajaran, praktik harian, dan kutipan bersumber dari seluruh karyanya.',
+  openGraph: {
+    title: 'Neville Goddard — Hukum Asumsi',
+    description:
+      'Kurikulum lengkap ajaran Neville Goddard: 10 bagian, 49 pelajaran, praktik harian, dan kutipan bersumber.',
+    url: 'https://loas.nevgoinstitute.com',
+    siteName: 'Hukum Asumsi — Neville Goddard',
+    locale: 'id_ID',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Neville Goddard — Hukum Asumsi',
+    description:
+      'Kurikulum lengkap ajaran Neville Goddard: 10 bagian, 49 pelajaran, praktik harian.',
+  },
+  alternates: {
+    canonical: 'https://loas.nevgoinstitute.com',
+  },
+};
 
 export default function Home() {
-  const { view } = useAppStore()
-
-  // Scroll to top when view changes
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
-  }, [view])
-
-  // Always use dark mode for this site
-  useEffect(() => {
-    document.documentElement.classList.add('dark')
-  }, [])
-
-  return (
-    <>
-      {(() => {
-        switch (view) {
-          case 'landing':
-            return <Landing />
-          case 'dashboard':
-            return <Dashboard />
-          case 'lesson':
-            return <LessonDetail />
-          case 'free-lesson':
-            return <FreeLessonPage />
-          case 'pricing':
-            return <Pricing />
-          case 'ai-manifestation':
-            return <AiManifestation />
-          case 'ai-limiting-belief':
-            return <AiLimitingBelief />
-          case 'ai-shadow':
-            return <AiShadow />
-          case 'ai-private-session':
-            return <AiPrivateSession />
-          case 'admin':
-            return <AdminPanel />
-          case 'community':
-            return <CommunityPage />
-          default:
-            return <Landing />;
-        }
-      })()}
-    </>
-  )
+  return <HomeClient />;
 }
