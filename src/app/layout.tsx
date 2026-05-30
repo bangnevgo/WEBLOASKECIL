@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Outfit, Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "@/styles/community.css";
@@ -23,7 +23,14 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1.0,
+  maximumScale: 5.0,
+};
+
 export const metadata: Metadata = {
+  metadataBase: new URL("https://loas.nevgoinstitute.com"),
   title: "Neville Goddard — Hukum Asumsi | Kurikulum Lengkap",
   description:
     "Pelajari Hukum Asumsi dari Neville Goddard melalui kurikulum terstruktur: 10 bagian, 49 pelajaran, praktik harian, dan kutipan bersumber dari seluruh karyanya. Mulai perjalanan manifestasi Anda sekarang.",
@@ -50,12 +57,38 @@ export const metadata: Metadata = {
     type: "website",
     locale: "id_ID",
     siteName: "Hukum Asumsi — Neville Goddard",
+    url: "https://loas.nevgoinstitute.com",
+    images: [
+      {
+        url: "/community-cover.png",
+        width: 1200,
+        height: 630,
+        alt: "Neville Goddard - Hukum Asumsi",
+        type: "image/png",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Neville Goddard — Hukum Asumsi",
     description:
       "Kurikulum lengkap ajaran Neville Goddard: 10 bagian, 49 pelajaran, praktik harian, dan kutipan bersumber.",
+    images: ["/community-cover.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
+  },
+  alternates: {
+    canonical: "https://loas.nevgoinstitute.com",
   },
 };
 
@@ -64,14 +97,133 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const structuredData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      name: "Neville Goddard — Hukum Asumsi: Kurikulum Lengkap",
+      description: "Pelajari Hukum Asumsi dari Neville Goddard melalui kurikulum terstruktur: 10 bagian, 49 pelajaran, praktik harian, dan kutipan bersumber dari seluruh karyanya.",
+      url: "https://loas.nevgoinstitute.com",
+      image: "https://loas.nevgoinstitute.com/community-cover.png",
+      provider: {
+        "@type": "Organization",
+        name: "Nevgo Institute",
+        url: "https://nevgoinstitute.com"
+      },
+      educationalLevel: "Semua Level",
+      inLanguage: ["id", "en"],
+      isAccessibleForFree: true,
+      hasCourseInstance: {
+        "@type": "CourseInstance",
+        courseMode: "online",
+        courseWorkload: "PT10H"
+      },
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "IDR",
+        description: "Akses gratis ke materi dasar. Berlangganan untuk akses penuh.",
+        availability: "https://schema.org/InStock",
+        url: "https://loas.nevgoinstitute.com"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "Apa itu Hukum Asumsi?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Hukum Asumsi adalah ajaran Neville Goddard yang menyatakan bahwa asumsi yang terus dipegang teguh akan menjadi kenyataan. Dengan mengasumsikan perasaan dari keinginan yang telah terwujud, seseorang dapat mengubah masa depannya."
+          }
+        },
+        {
+          "@type": "Question",
+          name: "Apakah saya perlu latar belakang agama?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Tidak. Hukum Asumsi adalah prinsip universal yang dapat dipraktikkan oleh siapa saja tanpa memandang latar belakang agama."
+          }
+        },
+        {
+          "@type": "Question",
+          name: "Bagaimana teknik SATS bekerja?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "SATS (State Akin To Sleep) adalah teknik di mana Anda memasuki kondisi kesadaran menjelang tidur dan memvisualisasikan keinginan Anda seolah sudah terwujud. Teknik ini dipercaya dapat memprogram alam bawah sadar."
+          }
+        },
+        {
+          "@type": "Question",
+          name: "Apa perbedaan antara paket Basic, Premium, dan Master?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Paket Basic memberikan akses ke materi dasar. Premium mencakup semua 49 pelajaran dan praktik harian. Master termasuk sesi AI privat, meditasi audio, dan konsultasi personal."
+          }
+        },
+        {
+          "@type": "Question",
+          name: "Apakah saya bisa membatalkan langganan?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Ya, Anda dapat membatalkan langganan kapan saja tanpa denda."
+          }
+        },
+        {
+          "@type": "Question",
+          name: "Dari mana sumber materi ini?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Semua materi bersumber langsung dari buku dan kuliah Neville Goddard, termasuk Five Lessons, The Power of Awareness, Feeling is the Secret, dan karya-karya lainnya."
+          }
+        }
+      ]
+    }
+  ];
+
   return (
     <html lang="id" className="dark" suppressHydrationWarning>
       <head>
+        <meta charSet="utf-8" />
+        <meta name="theme-color" content="#000000" />
+        <link rel="canonical" href="https://loas.nevgoinstitute.com" />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://app.midtrans.com" />
+
+        {/* Structured Data */}
+        {structuredData.map((schema, index) => (
+          <script
+            key={index}
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          />
+        ))}
+
+        {/* Midtrans */}
         <Script
           src="https://app.midtrans.com/snap/snap.js"
           strategy="afterInteractive"
           crossOrigin="anonymous"
         />
+
+        {/* Google Analytics */}
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <>
+            <Script
+              strategy="afterInteractive"
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+            />
+            <Script strategy="afterInteractive">
+              {`window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');`}
+            </Script>
+          </>
+        )}
       </head>
       <body
         className={`${inter.variable} ${outfit.variable} ${geistMono.variable} antialiased bg-background text-foreground`}

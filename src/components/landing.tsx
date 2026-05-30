@@ -270,6 +270,7 @@ export default function Landing() {
               </motion.div>
 
               <motion.div className="nv-hero-title" variants={staggerContainer} initial="initial" animate="animate">
+                <h1 className="sr-only">Neville Goddard — Hukum Asumsi: Kurikulum Lengkap Ajaran &amp; Praktik</h1>
                 <motion.span className="nv-hero-top" variants={fadeInUp}>Neville Goddard</motion.span>
                 <motion.span className="nv-hero-main" variants={fadeInUp}>HUKUM ASUMSI</motion.span>
                 <motion.span className="nv-hero-sub" variants={fadeInUp}>(Ajaran &amp; Praktik)</motion.span>
