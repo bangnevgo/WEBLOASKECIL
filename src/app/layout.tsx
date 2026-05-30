@@ -7,6 +7,8 @@ import { Toaster } from "sonner";
 import CookieConsent from "@/components/cookie-consent";
 import AdminShortcut from "@/components/admin-shortcut";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -188,7 +190,6 @@ export default function RootLayout({
       <head>
         <meta charSet="utf-8" />
         <meta name="theme-color" content="#000000" />
-        <link rel="canonical" href="https://loas.nevgoinstitute.com" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://app.midtrans.com" />
@@ -243,6 +244,8 @@ export default function RootLayout({
           }}
         />
         <CookieConsent />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
