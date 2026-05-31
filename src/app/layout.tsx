@@ -223,7 +223,6 @@ export default function RootLayout({
         <Script
           src="https://app.midtrans.com/snap/snap.js"
           strategy="afterInteractive"
-          crossOrigin="anonymous"
         />
 
         {/* Google Analytics */}
