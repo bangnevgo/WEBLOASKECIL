@@ -29,6 +29,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1.0,
   maximumScale: 5.0,
+  themeColor: "#000000",
 };
 
 export const metadata: Metadata = {
@@ -52,6 +53,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.svg",
   },
+  manifest: "/manifest.json",
   openGraph: {
     title: "Neville Goddard — Hukum Asumsi",
     description:
@@ -187,12 +189,26 @@ export default function RootLayout({
 
   return (
     <html lang="id" className="dark" suppressHydrationWarning>
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="theme-color" content="#000000" />
-        <link rel="manifest" href="/manifest.json" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="https://app.midtrans.com" />
+      <body
+        className={`${inter.variable} ${outfit.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
+      >
+        {children}
+        <AdminShortcut />
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            style: {
+              background: "var(--nv-bg-2)",
+              color: "var(--nv-text)",
+              border: "1px solid var(--nv-glass-border)",
+              borderRadius: "10px",
+              fontSize: "14px",
+            },
+          }}
+        />
+        <CookieConsent />
+        <Analytics />
+        <SpeedInsights />
 
         {/* Structured Data */}
         {structuredData.map((schema, index) => (
@@ -225,27 +241,6 @@ export default function RootLayout({
             </Script>
           </>
         )}
-      </head>
-      <body
-        className={`${inter.variable} ${outfit.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
-      >
-        {children}
-        <AdminShortcut />
-        <Toaster
-          position="top-center"
-          toastOptions={{
-            style: {
-              background: "var(--nv-bg-2)",
-              color: "var(--nv-text)",
-              border: "1px solid var(--nv-glass-border)",
-              borderRadius: "10px",
-              fontSize: "14px",
-            },
-          }}
-        />
-        <CookieConsent />
-        <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   );
