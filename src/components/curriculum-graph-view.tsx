@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect, useMemo } from 'react'
+import { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ZoomIn, ZoomOut, RotateCcw } from 'lucide-react'
 
@@ -41,14 +41,15 @@ const UI_TRANSLATIONS = {
 }
 
 // ── Graph data builders ──
-function makeNode(name: string, cat: number, size: number, opts: any = {}) {
+function makeNode(name: string, cat: number, size: number, opts: any = {}, scale = 1) {
   const c = CATEGORIES[cat];
+  const s = scale !== 1 ? Math.round(size * scale) : size;
   return {
     name,
     category: cat,
-    symbolSize: size,
+    symbolSize: s,
     itemStyle: opts.itemStyle || { color: c.dim, borderColor: c.color, borderWidth: 1.5 },
-    label: opts.label || { fontSize: size > 30 ? 12 : size > 22 ? 10.5 : 9.5, color: '#d4caba' },
+    label: opts.label || { fontSize: s > 30 ? 12 : s > 22 ? 10.5 : 9.5, color: '#d4caba' },
     ...(opts.extra || {}),
   };
 }
@@ -498,6 +499,17 @@ export default function CurriculumGraphView() {
 
   const graphData = useMemo(() => buildGraphData(), [])
 
+  // Post-process node sizes for mobile
+  const getScaledNodes = useCallback((nodes: any[], isMobile: boolean) => {
+    if (!isMobile) return nodes
+    const scale = 0.55
+    return nodes.map(n => ({
+      ...n,
+      symbolSize: Math.round((n.symbolSize || 30) * scale),
+      label: n.label ? { ...n.label, fontSize: Math.round((n.label.fontSize || 10) * scale) } : n.label,
+    }))
+  }, [])
+
   // Render ECharts Instance
   useEffect(() => {
     if (!scriptLoaded || !chartRef.current || typeof window === 'undefined' || !window.echarts) return;
@@ -510,6 +522,8 @@ export default function CurriculumGraphView() {
     const myChart = echarts.init(chartRef.current, null, { renderer: 'canvas' });
 
     const isMobile = window.innerWidth < 768;
+
+    const baseFontSize = isMobile ? 13 : 10;
 
     const option = {
       backgroundColor: '#0a0a0c',
@@ -533,13 +547,13 @@ export default function CurriculumGraphView() {
       series: [{
         type: 'graph',
         layout: 'force',
-        zoom: isMobile ? 0.55 : 0.85,
-        center: isMobile ? ['50%', '48%'] : ['50%', '50%'],
+        zoom: isMobile ? 0.37 : 0.85,
+        center: isMobile ? ['50%', '45%'] : ['50%', '50%'],
 
         force: {
-          repulsion: isMobile ? 500 : 380,
-          gravity: 0.04,
-          edgeLength: isMobile ? [80, 300] : [70, 240],
+          repulsion: isMobile ? 600 : 380,
+          gravity: 0.03,
+          edgeLength: isMobile ? [60, 250] : [70, 240],
           layoutAnimation: true,
           friction: 0.6,
         },
@@ -547,15 +561,17 @@ export default function CurriculumGraphView() {
         roam: true,
         draggable: true,
 
-        data: graphData.nodes,
+        symbolSize: undefined,
+
+        data: getScaledNodes(graphData.nodes, isMobile),
         links: graphData.links,
         categories: CATEGORIES.map((c, i) => ({ name: c.name, itemStyle: { color: c.color } })),
 
         label: {
           show: true,
           position: 'right',
-          distance: 8,
-          fontSize: 10,
+          distance: isMobile ? 4 : 8,
+          fontSize: baseFontSize,
           color: '#b8b0a2',
           fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
         },
@@ -596,7 +612,7 @@ export default function CurriculumGraphView() {
       window.removeEventListener('resize', handleResize);
       myChart.dispose();
     };
-  }, [scriptLoaded, graphData]);
+  }, [scriptLoaded, graphData, getScaledNodes]);
 
   // Zoom actions
   const handleZoom = (type: 'in' | 'out' | 'reset') => {
@@ -625,43 +641,48 @@ export default function CurriculumGraphView() {
   };
 
   return (
-    <section id="curriculum-graph" className="w-full py-16 bg-[#0a0a0c] border-y border-neutral-900 overflow-hidden relative select-none">
-      <div className="max-w-[1400px] mx-auto px-6 relative">
+    <section id="curriculum-graph" className="w-full py-8 md:py-16 bg-[#0a0a0c] border-y border-neutral-900 overflow-hidden relative select-none">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-6 relative">
 
         {/* Main Canvas Frame */}
-        <div className="w-full h-[400px] md:h-[680px] bg-[#0a0a0c] border border-neutral-800 rounded-3xl overflow-hidden relative shadow-2xl">
+        <div className="w-full h-[320px] md:h-[680px] bg-[#0a0a0c] border border-neutral-800 rounded-xl md:rounded-3xl overflow-hidden relative shadow-2xl">
 
-          {/* Floating Info HUD (Top-Left) — responsive for mobile */}
-          <div className="absolute top-3 left-3 right-3 md:top-6 md:left-6 md:right-auto z-20 w-auto md:w-80 bg-[#0a0a0c]/92 backdrop-blur border border-[rgba(245,200,66,0.2)] p-3 md:p-5 rounded-2xl shadow-xl pointer-events-auto max-h-[50%] md:max-h-none overflow-y-auto">
+          {/* Floating Info HUD (Top-Left) — minimal on mobile */}
+          <div className="absolute top-2 left-2 right-2 md:top-6 md:left-6 md:right-auto z-20 w-auto md:w-80 bg-[#0a0a0c]/92 backdrop-blur border border-[rgba(245,200,66,0.2)] p-2 md:p-5 rounded-xl md:rounded-2xl shadow-xl pointer-events-auto">
             <div className="flex items-center gap-1.5 md:gap-2 mb-1 md:mb-1.5">
-              <div className="w-[22px] h-[22px] md:w-[28px] md:h-[28px] bg-[#f5c842] rounded-lg flex items-center justify-center text-[11px] md:text-[14px] text-[#1a1508] font-bold shrink-0">✦</div>
-              <h2 className="text-[13px] md:text-[17px] font-bold text-[#e8e4dc] m-0 tracking-tight">{t.title}</h2>
+              <div className="w-[18px] h-[18px] md:w-[28px] md:h-[28px] bg-[#f5c842] rounded-lg flex items-center justify-center text-[9px] md:text-[14px] text-[#1a1508] font-bold shrink-0">✦</div>
+              <div>
+                <h2 className="text-[11px] md:text-[17px] font-bold text-[#e8e4dc] m-0 tracking-tight leading-tight">{t.title}</h2>
+                <p className="text-[8px] md:text-[11.5px] text-[#8a8275] mt-0 md:mt-0.5 leading-relaxed m-0 md:hidden">
+                  Graf pengetahuan — 10 Bagian, 49 Pelajaran
+                </p>
+              </div>
             </div>
             <p className="text-[10px] md:text-[11.5px] text-[#8a8275] mb-2 md:mb-3 leading-relaxed m-0 hidden md:block">
               {t.subtitle}
             </p>
 
-            <div className="flex gap-2 md:gap-4 mb-2 md:mb-3">
+            <div className="flex gap-1.5 md:gap-4 mb-1 md:mb-3">
               <div className="text-center">
-                <div className="text-[14px] md:text-[18px] font-bold text-[#f5c842]">10</div>
-                <div className="text-[8px] md:text-[9.5px] text-[#5c574d] uppercase tracking-wider">Bagian</div>
+                <div className="text-[11px] md:text-[18px] font-bold text-[#f5c842]">10</div>
+                <div className="text-[6px] md:text-[9.5px] text-[#5c574d] uppercase tracking-wider">Bagian</div>
               </div>
               <div className="text-center">
-                <div className="text-[14px] md:text-[18px] font-bold text-[#f5c842]">49</div>
-                <div className="text-[8px] md:text-[9.5px] text-[#5c574d] uppercase tracking-wider">Pelajaran</div>
+                <div className="text-[11px] md:text-[18px] font-bold text-[#f5c842]">49</div>
+                <div className="text-[6px] md:text-[9.5px] text-[#5c574d] uppercase tracking-wider">Pelajaran</div>
               </div>
               <div className="text-center">
-                <div className="text-[14px] md:text-[18px] font-bold text-[#f5c842]">15+</div>
-                <div className="text-[8px] md:text-[9.5px] text-[#5c574d] uppercase tracking-wider">Buku</div>
+                <div className="text-[11px] md:text-[18px] font-bold text-[#f5c842]">15+</div>
+                <div className="text-[6px] md:text-[9.5px] text-[#5c574d] uppercase tracking-wider">Buku</div>
               </div>
               <div className="text-center">
-                <div className="text-[14px] md:text-[18px] font-bold text-[#f5c842]">200+</div>
-                <div className="text-[8px] md:text-[9.5px] text-[#5c574d] uppercase tracking-wider">Kuliah</div>
+                <div className="text-[11px] md:text-[18px] font-bold text-[#f5c842]">200+</div>
+                <div className="text-[6px] md:text-[9.5px] text-[#5c574d] uppercase tracking-wider">Kuliah</div>
               </div>
             </div>
 
-            {/* Color coding Legend — scrollable on mobile */}
-            <div className="flex flex-wrap gap-x-2 md:gap-x-3 gap-y-0.5 md:gap-y-1">
+            {/* Color coding Legend — hidden on mobile */}
+            <div className="hidden md:flex flex-wrap gap-x-2 md:gap-x-3 gap-y-0.5 md:gap-y-1">
               {CATEGORIES.map((catInfo, i) => (
                 <div key={i} className="flex items-center gap-1 md:gap-1.5">
                   <span className="w-[7px] h-[7px] md:w-[9px] md:h-[9px] rounded-full shrink-0" style={{ backgroundColor: catInfo.color }} />
@@ -675,34 +696,34 @@ export default function CurriculumGraphView() {
           <div ref={chartRef} className="w-full h-full" />
 
           {/* Navigation Scale Controls (Bottom-Right) */}
-          <div className="absolute bottom-6 right-6 z-20 flex flex-col gap-2 pointer-events-auto">
+          <div className="absolute bottom-2 right-2 md:bottom-6 md:right-6 z-20 flex md:flex-col gap-1.5 md:gap-2 pointer-events-auto">
             <button
               onClick={() => handleZoom('in')}
-              className="w-9 h-9 rounded-xl bg-[#0a0a0c]/95 border border-neutral-700 text-neutral-400 hover:text-white flex items-center justify-center cursor-pointer shadow-md hover:bg-neutral-800"
+              className="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-[#0a0a0c]/95 border border-neutral-700 text-neutral-400 hover:text-white flex items-center justify-center cursor-pointer shadow-md hover:bg-neutral-800"
               title="Zoom In"
             >
-              <ZoomIn size={16} />
+              <ZoomIn size={13} />
             </button>
             <button
               onClick={() => handleZoom('out')}
-              className="w-9 h-9 rounded-xl bg-[#0a0a0c]/95 border border-neutral-700 text-neutral-400 hover:text-white flex items-center justify-center cursor-pointer shadow-md hover:bg-neutral-800"
+              className="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-[#0a0a0c]/95 border border-neutral-700 text-neutral-400 hover:text-white flex items-center justify-center cursor-pointer shadow-md hover:bg-neutral-800"
               title="Zoom Out"
             >
-              <ZoomOut size={16} />
+              <ZoomOut size={13} />
             </button>
             <button
               onClick={() => handleZoom('reset')}
-              className="w-9 h-9 rounded-xl bg-[#0a0a0c]/95 border border-neutral-700 text-neutral-400 hover:text-white flex items-center justify-center cursor-pointer shadow-md hover:bg-neutral-800"
+              className="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-[#0a0a0c]/95 border border-neutral-700 text-neutral-400 hover:text-white flex items-center justify-center cursor-pointer shadow-md hover:bg-neutral-800"
               title="Reset View"
             >
-              <RotateCcw size={15} />
+              <RotateCcw size={12} />
             </button>
           </div>
 
         </div>
 
         {/* Small subtext instruction */}
-        <div className="text-center mt-3 text-[10.5px] text-[#5c574d] font-sans select-none">
+        <div className="text-center mt-2 md:mt-3 text-[9px] md:text-[10.5px] text-[#5c574d] font-sans select-none">
           {t.instruction}
         </div>
 

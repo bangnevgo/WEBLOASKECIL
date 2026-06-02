@@ -6,11 +6,30 @@ import {
   AIFeature
 } from '@/lib/ai-prompts'
 
+import fs from 'fs/promises'
+import path from 'path'
+
 // Singleton ZAI instance — reuse across requests
 let zaiInstance: Awaited<ReturnType<typeof ZAI.create>> | null = null
 
 async function getZAI() {
   if (!zaiInstance) {
+    const configPath = path.join(process.cwd(), '.z-ai-config')
+    try {
+      await fs.access(configPath)
+    } catch {
+      // If config doesn't exist, write it dynamically from environment variables
+      const baseUrl = process.env.ZAI_BASE_URL || process.env.NEXT_PUBLIC_ZAI_BASE_URL
+      const apiKey = process.env.ZAI_API_KEY || process.env.NEXT_PUBLIC_ZAI_API_KEY
+      if (baseUrl && apiKey) {
+        try {
+          await fs.writeFile(configPath, JSON.stringify({ baseUrl, apiKey }, null, 2))
+          console.log('Runtime ZAI configuration initialized successfully.')
+        } catch (e) {
+          console.error('Failed to write runtime ZAI config:', e)
+        }
+      }
+    }
     zaiInstance = await ZAI.create()
   }
   return zaiInstance
@@ -116,6 +135,41 @@ function parseAIResponse(text: string, feature: Feature) {
   }
 }
 
+async function callOpenRouter(messages: Array<{ role: 'system' | 'assistant' | 'user'; content: string }>) {
+  const apiKey = process.env.OPENROUTER_API_KEY
+  const model = process.env.OPENROUTER_MODEL || 'openrouter/owl-alpha'
+  const baseUrl = process.env.OPENROUTER_BASE_URL || 'https://openrouter.ai/api/v1'
+
+  if (!apiKey) {
+    throw new Error('OpenRouter API key is not configured in environment variables.')
+  }
+
+  console.log(`Initiating OpenRouter fallback request with model: ${model}`)
+  const res = await fetch(`${baseUrl}/chat/completions`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: model,
+      messages: messages,
+    })
+  })
+
+  if (!res.ok) {
+    const errText = await res.text()
+    throw new Error(`OpenRouter request failed: ${errText}`)
+  }
+
+  const data = await res.json()
+  const content = data.choices?.[0]?.message?.content
+  if (!content) {
+    throw new Error('OpenRouter returned an empty response')
+  }
+  return content
+}
+
 async function callWithRetry(messages: Array<{ role: 'system' | 'assistant' | 'user'; content: string }>, retries = 3) {
   let lastError: Error | null = null
 
@@ -137,7 +191,7 @@ async function callWithRetry(messages: Array<{ role: 'system' | 'assistant' | 'u
       return response
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error))
-      console.error(`AI attempt ${attempt} failed:`, lastError.message)
+      console.error(`Z.ai attempt ${attempt} failed:`, lastError.message)
 
       if (attempt < retries) {
         await new Promise((resolve) => setTimeout(resolve, 1000 * attempt))
@@ -145,7 +199,15 @@ async function callWithRetry(messages: Array<{ role: 'system' | 'assistant' | 'u
     }
   }
 
-  throw lastError || new Error('AI request failed')
+  // Fallback to OpenRouter if Z.ai failed
+  console.warn('All Z.ai attempts failed or configuration was missing. Falling back to OpenRouter...')
+  try {
+    const response = await callOpenRouter(messages)
+    return response
+  } catch (orError: any) {
+    console.error('OpenRouter fallback also failed:', orError.message)
+    throw lastError || orError
+  }
 }
 
 export async function GET() {

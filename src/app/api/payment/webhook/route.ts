@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 
-const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzfZgwtmdFd5SYeNWQ5wquN4zjwzreEUB1vwXhT-pKgK4yts9Y-B3NYsUHUMq7FHY-9/exec'
-const TELEGRAM_BOT_TOKEN = '8294932959:AAHhZods2iZIsuMaAGC1kkzLTB5VVA_F0kA'
-const TELEGRAM_ADMIN_CHAT_ID = '5729835979'
+const GOOGLE_SHEET_URL = process.env.GOOGLE_SHEET_URL
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
+const TELEGRAM_ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID
 
 async function sendToGoogleSheet(data: any) {
+  if (!GOOGLE_SHEET_URL) {
+    console.warn('Google Sheet URL is not configured.')
+    return
+  }
   try {
     await fetch(GOOGLE_SHEET_URL, {
       method: 'POST',
@@ -18,6 +22,10 @@ async function sendToGoogleSheet(data: any) {
 }
 
 async function sendTelegramNotification(data: any) {
+  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_ADMIN_CHAT_ID) {
+    console.warn('Telegram credentials are not configured.')
+    return
+  }
   try {
     const message = `🚀 *NEW ORDER RECEIVED!*\n\n` +
                     `👤 *User:* ${data.name}\n` +
