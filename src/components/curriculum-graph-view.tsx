@@ -625,43 +625,43 @@ export default function CurriculumGraphView() {
       <div className="max-w-[1400px] mx-auto px-6 relative">
 
         {/* Main Canvas Frame */}
-        <div className="w-full h-[680px] bg-[#0a0a0c] border border-neutral-800 rounded-3xl overflow-hidden relative shadow-2xl">
+        <div className="w-full h-[400px] md:h-[680px] bg-[#0a0a0c] border border-neutral-800 rounded-3xl overflow-hidden relative shadow-2xl">
 
-          {/* Floating Info HUD (Top-Left) */}
-          <div className="absolute top-6 left-6 z-20 w-80 bg-[#0a0a0c]/92 backdrop-blur border border-[rgba(245,200,66,0.2)] p-5 rounded-2xl shadow-xl pointer-events-auto">
-            <div className="flex items-center gap-2 mb-1.5">
-              <div className="w-[28px] h-[28px] bg-[#f5c842] rounded-lg flex items-center justify-center text-[14px] text-[#1a1508] font-bold shrink-0">✦</div>
-              <h2 className="text-[17px] font-bold text-[#e8e4dc] m-0 tracking-tight">{t.title}</h2>
+          {/* Floating Info HUD (Top-Left) — responsive for mobile */}
+          <div className="absolute top-3 left-3 right-3 md:top-6 md:left-6 md:right-auto z-20 w-auto md:w-80 bg-[#0a0a0c]/92 backdrop-blur border border-[rgba(245,200,66,0.2)] p-3 md:p-5 rounded-2xl shadow-xl pointer-events-auto max-h-[50%] md:max-h-none overflow-y-auto">
+            <div className="flex items-center gap-1.5 md:gap-2 mb-1 md:mb-1.5">
+              <div className="w-[22px] h-[22px] md:w-[28px] md:h-[28px] bg-[#f5c842] rounded-lg flex items-center justify-center text-[11px] md:text-[14px] text-[#1a1508] font-bold shrink-0">✦</div>
+              <h2 className="text-[13px] md:text-[17px] font-bold text-[#e8e4dc] m-0 tracking-tight">{t.title}</h2>
             </div>
-            <p className="text-[11.5px] text-[#8a8275] mb-3 leading-relaxed m-0">
+            <p className="text-[10px] md:text-[11.5px] text-[#8a8275] mb-2 md:mb-3 leading-relaxed m-0 hidden md:block">
               {t.subtitle}
             </p>
 
-            <div className="flex gap-4 mb-3">
+            <div className="flex gap-2 md:gap-4 mb-2 md:mb-3">
               <div className="text-center">
-                <div className="text-[18px] font-bold text-[#f5c842]">10</div>
-                <div className="text-[9.5px] text-[#5c574d] uppercase tracking-wider">Bagian</div>
+                <div className="text-[14px] md:text-[18px] font-bold text-[#f5c842]">10</div>
+                <div className="text-[8px] md:text-[9.5px] text-[#5c574d] uppercase tracking-wider">Bagian</div>
               </div>
               <div className="text-center">
-                <div className="text-[18px] font-bold text-[#f5c842]">49</div>
-                <div className="text-[9.5px] text-[#5c574d] uppercase tracking-wider">Pelajaran</div>
+                <div className="text-[14px] md:text-[18px] font-bold text-[#f5c842]">49</div>
+                <div className="text-[8px] md:text-[9.5px] text-[#5c574d] uppercase tracking-wider">Pelajaran</div>
               </div>
               <div className="text-center">
-                <div className="text-[18px] font-bold text-[#f5c842]">15+</div>
-                <div className="text-[9.5px] text-[#5c574d] uppercase tracking-wider">Buku</div>
+                <div className="text-[14px] md:text-[18px] font-bold text-[#f5c842]">15+</div>
+                <div className="text-[8px] md:text-[9.5px] text-[#5c574d] uppercase tracking-wider">Buku</div>
               </div>
               <div className="text-center">
-                <div className="text-[18px] font-bold text-[#f5c842]">200+</div>
-                <div className="text-[9.5px] text-[#5c574d] uppercase tracking-wider">Kuliah</div>
+                <div className="text-[14px] md:text-[18px] font-bold text-[#f5c842]">200+</div>
+                <div className="text-[8px] md:text-[9.5px] text-[#5c574d] uppercase tracking-wider">Kuliah</div>
               </div>
             </div>
 
-            {/* Color coding Legend */}
-            <div className="flex flex-wrap gap-x-3 gap-y-1">
+            {/* Color coding Legend — scrollable on mobile */}
+            <div className="flex flex-wrap gap-x-2 md:gap-x-3 gap-y-0.5 md:gap-y-1">
               {CATEGORIES.map((catInfo, i) => (
-                <div key={i} className="flex items-center gap-1.5">
-                  <span className="w-[9px] h-[9px] rounded-full shrink-0" style={{ backgroundColor: catInfo.color }} />
-                  <span className="text-[10.5px] text-[#b8b0a2]">{catInfo.name}</span>
+                <div key={i} className="flex items-center gap-1 md:gap-1.5">
+                  <span className="w-[7px] h-[7px] md:w-[9px] md:h-[9px] rounded-full shrink-0" style={{ backgroundColor: catInfo.color }} />
+                  <span className="text-[8px] md:text-[10.5px] text-[#b8b0a2] whitespace-nowrap">{catInfo.name}</span>
                 </div>
               ))}
             </div>
