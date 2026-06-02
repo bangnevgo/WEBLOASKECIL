@@ -169,6 +169,18 @@ export default function Landing() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [curriculumParts])
 
+  // Hash scroll — support direct link to graph view section
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const hash = window.location.hash
+    if (hash === '#curriculum-graph' || hash === '#graph-view') {
+      setTimeout(() => {
+        const el = document.getElementById('curriculum-graph')
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 500)
+    }
+  }, [])
+
   const scrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])

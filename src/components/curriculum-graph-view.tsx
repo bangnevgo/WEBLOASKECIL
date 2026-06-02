@@ -621,7 +621,7 @@ export default function CurriculumGraphView() {
   };
 
   return (
-    <section className="w-full py-16 bg-[#0a0a0c] border-y border-neutral-900 overflow-hidden relative select-none">
+    <section id="curriculum-graph" className="w-full py-16 bg-[#0a0a0c] border-y border-neutral-900 overflow-hidden relative select-none">
       <div className="max-w-[1400px] mx-auto px-6 relative">
 
         {/* Main Canvas Frame */}
