@@ -509,6 +509,8 @@ export default function CurriculumGraphView() {
     const echarts = window.echarts;
     const myChart = echarts.init(chartRef.current, null, { renderer: 'canvas' });
 
+    const isMobile = window.innerWidth < 768;
+
     const option = {
       backgroundColor: '#0a0a0c',
 
@@ -531,11 +533,13 @@ export default function CurriculumGraphView() {
       series: [{
         type: 'graph',
         layout: 'force',
+        zoom: isMobile ? 0.55 : 0.85,
+        center: isMobile ? ['50%', '48%'] : ['50%', '50%'],
 
         force: {
-          repulsion: 380,
-          gravity: 0.07,
-          edgeLength: [70, 240],
+          repulsion: isMobile ? 500 : 380,
+          gravity: 0.04,
+          edgeLength: isMobile ? [80, 300] : [70, 240],
           layoutAnimation: true,
           friction: 0.6,
         },
