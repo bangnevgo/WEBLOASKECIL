@@ -1,6 +1,10 @@
 # WEBLOASKECIL — Hukum Asumsi
 
-Platform pembelajaran digital tentang Hukum Asumsi dan ajaran Neville Goddard. Menyediakan kurikulum terstruktur, AI-powered tools, dan komunitas eksklusif.
+<p align="center">
+  <img src="/graph-view-fullpage.png" alt="Knowledge Graph View" width="100%" />
+</p>
+
+> **Platform pembelajaran digital tentang Hukum Asumsi dan ajaran Neville Goddard.** Menyediakan kurikulum terstruktur, AI-powered tools, dan komunitas eksklusif. Tampilan di atas adalah **Second Brain Knowledge Graph** — peta visual dari seluruh kurikulum 10 Bagian, 49 Pelajaran, dan literatur pendukung.
 
 <p align="center">
   <img src="/screenshots/hero.png" alt="Hero Section" width="45%" />
