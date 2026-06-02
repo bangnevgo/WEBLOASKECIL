@@ -1,16 +1,18 @@
 'use client'
-
+ 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { useTranslation } from '@/lib/translations'
 import { Shield, X } from 'lucide-react'
-
+ 
 const ADMIN_PASSWORD = 'neville22'
-
+ 
 export default function AdminLoginModal({ onLoginSuccess }: { onLoginSuccess: () => void }) {
+  const { t, language } = useTranslation()
   const [password, setPassword] = useState('')
   const [error, setError] = useState(false)
   const [show, setShow] = useState(true)
-
+ 
   const handleLogin = () => {
     if (password === ADMIN_PASSWORD) {
       setError(false)
@@ -20,13 +22,13 @@ export default function AdminLoginModal({ onLoginSuccess }: { onLoginSuccess: ()
       setError(true)
     }
   }
-
+ 
   const handleClose = () => {
     setShow(false)
   }
-
+ 
   if (!show) return null
-
+ 
   return (
     <motion.div
       className="nv-locked-overlay"
@@ -44,7 +46,7 @@ export default function AdminLoginModal({ onLoginSuccess }: { onLoginSuccess: ()
         onClick={(e) => e.stopPropagation()}
       >
         <button className="nv-locked-close" onClick={handleClose}>✕</button>
-
+ 
         <div style={{ fontSize: 48, marginBottom: 12 }}>
           <Shield size={48} style={{ color: 'var(--nv-gold)' }} />
         </div>
@@ -52,9 +54,9 @@ export default function AdminLoginModal({ onLoginSuccess }: { onLoginSuccess: ()
           Admin Login
         </h3>
         <p style={{ fontSize: 14, color: 'var(--nv-muted)', marginBottom: 20 }}>
-          Masukkan password admin untuk mengakses panel
+          {language === 'en' ? 'Enter admin password to access the panel' : 'Masukkan password admin untuk mengakses panel'}
         </p>
-
+ 
         <input
           type="password"
           value={password}
@@ -77,10 +79,10 @@ export default function AdminLoginModal({ onLoginSuccess }: { onLoginSuccess: ()
         />
         {error && (
           <p style={{ color: '#ef4444', fontSize: 13, margin: '0 0 16px', textAlign: 'left' }}>
-            Password salah. Coba lagi.
+            {language === 'en' ? 'Wrong password. Try again.' : 'Password salah. Coba lagi.'}
           </p>
         )}
-
+ 
         <motion.button
           className="nv-cta-button nv-cta-pulse"
           onClick={handleLogin}

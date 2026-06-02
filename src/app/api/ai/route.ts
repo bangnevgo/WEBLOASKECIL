@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server'
 import ZAI from 'z-ai-web-dev-sdk'
 import {
-  MANIFESTATION_PROMPT,
-  LIMITING_BELIEF_PROMPT,
-  SHADOW_PROMPT,
-  PRIVATE_SESSION_PROMPT,
+  PROMPT_MAP,
+  PROMPT_MAP_EN,
+  AIFeature
 } from '@/lib/ai-prompts'
 
 // Singleton ZAI instance — reuse across requests
@@ -17,52 +16,54 @@ async function getZAI() {
   return zaiInstance
 }
 
-type Feature = 'manifestation' | 'limiting-belief' | 'shadow' | 'private-session'
+type Feature = AIFeature
 
-const SYSTEM_PROMPTS: Record<Feature, string> = {
-  'manifestation': MANIFESTATION_PROMPT,
-  'limiting-belief': LIMITING_BELIEF_PROMPT,
-  'shadow': SHADOW_PROMPT,
-  'private-session': PRIVATE_SESSION_PROMPT,
-}
-
-function buildMessages(feature: Feature, payload: Record<string, unknown>) {
-  const systemPrompt = SYSTEM_PROMPTS[feature]
+function buildMessages(feature: Feature, payload: Record<string, unknown>, language?: string) {
+  const systemPrompt = language === 'en' ? PROMPT_MAP_EN[feature] : PROMPT_MAP[feature]
 
   switch (feature) {
     case 'manifestation': {
       const { manifestation, category } = payload
+      const content = language === 'en'
+        ? `I want to manifest: ${manifestation}\n\nCategory: ${category}\n\nPlease analyze and return the result in JSON format according to the instructions.`
+        : `Saya ingin memanifestasikan: ${manifestation}\n\nKategori: ${category}\n\nMohon analisa dan berikan hasil dalam format JSON sesuai instruksi.`
       return [
         { role: 'system' as const, content: systemPrompt },
         {
           role: 'user' as const,
-          content: `Saya ingin memanifestasikan: ${manifestation}\n\nKategori: ${category}\n\nMohon analisa dan berikan hasil dalam format JSON sesuai instruksi.`,
+          content,
         },
       ]
     }
     case 'limiting-belief': {
       const { answers } = payload
       const formattedAnswers = Object.entries(answers as Record<string, string | number>)
-        .map(([id, answer]) => `Pertanyaan ${id}: ${answer}`)
+        .map(([id, answer]) => language === 'en' ? `Question ${id}: ${answer}` : `Pertanyaan ${id}: ${answer}`)
         .join('\n')
+      const content = language === 'en'
+        ? `Here are my questionnaire answers:\n\n${formattedAnswers}\n\nPlease analyze and return the result in JSON format according to the instructions.`
+        : `Berikut jawaban kuesioner saya:\n\n${formattedAnswers}\n\nMohon analisa dan berikan hasil dalam format JSON sesuai instruksi.`
       return [
         { role: 'system' as const, content: systemPrompt },
         {
           role: 'user' as const,
-          content: `Berikut jawaban kuesioner saya:\n\n${formattedAnswers}\n\nMohon analisa dan berikan hasil dalam format JSON sesuai instruksi.`,
+          content,
         },
       ]
     }
     case 'shadow': {
       const { answers } = payload
       const formattedAnswers = Object.entries(answers as Record<string, string | number>)
-        .map(([id, answer]) => `Pertanyaan ${id}: ${answer}`)
+        .map(([id, answer]) => language === 'en' ? `Question ${id}: ${answer}` : `Pertanyaan ${id}: ${answer}`)
         .join('\n')
+      const content = language === 'en'
+        ? `Here are my questionnaire answers:\n\n${formattedAnswers}\n\nPlease analyze and return the result in JSON format according to the instructions.`
+        : `Berikut jawaban kuesioner saya:\n\n${formattedAnswers}\n\nMohon analisa dan berikan hasil dalam format JSON sesuai instruksi.`
       return [
         { role: 'system' as const, content: systemPrompt },
         {
           role: 'user' as const,
-          content: `Berikut jawaban kuesioner saya:\n\n${formattedAnswers}\n\nMohon analisa dan berikan hasil dalam format JSON sesuai instruksi.`,
+          content,
         },
       ]
     }
@@ -158,10 +159,10 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { feature, payload } = body as { feature: Feature; payload: Record<string, unknown> }
+    const { feature, payload, language } = body as { feature: Feature; payload: Record<string, unknown>; language?: string }
 
     // Validate feature
-    if (!feature || !SYSTEM_PROMPTS[feature]) {
+    if (!feature || (!PROMPT_MAP[feature] && !PROMPT_MAP_EN[feature])) {
       return NextResponse.json(
         { success: false, error: 'Invalid feature. Must be one of: manifestation, limiting-belief, shadow, private-session' },
         { status: 400 }
@@ -197,7 +198,7 @@ export async function POST(request: Request) {
     }
 
     // Build messages
-    const messages = buildMessages(feature, payload)
+    const messages = buildMessages(feature, payload, language)
 
     // Call AI with retry
     const aiResponse = await callWithRetry(messages)

@@ -1,62 +1,96 @@
 'use client';
 
 import Link from 'next/link';
-import { PartFull } from '@/lib/curriculum-data';
+import { PartFull, ALL_PARTS as ALL_PARTS_ID } from '@/lib/curriculum-data';
+import { ALL_PARTS_EN } from '@/lib/curriculum-data-en';
 import { titleToSlug } from '@/lib/slug-utils';
+import { useTranslation } from '@/lib/translations';
 
 interface Props {
   part: PartFull;
-  prevPart: { slug: string; title: string } | null;
-  nextPart: { slug: string; title: string } | null;
+  prevPart: { slug: string; title: string; partId?: string } | null;
+  nextPart: { slug: string; title: string; partId?: string } | null;
   currentSlug: string;
 }
 
 export default function PartPageClient({ part, prevPart, nextPart }: Props) {
+  const { language } = useTranslation();
+
+  // Resolve part to active language version
+  const activePart = language === 'en'
+    ? (ALL_PARTS_EN.find(p => p.id === part.id) || part)
+    : part;
+
+  const getPartSlug = (partId?: string) => {
+    if (!partId) return '';
+    const targetPart = language === 'en'
+      ? ALL_PARTS_EN.find(p => p.id === partId)
+      : ALL_PARTS_ID.find(p => p.id === partId);
+    return targetPart ? titleToSlug(targetPart.title) : '';
+  };
+
+  const getPartTitle = (partId?: string, defaultTitle?: string) => {
+    if (!partId) return defaultTitle || '';
+    const targetPart = language === 'en'
+      ? ALL_PARTS_EN.find(p => p.id === partId)
+      : ALL_PARTS_ID.find(p => p.id === partId);
+    return targetPart ? targetPart.title : (defaultTitle || '');
+  };
+
+  const prevSlug = prevPart?.partId ? getPartSlug(prevPart.partId) : prevPart?.slug;
+  const prevTitle = prevPart?.partId ? getPartTitle(prevPart.partId, prevPart.title) : prevPart?.title;
+  
+  const nextSlug = nextPart?.partId ? getPartSlug(nextPart.partId) : nextPart?.slug;
+  const nextTitle = nextPart?.partId ? getPartTitle(nextPart.partId, nextPart.title) : nextPart?.title;
+
   return (
     <div className="nv-part-page">
       {/* Header breadcrumb */}
       <nav className="nv-part-breadcrumb" aria-label="Breadcrumb">
-        <Link href="/">Hukum Asumsi</Link>
+        <Link href="/">{language === 'en' ? 'Law of Assumption' : 'Hukum Asumsi'}</Link>
         <span aria-hidden="true">›</span>
-        <span>Bagian {part.num}</span>
+        <span>{language === 'en' ? `Part ${activePart.num}` : `Bagian ${activePart.num}`}</span>
       </nav>
 
       {/* Hero section */}
       <header className="nv-part-hero">
-        <div className="nv-part-num">BAGIAN {part.num}</div>
-        <h1 className="nv-part-title">{part.title}</h1>
-        <p className="nv-part-meta">{part.meta}</p>
-        <p className="nv-part-description">{part.description}</p>
+        <div className="nv-part-num">{language === 'en' ? `PART ${activePart.num}` : `BAGIAN ${activePart.num}`}</div>
+        <h1 className="nv-part-title">{activePart.title}</h1>
+        <p className="nv-part-meta">{activePart.meta}</p>
+        <p className="nv-part-description">{activePart.description}</p>
         <blockquote className="nv-part-quote">
-          <p>"{part.partQuote.text}"</p>
-          <cite>— {part.partQuote.source}</cite>
+          <p>"{activePart.partQuote.text}"</p>
+          <cite>— {activePart.partQuote.source}</cite>
         </blockquote>
       </header>
 
       {/* Lesson list */}
       <section className="nv-part-lessons" aria-labelledby="lessons-heading">
         <h2 id="lessons-heading" className="nv-part-lessons-heading">
-          {part.lessons.length} Pelajaran dalam Bagian Ini
+          {language === 'en' 
+            ? `${activePart.lessons.length} Lessons in This Part`
+            : `${activePart.lessons.length} Pelajaran dalam Bagian Ini`
+          }
         </h2>
         <ol className="nv-lessons-list">
-          {part.lessons.map((lesson, i) => (
+          {activePart.lessons.map((lesson, i) => (
             <li key={lesson.num} className="nv-lesson-item">
               <div className="nv-lesson-num">{lesson.num}</div>
               <div className="nv-lesson-content">
                 <h3 className="nv-lesson-title">{lesson.title}</h3>
-                <ul className="nv-lesson-bullets" aria-label="Poin utama pelajaran">
+                <ul className="nv-lesson-bullets" aria-label={language === 'en' ? 'Main points of lesson' : 'Poin utama pelajaran'}>
                   {lesson.bullets.map((b, j) => (
                     <li key={j}>{b}</li>
                   ))}
                 </ul>
                 {lesson.quotes[0] && (
                   <blockquote className="nv-lesson-quote">
-                    <p>"{lesson.quotes[0].translation ?? lesson.quotes[0].text}"</p>
+                    <p>"{lesson.quotes[0].translation && language !== 'en' ? lesson.quotes[0].translation : lesson.quotes[0].text}"</p>
                     <cite>— {lesson.quotes[0].source}</cite>
                   </blockquote>
                 )}
                 <div className="nv-lesson-practice">
-                  <strong>Praktik:</strong> {lesson.practice}
+                  <strong>{language === 'en' ? 'Practice:' : 'Praktik:'}</strong> {lesson.practice}
                 </div>
               </div>
             </li>
@@ -66,27 +100,32 @@ export default function PartPageClient({ part, prevPart, nextPart }: Props) {
 
       {/* CTA */}
       <section className="nv-part-cta">
-        <p>Dapatkan akses penuh ke semua {part.lessons.length} pelajaran dalam bagian ini beserta konten lengkap, kutipan bersumber, dan praktik harian.</p>
+        <p>
+          {language === 'en'
+            ? `Get full access to all ${activePart.lessons.length} lessons in this part including full teachings, sourced quotes, and daily practices.`
+            : `Dapatkan akses penuh ke semua ${activePart.lessons.length} pelajaran dalam bagian ini beserta konten lengkap, kutipan bersumber, dan praktik harian.`
+          }
+        </p>
         <Link href="/#pricing" className="nv-part-cta-btn">
-          ✦ Lihat Paket Berlangganan
+          ✦ {language === 'en' ? 'View Subscription Plans' : 'Lihat Paket Berlangganan'}
         </Link>
         <Link href="/" className="nv-part-back">
-          ← Kembali ke Kurikulum Lengkap
+          {language === 'en' ? '← Back to Complete Curriculum' : '← Kembali ke Kurikulum Lengkap'}
         </Link>
       </section>
 
       {/* Prev/Next navigation */}
-      <nav className="nv-part-nav" aria-label="Navigasi bagian">
+      <nav className="nv-part-nav" aria-label={language === 'en' ? 'Part navigation' : 'Navigasi bagian'}>
         {prevPart ? (
-          <Link href={`/belajar/${prevPart.slug}`} className="nv-part-nav-prev">
-            <span>← Bagian Sebelumnya</span>
-            <strong>{prevPart.title}</strong>
+          <Link href={`/belajar/${prevSlug}`} className="nv-part-nav-prev">
+            <span>← {language === 'en' ? 'Previous Part' : 'Bagian Sebelumnya'}</span>
+            <strong>{prevTitle}</strong>
           </Link>
         ) : <div />}
         {nextPart ? (
-          <Link href={`/belajar/${nextPart.slug}`} className="nv-part-nav-next">
-            <span>Bagian Berikutnya →</span>
-            <strong>{nextPart.title}</strong>
+          <Link href={`/belajar/${nextSlug}`} className="nv-part-nav-next">
+            <span>{language === 'en' ? 'Next Part →' : 'Bagian Berikutnya →'}</span>
+            <strong>{nextTitle}</strong>
           </Link>
         ) : <div />}
       </nav>

@@ -5,6 +5,8 @@ import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
 import { ALL_PARTS, FREE_LESSON_NUMS } from '@/lib/curriculum-data'
+import { ALL_PARTS_EN } from '@/lib/curriculum-data-en'
+import { useTranslation } from '@/lib/translations'
 import { toast } from 'sonner'
 
 // Map each free lesson to a thematic illustration with its aspect ratio
@@ -35,13 +37,16 @@ const fadeIn = {
 }
 
 export default function FreeLessonPage() {
+  const { t, language } = useTranslation()
+  const curriculumParts = language === 'en' ? ALL_PARTS_EN : ALL_PARTS
+
   const { freeLessonNum, closeFreeLesson, setView, toggleCompleted, completedLessons } = useAppStore()
   const [scrollProgress, setScrollProgress] = useState(0)
   const [practiceDone, setPracticeDone] = useState(false)
   const contentRef = useRef<HTMLDivElement>(null)
 
   // Find the lesson and its part
-  const part = ALL_PARTS.find(p => p.lessons.some(l => l.num === freeLessonNum))
+  const part = curriculumParts.find(p => p.lessons.some(l => l.num === freeLessonNum))
   const lesson = part?.lessons.find(l => l.num === freeLessonNum)
 
   // Scroll progress
@@ -62,19 +67,48 @@ export default function FreeLessonPage() {
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
   }, [freeLessonNum])
 
+  const displayIllust = (() => {
+    const illust = lessonIllustrations[lesson?.num || '']
+    if (!illust) return null
+    if (language === 'en') {
+      if (lesson?.num === '1.1') {
+        return {
+          ...illust,
+          alt: 'Manifestation Journal — Writing I AM',
+          caption: '"I AM" is not just a word — it is the creative power'
+        }
+      }
+      if (lesson?.num === '1.2') {
+        return {
+          ...illust,
+          alt: 'Consciousness Creates Reality',
+          caption: 'The outer world is a reflection of the inner world'
+        }
+      }
+      if (lesson?.num === '1.3') {
+        return {
+          ...illust,
+          alt: 'Meditation — Two Sides of Creation',
+          caption: 'Feeling is the bridge between conscious and subconscious'
+        }
+      }
+    }
+    return illust
+  })()
+
   const handlePracticeCheck = useCallback(() => {
     setPracticeDone(true)
     if (freeLessonNum) toggleCompleted(freeLessonNum)
-    toast('✦ Pelajaran ditandai selesai!')
-  }, [freeLessonNum, toggleCompleted])
+    toast(language === 'en' ? '✦ Lesson marked as completed!' : '✦ Pelajaran ditandai selesai!')
+  }, [freeLessonNum, toggleCompleted, language])
 
   if (!lesson || !part) {
     return (
       <div className="nv-fl-page">
         <div style={{ textAlign: 'center', padding: '120px 24px' }}>
-          <p style={{ color: 'var(--nv-muted)' }}>Pelajaran tidak ditemukan</p>
+          <p style={{ color: 'var(--nv-muted)' }}>{language === 'en' ? 'Lesson not found' : 'Pelajaran tidak ditemukan'}</p>
           <button className="nv-back-btn" onClick={closeFreeLesson} style={{ marginTop: 16 }}>
-            ← Kembali
+            {language === 'en' ? '← Back' : '← Kembali'}
           </button>
         </div>
       </div>
@@ -87,7 +121,7 @@ export default function FreeLessonPage() {
   // Free lesson index for stepper
   const freeIndex = FREE_LESSON_NUMS.indexOf(lesson.num)
   const allFreeLessons = FREE_LESSON_NUMS.map(num => {
-    for (const p of ALL_PARTS) {
+    for (const p of curriculumParts) {
       const l = p.lessons.find(l => l.num === num)
       if (l) return { num, title: l.title, partColor: p.color }
     }
@@ -95,7 +129,14 @@ export default function FreeLessonPage() {
   }).filter(Boolean) as { num: string; title: string; partColor: string }[]
 
   // Conversion teases
-  const teases = [
+  const teases = language === 'en' ? [
+    'How ASSUMPTION hardens into fact',
+    'Step-by-step SATS technique',
+    'The secret of FEELING as the creative medium',
+    'Importunity: daring impudence',
+    'Revision: rewriting the past',
+    'Imagination creates reality',
+  ] : [
     'Bagaimana ASUMSI mengeras menjadi fakta',
     'Teknik SATS langkah demi langkah',
     'Rahasia PERASAAN sebagai medium penciptaan',
@@ -116,9 +157,9 @@ export default function FreeLessonPage() {
       <header className="nv-fl-header">
         <div className="nv-fl-header-inner">
           <button className="nv-fl-back" onClick={closeFreeLesson}>
-            ← Kembali
+            {language === 'en' ? '← Back' : '← Kembali'}
           </button>
-          <span className="nv-fl-free-badge">GRATIS ✦</span>
+          <span className="nv-fl-free-badge">{t('freeBadge')}</span>
         </div>
       </header>
 
@@ -132,35 +173,35 @@ export default function FreeLessonPage() {
             <p className="nv-fl-epigraph">{lesson.takeaway}</p>
             <div className="nv-fl-meta-row">
               <span className="nv-fl-meta-item">
-                <span className="nv-fl-meta-accent">⏱</span> 8 min baca
+                <span className="nv-fl-meta-accent">⏱</span> {language === 'en' ? '8 min read' : '8 min baca'}
               </span>
               <span className="nv-fl-meta-item">
-                <span className="nv-fl-meta-accent">📖</span> Pelajaran {freeIndex + 1}/3 gratis
+                <span className="nv-fl-meta-accent">📖</span> {language === 'en' ? `Free Lesson ${freeIndex + 1}/3` : `Pelajaran ${freeIndex + 1}/3 gratis`}
               </span>
               <span className="nv-fl-meta-item">
-                BAGIAN {part.num}: {part.title.length > 30 ? part.title.slice(0, 28) + '…' : part.title}
+                {language === 'en' ? `PART ${part.num}: ${part.title.length > 30 ? part.title.slice(0, 28) + '…' : part.title}` : `BAGIAN ${part.num}: ${part.title.length > 30 ? part.title.slice(0, 28) + '…' : part.title}`}
               </span>
             </div>
           </div>
-          {lessonIllustrations[lesson.num] && (
+          {displayIllust && (
             <motion.div
               className="nv-fl-hero-illust"
               initial={{ opacity: 0, x: 30, scale: 0.95 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               transition={{ duration: 0.7, delay: 0.2 }}
             >
-              <div className="nv-fl-hero-illust-frame" style={{ aspectRatio: lessonIllustrations[lesson.num].aspectRatio }}>
+              <div className="nv-fl-hero-illust-frame" style={{ aspectRatio: displayIllust.aspectRatio }}>
                 <div className="nv-fl-hero-illust-glow" />
                 <Image
-                  src={lessonIllustrations[lesson.num].src}
-                  alt={lessonIllustrations[lesson.num].alt}
+                  src={displayIllust.src}
+                  alt={displayIllust.alt}
                   fill
                   className="nv-fl-hero-illust-img"
                   sizes="(max-width: 768px) 280px, 360px"
                   priority
                 />
               </div>
-              <p className="nv-fl-hero-illust-caption">{lessonIllustrations[lesson.num].caption}</p>
+              <p className="nv-fl-hero-illust-caption">{displayIllust.caption}</p>
             </motion.div>
           )}
         </div>
@@ -194,7 +235,7 @@ export default function FreeLessonPage() {
                 dangerouslySetInnerHTML={{ __html: processedPara }}
               />
               {/* Insert illustration break after the 2nd paragraph */}
-              {i === 1 && lessonIllustrations[lesson.num] && (
+              {i === 1 && displayIllust && (
                 <motion.div
                   className="nv-fl-illust-break"
                   initial={{ opacity: 0, y: 12 }}
@@ -202,17 +243,17 @@ export default function FreeLessonPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5 }}
                 >
-                  <div className="nv-fl-illust-break-frame" style={{ aspectRatio: lessonIllustrations[lesson.num].aspectRatio }}>
+                  <div className="nv-fl-illust-break-frame" style={{ aspectRatio: displayIllust.aspectRatio }}>
                     <Image
-                      src={lessonIllustrations[lesson.num].src}
-                      alt={lessonIllustrations[lesson.num].alt}
+                      src={displayIllust.src}
+                      alt={displayIllust.alt}
                       fill
                       className="nv-fl-illust-break-img"
                       sizes="(max-width: 768px) 90vw, 680px"
                     />
                     <div className="nv-fl-illust-break-overlay" />
                   </div>
-                  <p className="nv-fl-illust-break-caption">{lessonIllustrations[lesson.num].caption}</p>
+                  <p className="nv-fl-illust-break-caption">{displayIllust.caption}</p>
                 </motion.div>
               )}
             </div>
@@ -249,7 +290,7 @@ export default function FreeLessonPage() {
               )}
             </p>
             <p className="nv-fl-pull-quote-source">— {quote.source}</p>
-            {quote.translation && (
+            {quote.translation && language !== 'en' && (
               <p className="nv-fl-pull-quote-translation">{quote.translation}</p>
             )}
             {lesson.sourceUrl && (
@@ -259,7 +300,7 @@ export default function FreeLessonPage() {
                 rel="noopener noreferrer"
                 className="nv-fl-pull-quote-link"
               >
-                Baca sumber asli →
+                {language === 'en' ? 'Read original source →' : 'Baca sumber asli →'}
               </a>
             )}
           </motion.div>
@@ -283,7 +324,7 @@ export default function FreeLessonPage() {
             <div className="nv-fl-practice-text-col">
               <div className="nv-fl-practice-header">
                 <span className="nv-fl-practice-icon">🕯️</span>
-                <span className="nv-fl-practice-title">Praktik Hari Ini</span>
+                <span className="nv-fl-practice-title">{language === 'en' ? 'Today\'s Practice' : 'Praktik Hari Ini'}</span>
               </div>
               <p>{lesson.practice}</p>
               <div className="nv-fl-practice-checkbox" onClick={handlePracticeCheck}>
@@ -292,14 +333,14 @@ export default function FreeLessonPage() {
                   checked={practiceDone || completedLessons.has(lesson.num)}
                   onChange={() => {}}
                 />
-                <label>Saya sudah mempraktikkan ini</label>
+                <label>{language === 'en' ? 'I have practiced this' : 'Saya sudah mempraktikkan ini'}</label>
               </div>
             </div>
             <div className="nv-fl-practice-illust-col">
-              <div className="nv-fl-practice-illust-frame" style={{ aspectRatio: lessonIllustrations[lesson.num]?.aspectRatio || '1/1' }}>
+              <div className="nv-fl-practice-illust-frame" style={{ aspectRatio: displayIllust?.aspectRatio || '1/1' }}>
                 <Image
-                  src={lessonIllustrations[lesson.num]?.src || '/images/illustrations/meditation-imagination.webp'}
-                  alt={lessonIllustrations[lesson.num]?.alt || 'Praktik Meditasi'}
+                  src={displayIllust?.src || '/images/illustrations/meditation-imagination.webp'}
+                  alt={displayIllust?.alt || 'Praktik Meditasi'}
                   fill
                   className="nv-fl-practice-illust-img"
                   sizes="200px"
@@ -318,7 +359,7 @@ export default function FreeLessonPage() {
           transition={{ duration: 0.5 }}
         >
           <span className="nv-fl-takeaway-marks">&ldquo;</span>
-          <div className="nv-fl-takeaway-label">Inti Pelajaran</div>
+          <div className="nv-fl-takeaway-label">{language === 'en' ? 'Lesson Key Takeaway' : 'Inti Pelajaran'}</div>
           <p className="nv-fl-takeaway-text">{lesson.takeaway}</p>
         </motion.div>
       </motion.div>
@@ -347,7 +388,11 @@ export default function FreeLessonPage() {
               <div className="nv-fl-step-num">{fl.num}</div>
               <div className="nv-fl-step-title">{fl.title}</div>
               <div className="nv-fl-step-status">
-                {isDone ? '✓ Selesai' : isActive ? '● Sedang dibaca' : `${i + 1}/3 gratis`}
+                {isDone 
+                  ? (language === 'en' ? '✓ Completed' : '✓ Selesai') 
+                  : isActive 
+                    ? (language === 'en' ? '● Reading' : '● Sedang dibaca') 
+                    : (language === 'en' ? `${i + 1}/3 free` : `${i + 1}/3 gratis`)}
               </div>
             </button>
           )
@@ -393,10 +438,12 @@ export default function FreeLessonPage() {
               />
             </div>
           </div>
-          <h2 className="nv-fl-conversion-title">Anda baru saja memulai perjalanan.</h2>
+          <h2 className="nv-fl-conversion-title">{language === 'en' ? 'You have just begun the journey.' : 'Anda baru saja memulai perjalanan.'}</h2>
           <p className="nv-fl-conversion-desc">
-            Pelajaran ini adalah fondasi. Tetapi fondasi tanpa bangunan adalah tanah kosong.
-            Masih ada <strong style={{ color: 'var(--nv-gold)' }}>46 pelajaran</strong> yang menunggu:
+            {language === 'en' 
+              ? <>This lesson is the foundation. But a foundation without a building is empty land. There are still <strong style={{ color: 'var(--nv-gold)' }}>46 lessons</strong> waiting:</>
+              : <>Pelajaran ini adalah fondasi. Tetapi fondasi tanpa bangunan adalah tanah kosong. Masih ada <strong style={{ color: 'var(--nv-gold)' }}>46 pelajaran</strong> yang menunggu:</>
+            }
           </p>
           <ul className="nv-fl-conversion-teases">
             {teases.map((t, i) => (
@@ -413,7 +460,7 @@ export default function FreeLessonPage() {
             whileTap={{ scale: 0.97 }}
           >
             <span className="nv-cta-icon">✦</span>
-            Buka Kurikulum Lengkap — $9/bulan
+            {language === 'en' ? 'Unlock Full Curriculum — $9/month' : 'Buka Kurikulum Lengkap — $9/bulan'}
           </motion.button>
           <div className="nv-fl-progress-bar">
             <div className="nv-fl-progress-track">
@@ -423,7 +470,10 @@ export default function FreeLessonPage() {
               />
             </div>
             <div className="nv-fl-progress-label">
-              Sudah dibaca {Math.max(1, completedLessons.size)} dari 49 pelajaran ({Math.max(progressPercent, 2)}%)
+              {language === 'en'
+                ? `Read ${completedLessons.size} of 49 lessons (${progressPercent}%)`
+                : `Sudah dibaca ${completedLessons.size} dari 49 pelajaran (${progressPercent}%)`
+              }
             </div>
           </div>
         </div>
@@ -435,42 +485,42 @@ export default function FreeLessonPage() {
           <div className="nv-footer-brand">
             <span className="nv-footer-logo">✦</span>
             <div>
-              <div className="nv-footer-brand-name">Hukum Asumsi</div>
-              <div className="nv-footer-brand-tagline">Kurikulum Lengkap Ajaran Neville Goddard</div>
+              <div className="nv-footer-brand-name">{t('navLogo')}</div>
+              <div className="nv-footer-brand-tagline">{t('footerBrandTagline')}</div>
             </div>
           </div>
         </div>
         <div className="nv-footer-columns">
           <div className="nv-footer-col">
-            <h4 className="nv-footer-col-title">Kurikulum</h4>
+            <h4 className="nv-footer-col-title">{t('footerColCurriculum')}</h4>
             <ul className="nv-footer-col-links">
-              <li><a href="#part-1">Bagian 01 — Kesadaran</a></li>
-              <li><a href="#part-2">Bagian 02 — Asumsi</a></li>
-              <li><a href="#part-3">Bagian 03 — Perasaan</a></li>
-              <li><a href="#part-4">Bagian 04 — Diam</a></li>
-              <li><a href="#part-5">Bagian 05 — Kondisi</a></li>
+              <li><a href="#part-1">{language === 'en' ? 'Part 01 — Consciousness' : 'Bagian 01 — Kesadaran'}</a></li>
+              <li><a href="#part-2">{language === 'en' ? 'Part 02 — Assumption' : 'Bagian 02 — Asumsi'}</a></li>
+              <li><a href="#part-3">{language === 'en' ? 'Part 03 — Feeling' : 'Bagian 03 — Perasaan'}</a></li>
+              <li><a href="#part-4">{language === 'en' ? 'Part 04 — Silence' : 'Bagian 04 — Diam'}</a></li>
+              <li><a href="#part-5">{language === 'en' ? 'Part 05 — States' : 'Bagian 05 — Kondisi'}</a></li>
             </ul>
           </div>
           <div className="nv-footer-col">
-            <h4 className="nv-footer-col-title">Sumber Daya</h4>
+            <h4 className="nv-footer-col-title">{t('footerColResources')}</h4>
             <ul className="nv-footer-col-links">
-              <li><a href="#bonus">Buku Esensial</a></li>
+              <li><a href="#bonus">{t('essentialBooks')}</a></li>
               <li><a href="#">FAQ</a></li>
-              <li><a href="#">Meditasi Panduan</a></li>
+              <li><a href="#">{language === 'en' ? 'Guided Meditations' : 'Meditasi Panduan'}</a></li>
             </ul>
           </div>
           <div className="nv-footer-col">
-            <h4 className="nv-footer-col-title">Legal</h4>
+            <h4 className="nv-footer-col-title">{t('footerColLegal')}</h4>
             <ul className="nv-footer-col-links">
-              <li><a href="#">Syarat &amp; Ketentuan</a></li>
-              <li><a href="#">Kebijakan Privasi</a></li>
-              <li><a href="#">Kontak</a></li>
+              <li><a href="#">{language === 'en' ? 'Terms & Conditions' : 'Syarat & Ketentuan'}</a></li>
+              <li><a href="#">{language === 'en' ? 'Privacy Policy' : 'Kebijakan Privasi'}</a></li>
+              <li><a href="#">{language === 'en' ? 'Contact' : 'Kontak'}</a></li>
             </ul>
           </div>
         </div>
         <div className="nv-footer-bottom">
-          <span>© {new Date().getFullYear()} Hukum Asumsi. Seluruh hak dilindungi.</span>
-          <span className="nv-footer-bottom-accent">Dibuat dengan ✦ untuk pencari kebenaran</span>
+          <span>{t('footerRights').replace('{year}', new Date().getFullYear().toString())}</span>
+          <span className="nv-footer-bottom-accent">{t('footerMadeWith')}</span>
         </div>
       </footer>
     </div>

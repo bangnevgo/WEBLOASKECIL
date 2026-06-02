@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
+import { useTranslation } from '@/lib/translations'
 import { 
   MessageCircle, 
   Heart, 
@@ -28,6 +29,7 @@ import {
 import { toast } from 'sonner'
 import Image from 'next/image'
 import { ALL_PARTS } from '@/lib/curriculum-data'
+import { ALL_PARTS_EN } from '@/lib/curriculum-data-en'
 import KnowledgeBank from '@/components/knowledge-bank'
 
 // ── Types ──
@@ -82,7 +84,7 @@ const AVATAR_COLORS = [
   'linear-gradient(135deg, #fb923c, #f97316)',
 ]
 
-const CATEGORIES = [
+const CATEGORIES_ID = [
   { id: 'all', label: 'Semua', emoji: '📋' },
   { id: 'wins', label: 'Kemenangan (Wins)', emoji: '🏆' },
   { id: 'qna', label: 'Tanya Jawab', emoji: '💬' },
@@ -90,7 +92,15 @@ const CATEGORIES = [
   { id: 'resources', label: 'Sumber Daya', emoji: '📚' },
 ]
 
-const INITIAL_POSTS: Post[] = [
+const CATEGORIES_EN = [
+  { id: 'all', label: 'All', emoji: '📋' },
+  { id: 'wins', label: 'Wins', emoji: '🏆' },
+  { id: 'qna', label: 'Q&A', emoji: '💬' },
+  { id: 'discussions', label: 'Discussions', emoji: '🧠' },
+  { id: 'resources', label: 'Resources', emoji: '📚' },
+]
+
+const INITIAL_POSTS_ID: Post[] = [
   {
     id: 1,
     author: 'Toni Martin',
@@ -158,7 +168,75 @@ const INITIAL_POSTS: Post[] = [
   }
 ]
 
-const UPCOMING_EVENTS = [
+const INITIAL_POSTS_EN: Post[] = [
+  {
+    id: 1,
+    author: 'Toni Martin',
+    initials: 'TM',
+    colorIdx: 0,
+    role: 'Premium',
+    time: '2 hours ago',
+    category: 'wins',
+    title: 'Closed 120 Million IDR Project! Concrete Proof of SATS',
+    content: 'Just closed a project contract for 120 Million IDR! The SATS technique I learned in Part 1 really works. I visualized signing the contract every night before bed for 2 weeks until I felt a real sense of relief (as if it was already done). Suddenly, an old client reached out and we sealed the deal without lengthy negotiations. Believe in your imagination!',
+    likes: 48,
+    commentsCount: 3,
+    comments: [
+      { id: 101, author: 'Budi Santoso', initials: 'BS', colorIdx: 2, role: 'Premium', time: '1 hour ago', content: 'Awesome, bro! Huge congratulations, so inspiring.' },
+      { id: 102, author: 'Sarah Wijaya', initials: 'SW', colorIdx: 1, role: 'Master', time: '45 mins ago', content: 'Did the visualization of the contract signing feel very natural?' },
+      { id: 103, author: 'Toni Martin', initials: 'TM', colorIdx: 0, role: 'Premium', time: '30 mins ago', content: 'Yes, Sarah. I could feel the cold pen and the slightly textured paper.' }
+    ]
+  },
+  {
+    id: 2,
+    author: 'Sarah Wijaya',
+    initials: 'SW',
+    colorIdx: 1,
+    role: 'Master',
+    time: '5 hours ago',
+    category: 'discussions',
+    title: 'How to Handle an Obstacle-Filled "Bridge of Incidents"?',
+    content: 'Has anyone experienced the "bridge of incidents" phenomenon after consistently assuming, but the path in the middle becomes full of drama? I am revising my career, but suddenly there is a division restructuring at work. I know this is part of the bridge, but how do you keep your mind in a positive assumption in a chaotic situation?',
+    likes: 36,
+    commentsCount: 2,
+    comments: [
+      { id: 104, author: 'Dimas Pratama', initials: 'DP', colorIdx: 9, role: 'Master', time: '3 hours ago', content: 'Think of it as the dismantling of the old foundation, Sarah. Neville said not to interfere with the way it manifests.' },
+      { id: 105, author: 'Sarah Wijaya', initials: 'SW', colorIdx: 1, role: 'Master', time: '2 hours ago', content: 'Thank you, Dimas, that is a very good reminder.' }
+    ]
+  },
+  {
+    id: 3,
+    author: 'Budi Santoso',
+    initials: 'BS',
+    colorIdx: 2,
+    role: 'Premium',
+    time: '1 day ago',
+    category: 'qna',
+    title: 'Difference Between "Feeling Satisfied" vs "Wishful Thinking" in Practice?',
+    content: 'How do you distinguish between "feeling" (experiencing inner satisfaction) and "wishful thinking" (just daydreaming)? Sometimes I feel like I have assumed, but thinking back I still long for it during the day. Any practical tips?',
+    likes: 29,
+    commentsCount: 1,
+    comments: [
+      { id: 106, author: 'Toni Martin', initials: 'TM', colorIdx: 0, role: 'Premium', time: '18 hours ago', content: 'If you still long for it during the day, it means your assumption has not hardened in the subconscious. Your nightly SATS needs to be deepened until you feel relief.' }
+    ]
+  },
+  {
+    id: 4,
+    author: 'Maya Devi',
+    initials: 'MD',
+    colorIdx: 3,
+    role: 'Premium',
+    time: '2 days ago',
+    category: 'wins',
+    title: 'Manifestation of a Healthy & Harmonious Relationship',
+    content: 'After 6 months of consistent shadow work and changing self-concept, I finally succeeded in restoring my relationship with my partner. From being full of jealousy drama and coldness, now he changed drastically to be very attentive and supportive. Neville is right: "No one to change but self."',
+    likes: 67,
+    commentsCount: 0,
+    comments: []
+  }
+]
+
+const UPCOMING_EVENTS_ID = [
   {
     id: 1,
     title: 'Weekly Live Group Meditation & SATS',
@@ -188,7 +266,37 @@ const UPCOMING_EVENTS = [
   }
 ]
 
-const INITIAL_LEADERBOARD: LeaderboardUser[] = [
+const UPCOMING_EVENTS_EN = [
+  {
+    id: 1,
+    title: 'Weekly Live Group Meditation & SATS',
+    date: 'Every Thursday',
+    time: '21:00 - 22:00 WIB',
+    desc: 'Group induction into Theta state guided directly by Bang Nevgo. We visualize our respective desires simultaneously.',
+    link: 'https://zoom.us/j/meet-sats',
+    type: 'Zoom Meeting'
+  },
+  {
+    id: 2,
+    title: 'Q&A Session & Assumption Case Study',
+    date: 'Saturday, May 30, 2026',
+    time: '16:00 - 17:30 WIB',
+    desc: 'Submit your daily practice obstacles. We interactively analyze SATS imagination scenes and daily revision methods.',
+    link: 'https://zoom.us/j/meet-qa',
+    type: 'Zoom Meeting'
+  },
+  {
+    id: 3,
+    title: 'Masterclass: Reprogramming Inner Shadow',
+    date: 'Sunday, June 14, 2026',
+    time: '19:00 - 21:00 WIB',
+    desc: 'Exclusive for Master tier. Unravel deepest limiting beliefs and integrate shadow aspects so manifestation is not hindered.',
+    link: 'https://zoom.us/j/meet-vip',
+    type: 'VIP Zoom Masterclass'
+  }
+]
+
+const INITIAL_LEADERBOARD = [
   { rank: 1, name: 'Dimas Pratama', initials: 'DP', level: 6, points: 2450, streak: 12, colorIdx: 9 },
   { rank: 2, name: 'Sarah Wijaya', initials: 'SW', level: 5, points: 1840, streak: 8, colorIdx: 1 },
   { rank: 3, name: 'Toni Martin', initials: 'TM', level: 4, points: 1250, streak: 15, colorIdx: 0 },
@@ -198,7 +306,7 @@ const INITIAL_LEADERBOARD: LeaderboardUser[] = [
   { rank: 7, name: 'Fajar Nugroho', initials: 'FN', level: 2, points: 410, streak: 2, colorIdx: 7 }
 ]
 
-const LEVEL_REWARDS = [
+const LEVEL_REWARDS_ID = [
   { level: 1, name: 'Pengembara Kesadaran', pointsReq: 0, reward: 'Akses 3 Pelajaran Dasar & Buku Panduan Gratis' },
   { level: 2, name: 'Asumtif Junior', pointsReq: 200, reward: 'Membuka Audio Meditasi SATS & Diagnosa Limiting Belief' },
   { level: 3, name: 'Penyelaras Perasaan', pointsReq: 600, reward: 'Membuka Meditasi Kemakmuran & Reprogramming Diri' },
@@ -207,12 +315,26 @@ const LEVEL_REWARDS = [
   { level: 6, name: 'Kesadaran Ilahi', pointsReq: 2200, reward: 'Membuka Seluruh Rekaman Webinar VIP & Prioritas Konsultasi' }
 ]
 
+const LEVEL_REWARDS_EN = [
+  { level: 1, name: 'Consciousness Wanderer', pointsReq: 0, reward: 'Access to 3 Basic Lessons & Free Guidebook' },
+  { level: 2, name: 'Junior Assumer', pointsReq: 200, reward: 'Unlock SATS Meditation Audio & Limiting Belief Diagnosis' },
+  { level: 3, name: 'Feeling Aligner', pointsReq: 600, reward: 'Unlock Prosperity Meditation & Self-Reprogramming' },
+  { level: 4, name: 'Imagination Guru', pointsReq: 1000, reward: 'Unlock SATS Journal PDF & Shadow Work Diagnosis' },
+  { level: 5, name: 'Manifestation Master', pointsReq: 1500, reward: 'Unlock Private Q&A Session & 2 VIP Webinar Recordings' },
+  { level: 6, name: 'Divine Consciousness', pointsReq: 2200, reward: 'Unlock All VIP Webinar Recordings & Priority Consultation' }
+]
+
 export default function CommunityPage() {
   const { setView, hasCommunityAccess, userName, subscriptionTier } = useAppStore()
+  const { t, language } = useTranslation()
+
+  const activeCategories = language === 'en' ? CATEGORIES_EN : CATEGORIES_ID
+  const activeEvents = language === 'en' ? UPCOMING_EVENTS_EN : UPCOMING_EVENTS_ID
+  const activeLevelRewards = language === 'en' ? LEVEL_REWARDS_EN : LEVEL_REWARDS_ID
   
   // ── States ──
   const [activeTab, setActiveTab] = useState<'feed' | 'classroom' | 'calendar' | 'leaderboard' | 'knowledge' | 'about'>('feed')
-  const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS)
+  const [posts, setPosts] = useState<Post[]>([])
   const [activeCategory, setActiveCategory] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
   const [sortBy, setSortBy] = useState<'active' | 'popular' | 'newest'>('newest')
@@ -226,6 +348,24 @@ export default function CommunityPage() {
       setShowWelcomeVideo(false)
     }
   }, [])
+
+  // Sync posts when language changes (keeps user-created posts)
+  useEffect(() => {
+    setPosts(prev => {
+      const targetMocks = language === 'en' ? INITIAL_POSTS_EN : INITIAL_POSTS_ID
+      const sourceMocks = language === 'en' ? INITIAL_POSTS_ID : INITIAL_POSTS_EN
+      if (prev.length === 0) {
+        return targetMocks
+      }
+      return prev.map(p => {
+        const mockMatch = sourceMocks.find(m => m.id === p.id)
+        if (mockMatch) {
+          return targetMocks.find(m => m.id === p.id) || p
+        }
+        return p
+      })
+    })
+  }, [language])
 
   // Pricing/Upgrade modal state for non-premium users attempting interactions
   const [showPricingModal, setShowPricingModal] = useState(false)
@@ -271,13 +411,13 @@ export default function CommunityPage() {
     }))
     // Gain points for interacting (simulate)
     setUserPoints(prev => prev + 5)
-    toast('✦ Anda mendapatkan +5 Poin!')
+    toast(language === 'en' ? '✦ You received +5 Points!' : '✦ Anda mendapatkan +5 Poin!')
   }
 
   const handleCreatePost = (e: React.FormEvent) => {
     e.preventDefault()
     if (!newTitle || !newContent) {
-      toast.error('Mohon lengkapi judul dan konten postingan')
+      toast.error(language === 'en' ? 'Please complete the title and content' : 'Mohon lengkapi judul dan konten postingan')
       return
     }
 
@@ -287,7 +427,7 @@ export default function CommunityPage() {
       initials: (userName || 'PB').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2),
       colorIdx: Math.floor(Math.random() * AVATAR_COLORS.length),
       role: subscriptionTier.toUpperCase(),
-      time: 'Baru saja',
+      time: language === 'en' ? 'Just now' : 'Baru saja',
       category: newCategory,
       title: newTitle,
       content: newContent,
@@ -301,7 +441,7 @@ export default function CommunityPage() {
     setNewTitle('')
     setNewContent('')
     setUserPoints(prev => prev + 25)
-    toast.success('Postingan diterbitkan! Anda mendapatkan +25 Poin! 🏆')
+    toast.success(language === 'en' ? 'Post published! You received +25 Points! 🏆' : 'Postingan diterbitkan! Anda mendapatkan +25 Poin! 🏆')
   }
 
   const handleAddComment = (e: React.FormEvent) => {
@@ -314,7 +454,7 @@ export default function CommunityPage() {
       initials: (userName || 'PB').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2),
       colorIdx: 2,
       role: subscriptionTier.toUpperCase(),
-      time: 'Baru saja',
+      time: language === 'en' ? 'Just now' : 'Baru saja',
       content: commentText
     }
 
@@ -338,7 +478,7 @@ export default function CommunityPage() {
 
     setCommentText('')
     setUserPoints(prev => prev + 10)
-    toast.success('Komentar ditambahkan! +10 Poin!')
+    toast.success(language === 'en' ? 'Comment added! +10 Points!' : 'Komentar ditambahkan! +10 Poin!')
   }
 
   // ── Filters & Sorting ──
@@ -355,13 +495,13 @@ export default function CommunityPage() {
     })
 
   // ── Gamification Calculations ──
-  const currentLevelInfo = LEVEL_REWARDS.find(l => l.level === userLevel) || LEVEL_REWARDS[0]
-  const nextLevelInfo = LEVEL_REWARDS.find(l => l.level === userLevel + 1)
+  const currentLevelInfo = activeLevelRewards.find(l => l.level === userLevel) || activeLevelRewards[0]
+  const nextLevelInfo = activeLevelRewards.find(l => l.level === userLevel + 1)
   
   // Auto-level up check
   if (nextLevelInfo && userPoints >= nextLevelInfo.pointsReq) {
     setUserLevel(userLevel + 1)
-    toast.success(`🎉 LEVEL UP! Selamat Anda sekarang Level ${userLevel + 1}: ${nextLevelInfo.name}!`)
+    toast.success(language === 'en' ? `🎉 LEVEL UP! Congratulations, you are now Level ${userLevel + 1}: ${nextLevelInfo.name}!` : `🎉 LEVEL UP! Selamat Anda sekarang Level ${userLevel + 1}: ${nextLevelInfo.name}!`)
   }
 
   const pointsProgress = nextLevelInfo 
@@ -373,7 +513,7 @@ export default function CommunityPage() {
     ...INITIAL_LEADERBOARD,
     {
       rank: 0, // calculated dynamically below
-      name: `${userName || 'Anda'} (Kamu)`,
+      name: `${userName || (language === 'en' ? 'You' : 'Anda')} (${language === 'en' ? 'You' : 'Kamu'})`,
       initials: (userName || 'PB').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2),
       level: userLevel,
       points: userPoints,
@@ -394,13 +534,13 @@ export default function CommunityPage() {
         <div className="bg-gradient-to-r from-amber-500/20 via-amber-500/10 to-transparent border-b border-amber-500/30 px-6 py-2.5 backdrop-blur-md">
           <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
             <p className="text-xs text-amber-500 font-bold m-0 flex items-center gap-1.5">
-              <span>🔒 Anda berada dalam Mode Pratinjau. Upgrade untuk berdiskusi, membuka Classroom, dan join Live Zoom.</span>
+              <span>{language === 'en' ? '🔒 You are in Preview Mode. Upgrade to discuss, unlock Classroom, and join Live Zoom.' : '🔒 Anda berada dalam Mode Pratinjau. Upgrade untuk berdiskusi, membuka Classroom, dan join Live Zoom.'}</span>
             </p>
             <button 
               onClick={() => setView('pricing')} 
               className="text-[10px] font-bold text-neutral-950 bg-amber-500 hover:bg-[#e2b36e] px-3 py-1.5 rounded-lg transition uppercase tracking-wider cursor-pointer"
             >
-              Buka Akses Premium
+              {language === 'en' ? 'Unlock Premium Access' : 'Buka Akses Premium'}
             </button>
           </div>
         </div>
@@ -408,7 +548,7 @@ export default function CommunityPage() {
       {/* ── Sub Header / Banner ── */}
       <section className="nv-community-header">
         <button className="nv-community-back-btn" onClick={() => setView('dashboard')}>
-          ← Dasbor Pembelajaran
+          {language === 'en' ? '← Learning Dashboard' : '← Dasbor Pembelajaran'}
         </button>
         <div className="nv-community-header-glow" />
         <div className="nv-community-header-inner">
@@ -420,7 +560,10 @@ export default function CommunityPage() {
               AKU ANAK LOAS
             </h1>
             <p className="nv-community-header-desc text-xs sm:text-sm text-neutral-300 tracking-wide mt-1.5 font-medium">
-              Forum Komunitas Belajar Bersama Pure Teaching Neville Goddard - Law of Assumption
+              {language === 'en'
+                ? 'Co-Learning Community Forum for Neville Goddard’s Pure Teaching - Law of Assumption'
+                : 'Forum Komunitas Belajar Bersama Pure Teaching Neville Goddard - Law of Assumption'
+              }
             </p>
           </div>
         </div>
@@ -434,37 +577,37 @@ export default function CommunityPage() {
               className={`nv-tab-btn h-full border-b-2 rounded-none px-4 flex items-center gap-2 text-sm font-bold shrink-0 ${activeTab === 'feed' ? 'border-[#d4a053] text-[#d4a053]' : 'border-transparent text-neutral-400'}`}
               onClick={() => setActiveTab('feed')}
             >
-              💬 Diskusi
+              {language === 'en' ? '💬 Discussion' : '💬 Diskusi'}
             </button>
             <button 
               className={`nv-tab-btn h-full border-b-2 rounded-none px-4 flex items-center gap-2 text-sm font-bold shrink-0 ${activeTab === 'classroom' ? 'border-[#d4a053] text-[#d4a053]' : 'border-transparent text-neutral-400'}`}
               onClick={() => setActiveTab('classroom')}
             >
-              📚 Classroom
+              {language === 'en' ? '📚 Classroom' : '📚 Classroom'}
             </button>
             <button 
               className={`nv-tab-btn h-full border-b-2 rounded-none px-4 flex items-center gap-2 text-sm font-bold shrink-0 ${activeTab === 'calendar' ? 'border-[#d4a053] text-[#d4a053]' : 'border-transparent text-neutral-400'}`}
               onClick={() => setActiveTab('calendar')}
             >
-              📅 Kalender Sesi
+              {language === 'en' ? '📅 Calendar' : '📅 Kalender Sesi'}
             </button>
             <button 
               className={`nv-tab-btn h-full border-b-2 rounded-none px-4 flex items-center gap-2 text-sm font-bold shrink-0 ${activeTab === 'leaderboard' ? 'border-[#d4a053] text-[#d4a053]' : 'border-transparent text-neutral-400'}`}
               onClick={() => setActiveTab('leaderboard')}
             >
-              🏆 Leaderboard
+              {language === 'en' ? '🏆 Leaderboard' : '🏆 Leaderboard'}
             </button>
             <button 
               className={`nv-tab-btn h-full border-b-2 rounded-none px-4 flex items-center gap-2 text-sm font-bold shrink-0 ${activeTab === 'knowledge' ? 'border-[#d4a053] text-[#d4a053]' : 'border-transparent text-neutral-400'}`}
               onClick={() => setActiveTab('knowledge')}
             >
-              🧠 Bank Knowledge
+              {language === 'en' ? '🧠 Knowledge Bank' : '🧠 Bank Knowledge'}
             </button>
             <button 
               className={`nv-tab-btn h-full border-b-2 rounded-none px-4 flex items-center gap-2 text-sm font-bold shrink-0 ${activeTab === 'about' ? 'border-[#d4a053] text-[#d4a053]' : 'border-transparent text-neutral-400'}`}
               onClick={() => setActiveTab('about')}
             >
-              ℹ️ Tentang
+              {language === 'en' ? 'ℹ️ About' : 'ℹ️ Tentang'}
             </button>
           </div>
 
@@ -481,7 +624,7 @@ export default function CommunityPage() {
             
             <div className="flex items-center gap-1 text-[#f87171] font-bold text-xs">
               <Flame size={14} className="fill-current" />
-              <span>{userStreak} hari</span>
+              <span>{language === 'en' ? `${userStreak} days` : `${userStreak} hari`}</span>
             </div>
           </div>
         </div>
@@ -517,19 +660,28 @@ export default function CommunityPage() {
                       <div className="flex items-center gap-2">
                         <span className="px-2 py-0.5 bg-amber-500/10 border border-amber-500/30 text-[#d4a053] font-mono text-[9px] font-bold rounded uppercase tracking-wider flex items-center gap-1">
                           <Pin size={10} className="rotate-45" />
-                          <span>Pinned</span>
+                          <span>{language === 'en' ? 'Pinned' : 'Tersemat'}</span>
                         </span>
-                        <h3 className="text-xs sm:text-sm font-bold text-white m-0">Selamat Datang & Panduan Batin (Wajib Tonton!) 🎬</h3>
+                        <h3 className="text-xs sm:text-sm font-bold text-white m-0">
+                          {language === 'en'
+                            ? 'Welcome & Inner Orientation Guide (Must Watch!) 🎬'
+                            : 'Selamat Datang & Panduan Batin (Wajib Tonton!) 🎬'
+                          }
+                        </h3>
                       </div>
                       
                       <button 
                         onClick={() => {
                           setShowWelcomeVideo(false)
                           localStorage.setItem('nv-hide-welcome-video', 'true')
-                          toast.info('Video panduan disembunyikan. Anda dapat membukanya kembali kapan saja.')
+                          toast.info(
+                            language === 'en'
+                              ? 'Orientation video hidden. You can show it again anytime.'
+                              : 'Video panduan disembunyikan. Anda dapat membukanya kembali kapan saja.'
+                          )
                         }}
                         className="text-neutral-500 hover:text-white p-1 rounded-lg bg-neutral-900/40 hover:bg-neutral-900 transition border border-neutral-800"
-                        title="Sembunyikan Video"
+                        title={language === 'en' ? 'Hide Video' : 'Sembunyikan Video'}
                       >
                         <X size={14} />
                       </button>
@@ -549,22 +701,27 @@ export default function CommunityPage() {
                       </div>
                       
                       <div className="md:col-span-5 flex flex-col gap-2">
-                        <h4 className="text-[10px] font-bold text-amber-500 font-outfit uppercase tracking-wider m-0">PESAN DARI BANG NEVGO</h4>
+                        <h4 className="text-[10px] font-bold text-amber-500 font-outfit uppercase tracking-wider m-0">
+                          {language === 'en' ? 'MESSAGE FROM BANG NEVGO' : 'PESAN DARI BANG NEVGO'}
+                        </h4>
                         <p className="text-[11px] text-neutral-400 leading-relaxed m-0">
-                          Video ini merangkum dasar melatih SATS (State Allied to Sleep), cara merevisi hari secara interaktif, dan cara berpartisipasi aktif untuk naik peringkat di leaderboard komunitas demi membuka hadiah materi VIP.
+                          {language === 'en'
+                            ? 'This video summarizes the basics of practicing SATS (State Akin to Sleep), how to interactively revise your day, and how to participate actively to level up in the community leaderboard to unlock VIP material rewards.'
+                            : 'Video ini merangkum dasar melatih SATS (State Allied to Sleep), cara merevisi hari secara interaktif, dan cara berpartisipasi aktif untuk naik peringkat di leaderboard komunitas demi membuka hadiah materi VIP.'
+                          }
                         </p>
                         <div className="flex gap-2 mt-2">
                           <button 
                             onClick={() => setActiveTab('classroom')} 
                             className="nv-activation-widget-btn py-1.5 px-3 rounded-lg text-[10px] w-auto font-bold flex items-center gap-1 shadow-md"
                           >
-                            Jelajahi Classroom
+                            {language === 'en' ? 'Explore Classroom' : 'Jelajahi Classroom'}
                           </button>
                           <button 
                             onClick={() => setActiveTab('calendar')} 
                             className="bg-neutral-900 border border-neutral-800 text-neutral-300 hover:text-white hover:border-neutral-700 py-1.5 px-3 rounded-lg text-[10px] w-auto font-bold transition"
                           >
-                            Jadwal Live Zoom
+                            {language === 'en' ? 'Live Zoom Schedule' : 'Jadwal Live Zoom'}
                           </button>
                         </div>
                       </div>
@@ -580,7 +737,7 @@ export default function CommunityPage() {
                       className="text-[10px] font-bold text-amber-500 hover:text-[#e2b36e] flex items-center gap-1.5 bg-[#d4a053]/10 border border-[#d4a053]/20 px-3 py-1.5 rounded-lg transition"
                     >
                       <Pin size={10} className="rotate-45" />
-                      Tampilkan Video Panduan Pinned 🎬
+                      {language === 'en' ? 'Show Pinned Guide Video 🎬' : 'Tampilkan Video Panduan Pinned 🎬'}
                     </button>
                   </div>
                 )}
@@ -591,7 +748,7 @@ export default function CommunityPage() {
                     <Search size={14} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500" />
                     <input
                       type="text"
-                      placeholder="Cari postingan..."
+                      placeholder={language === 'en' ? 'Search posts...' : 'Cari postingan...'}
                       className="w-full bg-neutral-900/60 border border-neutral-800 rounded-lg pl-9 pr-4 py-1.5 text-xs text-[#e8e4dc] outline-none focus:border-amber-500/50"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
@@ -604,26 +761,26 @@ export default function CommunityPage() {
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${sortBy === 'newest' ? 'bg-[#d4a053]/15 text-[#d4a053]' : 'text-neutral-400 hover:text-white'}`}
                       onClick={() => setSortBy('newest')}
                     >
-                      Terbaru
+                      {language === 'en' ? 'Newest' : 'Terbaru'}
                     </button>
                     <button 
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${sortBy === 'popular' ? 'bg-[#d4a053]/15 text-[#d4a053]' : 'text-neutral-400 hover:text-white'}`}
                       onClick={() => setSortBy('popular')}
                     >
-                      Populer
+                      {language === 'en' ? 'Popular' : 'Populer'}
                     </button>
                     <button 
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${sortBy === 'active' ? 'bg-[#d4a053]/15 text-[#d4a053]' : 'text-neutral-400 hover:text-white'}`}
                       onClick={() => setSortBy('active')}
                     >
-                      Aktif
+                      {language === 'en' ? 'Active' : 'Aktif'}
                     </button>
                   </div>
                 </div>
 
                 {/* Categories Scrollbar */}
                 <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-                  {CATEGORIES.map(cat => (
+                  {activeCategories.map(cat => (
                     <button
                       key={cat.id}
                       className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap border transition ${
@@ -653,7 +810,9 @@ export default function CommunityPage() {
                     <div className="w-8 h-8 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-500 font-bold text-xs">
                       {(userName || 'U').charAt(0).toUpperCase()}
                     </div>
-                    <span className="text-xs text-neutral-500 flex-1">Bagikan kemenangan asumsi atau tanyakan sesuatu...</span>
+                    <span className="text-xs text-neutral-500 flex-1">
+                      {language === 'en' ? 'Share your assumption wins or ask a question...' : 'Bagikan kemenangan asumsi atau tanyakan sesuatu...'}
+                    </span>
                     <Plus size={16} className="text-neutral-400" />
                   </div>
                 ) : (
@@ -664,20 +823,22 @@ export default function CommunityPage() {
                     animate={{ opacity: 1, y: 0 }}
                   >
                     <div className="flex justify-between items-center border-b border-neutral-900 pb-3">
-                      <span className="text-xs font-bold text-amber-500">TULIS POSTINGAN BARU</span>
+                      <span className="text-xs font-bold text-amber-500">
+                        {language === 'en' ? 'WRITE NEW POST' : 'TULIS POSTINGAN BARU'}
+                      </span>
                       <button 
                         type="button" 
                         className="text-neutral-500 hover:text-white text-xs"
                         onClick={() => setIsCreatingPost(false)}
                       >
-                        Batal
+                        {language === 'en' ? 'Cancel' : 'Batal'}
                       </button>
                     </div>
 
                     <div className="flex flex-col gap-3">
                       <input
                         type="text"
-                        placeholder="Judul postingan..."
+                        placeholder={language === 'en' ? 'Post title...' : 'Judul postingan...'}
                         required
                         className="w-full bg-transparent border-none text-sm font-bold text-white outline-none placeholder:text-neutral-600"
                         value={newTitle}
@@ -685,7 +846,7 @@ export default function CommunityPage() {
                       />
                       
                       <textarea
-                        placeholder="Tuliskan pengalaman atau pertanyaan Anda secara mendalam disini..."
+                        placeholder={language === 'en' ? 'Write your experience or question in detail here...' : 'Tuliskan pengalaman atau pertanyaan Anda secara mendalam disini...'}
                         required
                         rows={5}
                         className="w-full bg-transparent border-none text-xs text-neutral-300 outline-none resize-none placeholder:text-neutral-600 leading-relaxed"
@@ -696,22 +857,24 @@ export default function CommunityPage() {
 
                     <div className="flex flex-col sm:flex-row gap-3 items-center justify-between border-t border-neutral-900 pt-3 mt-2">
                       <div className="flex gap-2 items-center">
-                        <span className="text-[10px] text-neutral-500 uppercase font-mono">PILIH KATEGORI:</span>
+                        <span className="text-[10px] text-neutral-500 uppercase font-mono">
+                          {language === 'en' ? 'CHOOSE CATEGORY:' : 'PILIH KATEGORI:'}
+                        </span>
                         <select 
                           className="bg-neutral-900 border border-neutral-800 rounded px-2.5 py-1 text-xs text-[#e8e4dc] outline-none"
                           value={newCategory}
                           onChange={(e) => setNewCategory(e.target.value)}
                         >
-                          <option value="discussions">Diskusi 🧠</option>
-                          <option value="wins">Kemenangan (Wins) 🏆</option>
-                          <option value="qna">Tanya Jawab 💬</option>
-                          <option value="resources">Sumber Daya 📚</option>
+                          <option value="discussions">{language === 'en' ? 'Discussion 🧠' : 'Diskusi 🧠'}</option>
+                          <option value="wins">{language === 'en' ? 'Wins 🏆' : 'Kemenangan (Wins) 🏆'}</option>
+                          <option value="qna">{language === 'en' ? 'Q&A 💬' : 'Tanya Jawab 💬'}</option>
+                          <option value="resources">{language === 'en' ? 'Resources 📚' : 'Sumber Daya 📚'}</option>
                         </select>
                       </div>
 
                       <button type="submit" className="nv-auth-submit-btn py-2 px-6 w-auto flex gap-1.5 items-center">
                         <Send size={13} />
-                        <span>Kirim Post</span>
+                        <span>{language === 'en' ? 'Submit Post' : 'Kirim Post'}</span>
                       </button>
                     </div>
                   </motion.form>
@@ -749,7 +912,7 @@ export default function CommunityPage() {
                           </div>
                           
                           <span className="text-xs bg-neutral-900/60 border border-neutral-800 px-2.5 py-0.5 rounded-full text-neutral-400 flex items-center gap-1 font-semibold">
-                            {CATEGORIES.find(c => c.id === post.category)?.emoji} {CATEGORIES.find(c => c.id === post.category)?.label}
+                            {activeCategories.find(c => c.id === post.category)?.emoji} {activeCategories.find(c => c.id === post.category)?.label}
                           </span>
                         </div>
 
@@ -781,11 +944,13 @@ export default function CommunityPage() {
                               }}
                             >
                               <MessageCircle size={14} />
-                              <span>{post.commentsCount} Komentar</span>
+                              <span>{post.commentsCount} {language === 'en' ? 'Comments' : 'Komentar'}</span>
                             </button>
                           </div>
                           
-                          <span className="text-[10px] text-neutral-600 font-mono">Dapatkan +5 pts untuk menyukai postingan</span>
+                          <span className="text-[10px] text-neutral-600 font-mono">
+                            {language === 'en' ? 'Earn +5 pts for liking posts' : 'Dapatkan +5 pts untuk menyukai postingan'}
+                          </span>
                         </div>
                       </motion.div>
                     ))}
@@ -793,8 +958,15 @@ export default function CommunityPage() {
                 ) : (
                   <div className="text-center py-16 border border-dashed border-neutral-900 rounded-xl">
                     <span className="text-4xl">📭</span>
-                    <p className="text-sm font-bold text-neutral-400 mt-2">Tidak ada diskusi ditemukan</p>
-                    <p className="text-xs text-neutral-500 mt-1 max-w-xs mx-auto">Coba cari dengan kata kunci lain atau pilih kategori yang sesuai.</p>
+                    <p className="text-sm font-bold text-neutral-400 mt-2">
+                      {language === 'en' ? 'No discussions found' : 'Tidak ada diskusi ditemukan'}
+                    </p>
+                    <p className="text-xs text-neutral-500 mt-1 max-w-xs mx-auto">
+                      {language === 'en'
+                        ? 'Try searching with other keywords or choose a different category.'
+                        : 'Coba cari dengan kata kunci lain atau pilih kategori yang sesuai.'
+                      }
+                    </p>
                   </div>
                 )}
               </motion.div>
@@ -810,12 +982,19 @@ export default function CommunityPage() {
                 className="flex flex-col gap-6"
               >
                 <div>
-                  <h2 className="text-xl font-bold text-[#e8e4dc] leading-tight m-0">📚 Classroom: Kurikulum Asumsi</h2>
-                  <p className="text-xs text-neutral-400 m-0 mt-1">Gunakan tab ini untuk melompat langsung ke kurikulum pembelajaran 10 bagian.</p>
+                  <h2 className="text-xl font-bold text-[#e8e4dc] leading-tight m-0">
+                    {language === 'en' ? '📚 Classroom: Assumption Curriculum' : '📚 Classroom: Kurikulum Asumsi'}
+                  </h2>
+                  <p className="text-xs text-neutral-400 m-0 mt-1">
+                    {language === 'en'
+                      ? 'Use this tab to jump directly to the 10-part learning curriculum.'
+                      : 'Gunakan tab ini untuk melompat langsung ke kurikulum pembelajaran 10 bagian.'
+                    }
+                  </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {ALL_PARTS.map((part, idx) => (
+                  {(language === 'en' ? ALL_PARTS_EN : ALL_PARTS).map((part, idx) => (
                     <motion.div
                       key={part.id}
                       className="nv-pdf-card nv-premium-glass p-5 border border-neutral-900 hover:border-amber-500/20 transition flex flex-col justify-between"
@@ -832,13 +1011,15 @@ export default function CommunityPage() {
                       <div>
                         <div className="flex items-center justify-between">
                           <span className="text-[10px] text-amber-500 font-mono font-bold">{part.num}</span>
-                          <span className="text-[10px] text-neutral-500 font-mono">{part.lessons.length} Pelajaran</span>
+                          <span className="text-[10px] text-neutral-500 font-mono">
+                            {part.lessons.length} {language === 'en' ? 'Lessons' : 'Pelajaran'}
+                          </span>
                         </div>
                         <h3 className="text-sm font-bold text-[#e8e4dc] m-0 mt-1 line-clamp-1">{part.title}</h3>
                         <p className="text-xs text-neutral-400 line-clamp-2 leading-relaxed m-0 mt-1.5">{part.description}</p>
                       </div>
                       <span className="text-[11px] text-[#d4a053] font-semibold mt-4 flex items-center gap-1">
-                        Buka di Dasbor <ChevronRight size={12} />
+                        {language === 'en' ? 'Open in Dashboard' : 'Buka di Dasbor'} <ChevronRight size={12} />
                       </span>
                     </motion.div>
                   ))}
@@ -856,12 +1037,19 @@ export default function CommunityPage() {
                 className="flex flex-col gap-6"
               >
                 <div>
-                  <h2 className="text-xl font-bold text-[#e8e4dc] leading-tight m-0">📅 Jadwal Sesi Live Komunitas</h2>
-                  <p className="text-xs text-neutral-400 m-0 mt-1">Jangan lewatkan sesi meditasi serentak dan bedah kasus interaktif bersama praktisi lainnya.</p>
+                  <h2 className="text-xl font-bold text-[#e8e4dc] leading-tight m-0">
+                    {language === 'en' ? '📅 Live Community Sessions Schedule' : '📅 Jadwal Sesi Live Komunitas'}
+                  </h2>
+                  <p className="text-xs text-neutral-400 m-0 mt-1">
+                    {language === 'en'
+                      ? 'Don’t miss the simultaneous meditation sessions and interactive case studies with other practitioners.'
+                      : 'Jangan lewatkan sesi meditasi serentak dan bedah kasus interaktif bersama praktisi lainnya.'
+                    }
+                  </p>
                 </div>
 
                 <div className="flex flex-col gap-4">
-                  {UPCOMING_EVENTS.map(event => (
+                  {activeEvents.map(event => (
                     <div 
                       key={event.id} 
                       className="nv-pdf-card nv-premium-glass p-5 border border-neutral-900 flex flex-col md:flex-row justify-between md:items-center gap-4"
@@ -888,7 +1076,7 @@ export default function CommunityPage() {
                           className="nv-pdf-download-btn flex gap-1.5 items-center justify-center text-center py-2 px-5 shrink-0 cursor-pointer"
                           style={{ height: 'max-content' }}
                         >
-                          <span>Join Sesi</span>
+                          <span>{language === 'en' ? 'Join Session' : 'Join Sesi'}</span>
                           <ExternalLink size={12} />
                         </button>
                       ) : (
@@ -899,7 +1087,7 @@ export default function CommunityPage() {
                           className="nv-pdf-download-btn flex gap-1.5 items-center justify-center text-center py-2 px-5 shrink-0"
                           style={{ height: 'max-content' }}
                         >
-                          <span>Join Sesi</span>
+                          <span>{language === 'en' ? 'Join Session' : 'Join Sesi'}</span>
                           <ExternalLink size={12} />
                         </a>
                       )}
@@ -922,16 +1110,23 @@ export default function CommunityPage() {
                 <div className="nv-pricing-cta-section p-6 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-6 text-left" style={{ margin: 0 }}>
                   <div>
                     <h3 className="text-sm font-bold text-amber-500 m-0 uppercase font-mono tracking-wider flex items-center gap-1.5">
-                      <Trophy size={14} /> Posisi Peringkat Anda
+                      <Trophy size={14} /> {language === 'en' ? 'Your Leaderboard Rank' : 'Posisi Peringkat Anda'}
                     </h3>
-                    <h2 className="text-xl font-black text-white m-0 mt-1">Peringkat #{currentUserRank} dari 885 Anggota</h2>
+                    <h2 className="text-xl font-black text-white m-0 mt-1">
+                      {language === 'en' ? `Rank #${currentUserRank} of 885 Members` : `Peringkat #${currentUserRank} dari 885 Anggota`}
+                    </h2>
                     <p className="text-xs text-neutral-300 leading-relaxed m-0 mt-1">
-                      Kumpulkan poin dengan membagikan kemenangan asumsi (+25), berkomentar (+10), atau disukai (+5) oleh anggota lainnya.
+                      {language === 'en'
+                        ? 'Earn points by sharing assumption wins (+25), commenting (+10), or getting liked (+5) by other members.'
+                        : 'Kumpulkan poin dengan membagikan kemenangan asumsi (+25), berkomentar (+10), atau disukai (+5) oleh anggota lainnya.'
+                      }
                     </p>
                   </div>
                   
                   <div className="bg-neutral-950/60 border border-neutral-900 rounded-xl px-5 py-3 flex flex-col items-center justify-center shrink-0 w-36 text-center">
-                    <span className="text-[10px] text-neutral-500 font-bold uppercase tracking-wider">Level Saat Ini</span>
+                    <span className="text-[10px] text-neutral-500 font-bold uppercase tracking-wider">
+                      {language === 'en' ? 'Current Level' : 'Level Saat Ini'}
+                    </span>
                     <span className="text-3xl font-black text-amber-500 mt-1">{userLevel}</span>
                     <span className="text-[10px] text-neutral-400 font-semibold truncate w-full px-1">{currentLevelInfo.name}</span>
                   </div>
@@ -941,7 +1136,7 @@ export default function CommunityPage() {
                   {/* Top Members List */}
                   <div className="md:col-span-2 flex flex-col gap-3">
                     <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest border-b border-neutral-900 pb-2 m-0">
-                      🏆 KELAS UTAMA PERINGKAT (ALL TIME)
+                      {language === 'en' ? '🏆 LEADERBOARD RANKINGS (ALL TIME)' : '🏆 KELAS UTAMA PERINGKAT (ALL TIME)'}
                     </h3>
                     <div className="flex flex-col gap-2">
                       {leaderboardData.map((user) => (
@@ -985,10 +1180,10 @@ export default function CommunityPage() {
                   {/* Level Progression Rewards list */}
                   <div className="flex flex-col gap-3">
                     <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest border-b border-neutral-900 pb-2 m-0">
-                      🎁 UNLOCK REWARDS LEVEL
+                      {language === 'en' ? '🎁 LEVEL UNLOCK REWARDS' : '🎁 UNLOCK REWARDS LEVEL'}
                     </h3>
                     <div className="flex flex-col gap-3">
-                      {LEVEL_REWARDS.map(reward => {
+                      {activeLevelRewards.map(reward => {
                         const isUnlocked = userLevel >= reward.level
                         return (
                           <div 
@@ -1004,7 +1199,9 @@ export default function CommunityPage() {
                                 Lv. {reward.level} — {reward.name}
                               </span>
                               {isUnlocked ? (
-                                <span className="text-[10px] text-green-500">✓ Terbuka</span>
+                                <span className="text-[10px] text-green-500">
+                                  ✓ {language === 'en' ? 'Unlocked' : 'Terbuka'}
+                                </span>
                               ) : (
                                 <span className="text-[10px] text-neutral-500 font-mono">{reward.pointsReq} pts</span>
                               )}
@@ -1031,8 +1228,15 @@ export default function CommunityPage() {
                 className="flex flex-col gap-6"
               >
                 <div>
-                  <h2 className="text-xl font-bold text-[#e8e4dc] leading-tight m-0">🧠 Bank Knowledge: Repositori Keilmuan</h2>
-                  <p className="text-xs text-neutral-400 m-0 mt-1">Akses lengkap rekaman webinar, video live TikTok, dokumen PDF pendukung, serta audio meditasi.</p>
+                  <h2 className="text-xl font-bold text-[#e8e4dc] leading-tight m-0">
+                    {language === 'en' ? '🧠 Knowledge Bank: Learning Repository' : '🧠 Bank Knowledge: Repositori Keilmuan'}
+                  </h2>
+                  <p className="text-xs text-neutral-400 m-0 mt-1">
+                    {language === 'en'
+                      ? 'Full access to webinar recordings, live TikTok videos, supporting PDF documents, and meditation audios.'
+                      : 'Akses lengkap rekaman webinar, video live TikTok, dokumen PDF pendukung, serta audio meditasi.'
+                    }
+                  </p>
                 </div>
                 <KnowledgeBank isCommunityMode={true} />
               </motion.div>
@@ -1050,7 +1254,7 @@ export default function CommunityPage() {
                 {/* Pinned Video in About */}
                 <div className="nv-community-about-card nv-premium-glass p-6 border border-neutral-900 flex flex-col gap-4">
                   <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest flex items-center gap-2 m-0">
-                    🎬 Video Panduan & Orientasi Komunitas
+                    {language === 'en' ? '🎬 Guide Video & Community Orientation' : '🎬 Video Panduan & Orientasi Komunitas'}
                   </h3>
                   <div className="relative w-full rounded-xl overflow-hidden border border-neutral-850 shadow-2xl bg-neutral-950" style={{ aspectRatio: '16/9', maxWidth: '720px' }}>
                     <iframe
@@ -1062,35 +1266,56 @@ export default function CommunityPage() {
                     />
                   </div>
                   <p className="text-xs text-neutral-400 leading-relaxed m-0">
-                    Tonton orientasi video ini untuk memahami bagaimana menggunakan platform ini secara maksimal. Kami membahas cara belajar di tab *Classroom*, berinteraksi di forum *Diskusi*, menghadiri sesi di *Kalender Sesi*, dan bersenang-senang mengumpulkan poin di *Leaderboard*.
+                    {language === 'en'
+                      ? 'Watch this orientation video to understand how to make the most of this platform. We cover how to study in the *Classroom* tab, interact in the *Discussion* forum, attend sessions in the *Calendar*, and have fun collecting points in the *Leaderboard*.'
+                      : 'Tonton orientasi video ini untuk memahami bagaimana menggunakan platform ini secara maksimal. Kami membahas cara belajar di tab *Classroom*, berinteraksi di forum *Diskusi*, menghadiri sesi di *Kalender Sesi*, dan bersenang-senang mengumpulkan poin di *Leaderboard*.'
+                    }
                   </p>
                 </div>
 
                 <div className="nv-community-about-card nv-premium-glass p-6 border border-neutral-900">
                   <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest flex items-center gap-2 m-0 mb-3">
-                    <Info size={16} /> Tentang Komunitas AKU ANAK LOAS
+                    <Info size={16} /> {language === 'en' ? 'About AKU ANAK LOAS Community' : 'Tentang Komunitas AKU ANAK LOAS'}
                   </h3>
                   <p className="text-xs text-neutral-300 leading-relaxed m-0">
-                    Ini adalah tempat berkumpul eksklusif bagi praktisi Hukum Asumsi Neville Goddard di Indonesia. Di sini, setiap anggota berkomitmen untuk menghentikan pencarian metode instan di luar dan berfokus melatih batin ke dalam kesadaran diri. Komunitas ini mengintegrasikan leaderboard gamifikasi untuk memotivasi interaksi berkualitas.
+                    {language === 'en'
+                      ? 'This is an exclusive gathering place for practitioners of Neville Goddard’s Law of Assumption in Indonesia. Here, each member commits to stopping the search for instant methods outside and focusing on training the inner self into self-consciousness. This community integrates a gamified leaderboard to motivate high-quality interactions.'
+                      : 'Ini adalah tempat berkumpul eksklusif bagi praktisi Hukum Asumsi Neville Goddard di Indonesia. Di sini, setiap anggota berkomitmen untuk menghentikan pencarian metode instan di luar dan berfokus melatih batin ke dalam kesadaran diri. Komunitas ini mengintegrasikan leaderboard gamifikasi untuk memotivasi interaksi berkualitas.'
+                    }
                   </p>
                 </div>
                 
                 <div className="nv-community-about-card nv-premium-glass p-6 border border-neutral-900">
                   <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest flex items-center gap-2 m-0 mb-3">
-                    <Shield size={16} /> Panduan & Aturan Berlaku
+                    <Shield size={16} /> {language === 'en' ? 'Guidelines & Rules' : 'Panduan & Aturan Berlaku'}
                   </h3>
                   <ul className="list-none padding-0 margin-0 flex flex-col gap-3">
                     <li className="text-xs text-neutral-300 leading-relaxed flex gap-2">
                       <span className="text-amber-500">🤝</span>
-                      <span>Hormati perjalanan batin setiap orang. Dilarang mendebat kasar atau menyerang keyakinan anggota lain.</span>
+                      <span>
+                        {language === 'en'
+                          ? 'Respect everyone’s inner journey. Rude debating or attacking other members’ beliefs is prohibited.'
+                          : 'Hormati perjalanan batin setiap orang. Dilarang mendebat kasar atau menyerang keyakinan anggota lain.'
+                        }
+                      </span>
                     </li>
                     <li className="text-xs text-neutral-300 leading-relaxed flex gap-2">
                       <span className="text-amber-500">🔒</span>
-                      <span>Menjaga rahasia sharing. Apa yang diceritakan di forum internal tetap berada di forum ini.</span>
+                      <span>
+                        {language === 'en'
+                          ? 'Keep shared stories private. What is told in the internal forum stays in this forum.'
+                          : 'Menjaga rahasia sharing. Apa yang diceritakan di forum internal tetap berada di forum ini.'
+                        }
+                      </span>
                     </li>
                     <li className="text-xs text-neutral-300 leading-relaxed flex gap-2">
                       <span className="text-amber-500">🧠</span>
-                      <span>Semua postingan wajib berlandaskan pada materi Hukum Asumsi Neville Goddard. Postingan luar topik/iklan promosi akan langsung dihapus oleh moderator.</span>
+                      <span>
+                        {language === 'en'
+                          ? 'All posts must be based on Neville Goddard’s Law of Assumption materials. Off-topic/promotional posts will be immediately deleted by moderators.'
+                          : 'Semua postingan wajib berlandaskan pada materi Hukum Asumsi Neville Goddard. Postingan luar topik/iklan promosi akan langsung dihapus oleh moderator.'
+                        }
+                      </span>
                     </li>
                   </ul>
                 </div>
@@ -1123,13 +1348,17 @@ export default function CommunityPage() {
             {/* Streak & Points display */}
             <div className="grid grid-cols-2 gap-4 w-full text-left mb-4">
               <div className="bg-neutral-950/40 p-3 rounded-lg border border-neutral-900/50">
-                <span className="text-[9px] text-neutral-500 font-bold uppercase block">Streak Aktif</span>
+                <span className="text-[9px] text-neutral-500 font-bold uppercase block">
+                  {language === 'en' ? 'Active Streak' : 'Streak Aktif'}
+                </span>
                 <span className="text-sm font-bold text-[#f87171] mt-0.5 block flex items-center gap-1">
-                  <Flame size={14} className="fill-current" /> {userStreak} Hari
+                  <Flame size={14} className="fill-current" /> {userStreak} {language === 'en' ? 'Days' : 'Hari'}
                 </span>
               </div>
               <div className="bg-neutral-950/40 p-3 rounded-lg border border-neutral-900/50">
-                <span className="text-[9px] text-neutral-500 font-bold uppercase block">Skor Poin</span>
+                <span className="text-[9px] text-neutral-500 font-bold uppercase block">
+                  {language === 'en' ? 'Point Score' : 'Skor Poin'}
+                </span>
                 <span className="text-sm font-bold text-[#e8e4dc] mt-0.5 block font-mono">
                   {userPoints} Pts
                 </span>
@@ -1140,14 +1369,17 @@ export default function CommunityPage() {
             {nextLevelInfo && (
               <div className="w-full text-left">
                 <div className="flex justify-between items-center text-[10px] text-neutral-400 font-bold mb-1">
-                  <span>Progress Level {userLevel}</span>
+                  <span>{language === 'en' ? `Level ${userLevel} Progress` : `Progress Level ${userLevel}`}</span>
                   <span>{userPoints} / {nextLevelInfo.pointsReq} Pts</span>
                 </div>
                 <div className="w-full bg-neutral-900 h-2 rounded-full overflow-hidden border border-neutral-800">
                   <div className="bg-gradient-to-r from-amber-500 to-[#e2b36e] h-full rounded-full" style={{ width: `${pointsProgress}%` }} />
                 </div>
                 <p className="text-[9px] text-neutral-500 mt-1 leading-normal italic">
-                  Berikutnya: **{nextLevelInfo.name}** (Hadiah: {nextLevelInfo.reward})
+                  {language === 'en'
+                    ? `Next: **${nextLevelInfo.name}** (Reward: ${nextLevelInfo.reward})`
+                    : `Berikutnya: **${nextLevelInfo.name}** (Hadiah: ${nextLevelInfo.reward})`
+                  }
                 </p>
               </div>
             )}
@@ -1156,7 +1388,7 @@ export default function CommunityPage() {
           {/* Quick upcoming event countdown */}
           <div className="nv-premium-glass p-5 border border-neutral-900 flex flex-col gap-3">
             <h4 className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-2 border-b border-neutral-900 pb-2 m-0">
-              📅 SESI TERDEKAT
+              {language === 'en' ? '📅 UPCOMING SESSION' : '📅 SESI TERDEKAT'}
             </h4>
             
             {/* Embedded Flyer Image with full-screen zoom handler */}
@@ -1164,7 +1396,7 @@ export default function CommunityPage() {
               className="relative w-full rounded-lg overflow-hidden border border-neutral-800 shadow-md group cursor-zoom-in" 
               style={{ aspectRatio: '1/1.4' }}
               onClick={() => setShowFlyerLightbox(true)}
-              title="Klik untuk memperbesar flyer"
+              title={language === 'en' ? 'Click to enlarge flyer' : 'Klik untuk memperbesar flyer'}
             >
               <img 
                 src="/images/illustrations/webinar-flyer.jpg" 
@@ -1179,17 +1411,21 @@ export default function CommunityPage() {
 
             <div className="flex flex-col gap-2">
               <div className="text-[10px] bg-amber-500/10 border border-amber-500/30 text-amber-500 font-mono px-2 py-0.5 rounded w-max font-bold uppercase">
-                Webinar Spesial
+                {language === 'en' ? 'Special Webinar' : 'Webinar Spesial'}
               </div>
-              <h5 className="text-xs font-bold text-neutral-200 m-0 leading-snug">Dimana Manifestku? Kenapa Belum Berhasil.</h5>
-              <p className="text-[10px] text-neutral-500 font-mono m-0">Minggu, 26 April 2026 • 18:00 WIB</p>
+              <h5 className="text-xs font-bold text-neutral-200 m-0 leading-snug">
+                {language === 'en' ? 'Where is My Manifestation? Why Has it Not Succeeded.' : 'Dimana Manifestku? Kenapa Belum Berhasil.'}
+              </h5>
+              <p className="text-[10px] text-neutral-500 font-mono m-0">
+                {language === 'en' ? 'Sunday, April 26, 2026 • 18:00 WIB' : 'Minggu, 26 April 2026 • 18:00 WIB'}
+              </p>
               
               {!isAccessAllowed ? (
                 <button 
                   onClick={() => setShowPricingModal(true)} 
                   className="nv-pdf-download-btn py-1.5 mt-1 flex items-center justify-center gap-1.5 text-xs text-center cursor-pointer font-bold w-full"
                 >
-                  <span>Daftar / Join Sesi</span>
+                  <span>{language === 'en' ? 'Register / Join Session' : 'Daftar / Join Sesi'}</span>
                   <ExternalLink size={10} />
                 </button>
               ) : (
@@ -1199,7 +1435,7 @@ export default function CommunityPage() {
                   rel="noopener noreferrer" 
                   className="nv-pdf-download-btn py-1.5 mt-1 flex items-center justify-center gap-1.5 text-xs text-center font-bold w-full"
                 >
-                  <span>Join Sesi Zoom</span>
+                  <span>{language === 'en' ? 'Join Zoom Session' : 'Join Sesi Zoom'}</span>
                   <ExternalLink size={10} />
                 </a>
               )}
@@ -1209,16 +1445,19 @@ export default function CommunityPage() {
           {/* Quick Knowledge Bank Shortcut widget */}
           <div className="nv-premium-glass p-5 border border-neutral-900 flex flex-col gap-2">
             <h4 className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-1 border-b border-neutral-900 pb-2 m-0 flex items-center gap-1">
-              <span>🧠 BANK KNOWLEDGE</span>
+              <span>{language === 'en' ? '🧠 KNOWLEDGE BANK' : '🧠 BANK KNOWLEDGE'}</span>
             </h4>
             <p className="text-[11px] text-neutral-400 leading-relaxed m-0 mt-1.5">
-              Akses materi tambahan: rekaman webinar VIP, video live TikTok, PDF materi, dan meditasi audio terbimbing.
+              {language === 'en'
+                ? 'Access additional materials: VIP webinar recordings, live TikTok videos, material PDFs, and guided audio meditations.'
+                : 'Akses materi tambahan: rekaman webinar VIP, video live TikTok, PDF materi, dan meditasi audio terbimbing.'
+              }
             </p>
             <button 
               onClick={() => setActiveTab('knowledge')} 
               className="nv-pdf-download-btn py-1.5 mt-2 flex items-center justify-center gap-1.5 text-xs text-center cursor-pointer font-bold w-full"
             >
-              <span>Buka Bank Knowledge</span>
+              <span>{language === 'en' ? 'Open Knowledge Bank' : 'Buka Bank Knowledge'}</span>
               <ChevronRight size={12} />
             </button>
           </div>
@@ -1240,7 +1479,9 @@ export default function CommunityPage() {
             >
               {/* Header */}
               <div className="flex justify-between items-center border-b border-neutral-900 pb-3">
-                <span className="text-xs font-bold text-amber-500">KOMENTAR POSTINGAN</span>
+                <span className="text-xs font-bold text-amber-500">
+                  {language === 'en' ? 'POST COMMENTS' : 'KOMENTAR POSTINGAN'}
+                </span>
                 <button className="text-neutral-400 hover:text-white" onClick={handleClose}>
                   <X size={16} />
                 </button>
@@ -1290,7 +1531,9 @@ export default function CommunityPage() {
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-6 text-xs text-neutral-500 font-mono">Belum ada komentar. Jadilah yang pertama berkomentar!</div>
+                  <div className="text-center py-6 text-xs text-neutral-500 font-mono">
+                    {language === 'en' ? 'No comments yet. Be the first to comment!' : 'Belum ada komentar. Jadilah yang pertama berkomentar!'}
+                  </div>
                 )}
               </div>
 
@@ -1298,14 +1541,14 @@ export default function CommunityPage() {
               <form onSubmit={handleAddComment} className="flex gap-2 items-center mt-2 border-t border-neutral-900 pt-3">
                 <input
                   type="text"
-                  placeholder="Ketik komentar Anda..."
+                  placeholder={language === 'en' ? 'Type your comment...' : 'Ketik komentar Anda...'}
                   required
                   className="flex-1 bg-neutral-900/60 border border-neutral-850 rounded-lg px-4 py-2 text-xs text-[#e8e4dc] outline-none focus:border-amber-500/40"
                   value={commentText}
                   onChange={(e) => setCommentText(e.target.value)}
                 />
                 <button type="submit" className="nv-activation-widget-btn py-2 px-4 rounded-lg">
-                  Kirim
+                  {language === 'en' ? 'Send' : 'Kirim'}
                 </button>
               </form>
             </motion.div>
@@ -1336,25 +1579,34 @@ export default function CommunityPage() {
 
               <div className="text-center py-4 flex flex-col items-center gap-3">
                 <div className="text-5xl drop-shadow-lg">👑</div>
-                <h3 className="text-lg font-bold text-white font-outfit m-0">Fitur Premium Terkunci</h3>
+                <h3 className="text-lg font-bold text-white font-outfit m-0">
+                  {language === 'en' ? 'Premium Feature Locked' : 'Fitur Premium Terkunci'}
+                </h3>
                 <p className="text-xs text-neutral-400 leading-relaxed max-w-sm m-0">
-                  Untuk menyukai, berkomentar, membuat postingan baru, membuka kurikulum Classroom, atau bergabung sesi Live Zoom, silakan tingkatkan akun Anda ke Premium.
+                  {language === 'en'
+                    ? 'To like, comment, write new posts, open the Classroom curriculum, or join Live Zoom sessions, please upgrade your account to Premium.'
+                    : 'Untuk menyukai, berkomentar, membuat postingan baru, membuka kurikulum Classroom, atau bergabung sesi Live Zoom, silakan tingkatkan akun Anda ke Premium.'
+                  }
                 </p>
               </div>
 
               <div className="bg-neutral-950/60 border border-neutral-900 rounded-xl p-4 flex flex-col gap-3">
                 <div className="flex justify-between items-center">
                   <div className="flex flex-col">
-                    <span className="text-xs font-bold text-white">Tier Premium</span>
-                    <span className="text-[10px] text-neutral-500">Akses komunitas, meditasi, & 49 pelajaran</span>
+                    <span className="text-xs font-bold text-white">{language === 'en' ? 'Premium Tier' : 'Tier Premium'}</span>
+                    <span className="text-[10px] text-neutral-500">
+                      {language === 'en' ? 'Access community, meditations, & 49 lessons' : 'Akses komunitas, meditasi, & 49 pelajaran'}
+                    </span>
                   </div>
                   <span className="text-xs font-bold text-amber-500 font-mono">Rp 149.000 / bln</span>
                 </div>
                 <div className="w-full border-t border-neutral-900" />
                 <div className="flex justify-between items-center">
                   <div className="flex flex-col">
-                    <span className="text-xs font-bold text-[#a78bfa]">Tier Master (VIP)</span>
-                    <span className="text-[10px] text-neutral-500">Semua benefit Premium + Webinar Eksklusif</span>
+                    <span className="text-xs font-bold text-[#a78bfa]">{language === 'en' ? 'Master Tier (VIP)' : 'Tier Master (VIP)'}</span>
+                    <span className="text-[10px] text-neutral-500">
+                      {language === 'en' ? 'All Premium benefits + Exclusive Webinars' : 'Semua benefit Premium + Webinar Eksklusif'}
+                    </span>
                   </div>
                   <span className="text-xs font-bold text-[#a78bfa] font-mono">Rp 299.000 / bln</span>
                 </div>
@@ -1369,13 +1621,13 @@ export default function CommunityPage() {
                   className="nv-cta-button nv-cta-pulse w-full py-2.5 rounded-lg text-xs font-bold text-center flex items-center justify-center gap-2"
                 >
                   <UserPlus size={14} />
-                  <span>Upgrade & Buka Akses Sekarang</span>
+                  <span>{language === 'en' ? 'Upgrade & Unlock Access Now' : 'Upgrade & Buka Akses Sekarang'}</span>
                 </button>
                 <button
                   onClick={() => setShowPricingModal(false)}
                   className="bg-neutral-900 border border-neutral-800 text-neutral-450 hover:text-white py-2 rounded-lg text-xs font-semibold"
                 >
-                  Kembali Menjelajah (Pratinjau)
+                  {language === 'en' ? 'Go Back to Browsing (Preview)' : 'Kembali Menjelajah (Pratinjau)'}
                 </button>
               </div>
             </motion.div>

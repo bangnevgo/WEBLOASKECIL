@@ -32,6 +32,8 @@ interface AppState {
   userEmail: string
   isAuthenticated: boolean
   setUserName: (name: string) => void
+  language: 'id' | 'en'
+  setLanguage: (lang: 'id' | 'en') => void
   activePartId: string | null
   activeLessonNum: string | null
   openLesson: (partId: string, lessonNum: string) => void
@@ -84,10 +86,18 @@ function persistState(state: {
   subscriptionTier: SubscriptionTier
   isAdmin: boolean
   completedLessons: string[]
+  language?: 'id' | 'en'
 }) {
   if (typeof window === 'undefined') return
   try {
-    localStorage.setItem('nv-app-state', JSON.stringify(state))
+    const existing = localStorage.getItem('nv-app-state')
+    const parsed = existing ? JSON.parse(existing) : {}
+    const finalState = {
+      ...parsed,
+      ...state,
+      language: state.language || parsed.language || 'id'
+    }
+    localStorage.setItem('nv-app-state', JSON.stringify(finalState))
   } catch {
     // localStorage might be full or blocked
   }
@@ -121,6 +131,19 @@ export const useAppStore = create<AppState>((set, get) => ({
   userName: persisted?.userName || '',
   userEmail: persisted?.userEmail || '',
   isAuthenticated: persisted?.isAuthenticated || false,
+  language: persisted?.language || 'id',
+  setLanguage: (language) => {
+    set({ language })
+    persistState({
+      userName: get().userName,
+      userEmail: get().userEmail,
+      isAuthenticated: get().isAuthenticated,
+      subscriptionTier: get().subscriptionTier,
+      isAdmin: get().isAdmin,
+      completedLessons: [...get().completedLessons],
+      language
+    })
+  },
   setUserName: (name) => {
     set({ userName: name })
     persistState({

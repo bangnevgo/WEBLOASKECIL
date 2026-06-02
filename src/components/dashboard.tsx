@@ -5,6 +5,8 @@ import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore, SubscriptionTier } from '@/lib/store'
 import { ALL_PARTS } from '@/lib/curriculum-data'
+import { ALL_PARTS_EN } from '@/lib/curriculum-data-en'
+import { useTranslation } from '@/lib/translations'
 import { Users, Crown, BookOpen, Sparkles, Key, Play, Lock, LogOut, CheckCircle2 } from 'lucide-react'
 import AudioPlayer from '@/components/ui/audio-player'
 import WebinarHub from '@/components/webinar-hub'
@@ -74,7 +76,62 @@ const MEDITATIONS = [
   }
 ]
 
+const MEDITATIONS_EN = [
+  {
+    slug: 'sats-meditation',
+    title: 'SATS Meditation: Entering the Theta State',
+    duration: '15:00',
+    desc: 'Audio guide to enter State Akin To Sleep (SATS) to implant assumptions in the subconscious mind.',
+    file: 'sats-meditation.mp3',
+    minTier: 'basic'
+  },
+  {
+    slug: 'visualisasi-kesehatan',
+    title: 'Perfect Health Visualization',
+    duration: '10:00',
+    desc: 'Audio loop to assist visualization of a recovered and prime body with feelings of gratitude.',
+    file: 'visualisasi-kesehatan.mp3',
+    minTier: 'basic'
+  },
+  {
+    slug: 'visualisasi-kemakmuran',
+    title: 'Prosperity & Wealth Visualization',
+    duration: '10:00',
+    desc: 'Assuming financial abundance from the perspective of the wish fulfilled naturally.',
+    file: 'visualisasi-kemakmuran.mp3',
+    minTier: 'master'
+  },
+  {
+    slug: 'revisi-malam',
+    title: 'Night Revision: Rewriting Your Day',
+    duration: '12:00',
+    desc: 'Before-bed exercise to revise and replace negative memories of the day with ideal assumptions.',
+    file: 'revisi-malam.mp3',
+    minTier: 'master'
+  },
+  {
+    slug: 'afirmasi-iam',
+    title: 'Great I AM Affirmations: Theta Repetition',
+    duration: '20:00',
+    desc: 'Affirmations loop confirming the divine presence within, most receptive in theta wave state.',
+    file: 'afirmasi-iam.mp3',
+    minTier: 'master'
+  },
+  {
+    slug: 'meditasi-gratitude',
+    title: 'Gratitude Meditation: Living from the End',
+    duration: '10:00',
+    desc: 'Locking in the vibration of gratitude implying that your desire has already fully manifested.',
+    file: 'meditasi-gratitude.mp3',
+    minTier: 'master'
+  }
+]
+
 export default function Dashboard() {
+  const { t, language } = useTranslation()
+  const curriculumParts = language === 'en' ? ALL_PARTS_EN : ALL_PARTS
+  const meditationsList = language === 'en' ? MEDITATIONS_EN : MEDITATIONS
+
   const { 
     userName, 
     subscriptionTier,
@@ -92,7 +149,7 @@ export default function Dashboard() {
   const [activationCode, setActivationCode] = useState('')
   const [activeAudio, setActiveAudio] = useState<typeof MEDITATIONS[0] | null>(null)
 
-  const totalLessons = ALL_PARTS.reduce((acc, p) => acc + p.lessons.length, 0)
+  const totalLessons = curriculumParts.reduce((acc, p) => acc + p.lessons.length, 0)
   const completedCount = completedLessons.size
   const progressPct = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0
 
@@ -105,7 +162,7 @@ export default function Dashboard() {
   const handleActivation = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!activationCode.trim()) {
-      toast.error('Mohon masukkan kode aktivasi')
+      toast.error(language === 'en' ? 'Please enter activation code' : 'Mohon masukkan kode aktivasi')
       return
     }
 
@@ -128,9 +185,13 @@ export default function Dashboard() {
     return false
   }
 
-  const handleAudioPlay = (audio: typeof MEDITATIONS[0]) => {
+  const handleAudioPlay = (audio: typeof meditationsList[0]) => {
     if (!hasAudioAccess(audio.minTier)) {
-      toast.error(`Audio terkunci. Silakan upgrade ke tier yang lebih tinggi untuk membuka meditasi ini.`)
+      toast.error(
+        language === 'en' 
+          ? 'Audio locked. Please upgrade to a higher plan to unlock this meditation.' 
+          : 'Audio terkunci. Silakan upgrade ke tier yang lebih tinggi untuk membuka meditasi ini.'
+      )
       setView('pricing')
       return
     }
@@ -150,9 +211,9 @@ export default function Dashboard() {
           >
             <div className="nv-dash-logo" style={{ boxShadow: '0 0 20px var(--nv-gold-glow)' }}>✦</div>
             <div>
-              <div style={{ fontWeight: 800, fontSize: 16, color: 'var(--nv-gold)' }}>Hukum Asumsi</div>
+              <div style={{ fontWeight: 800, fontSize: 16, color: 'var(--nv-gold)' }}>{language === 'en' ? 'Law of Assumption' : 'Hukum Asumsi'}</div>
               <div style={{ fontSize: 11, color: 'var(--nv-dim)', fontFamily: 'var(--font-geist-mono), monospace' }}>
-                PORTAL PEMBELAJARAN
+                {language === 'en' ? 'LEARNING PORTAL' : 'PORTAL PEMBELAJARAN'}
               </div>
             </div>
           </motion.div>
@@ -176,7 +237,7 @@ export default function Dashboard() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <LogOut size={12} /> Keluar
+              <LogOut size={12} /> {t('logout')}
             </motion.button>
           </motion.div>
         </div>
@@ -225,7 +286,7 @@ export default function Dashboard() {
                   {completedCount}<span style={{ fontSize: 13, color: 'var(--nv-dim)', fontWeight: 400 }}>/{totalLessons}</span>
                 </div>
                 <div style={{ fontSize: 11, color: 'var(--nv-muted)', fontFamily: 'var(--font-geist-mono), monospace', marginTop: 2 }}>
-                  {progressPct}% Selesai
+                  {progressPct}% {language === 'en' ? 'Completed' : 'Selesai'}
                 </div>
               </div>
             </div>
@@ -234,12 +295,12 @@ export default function Dashboard() {
           {/* Stats Row */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>
             <div className="nv-stat-card">
-              <div style={{ fontSize: 18, fontWeight: 900, color: 'var(--nv-gold)' }}>{ALL_PARTS.length}</div>
-              <div style={{ fontSize: 10, color: 'var(--nv-dim)', fontFamily: 'var(--font-geist-mono), monospace' }}>BAGIAN</div>
+              <div style={{ fontSize: 18, fontWeight: 900, color: 'var(--nv-gold)' }}>{curriculumParts.length}</div>
+              <div style={{ fontSize: 10, color: 'var(--nv-dim)', fontFamily: 'var(--font-geist-mono), monospace' }}>{language === 'en' ? 'PARTS' : 'BAGIAN'}</div>
             </div>
             <div className="nv-stat-card">
               <div style={{ fontSize: 18, fontWeight: 900, color: 'var(--nv-gold)' }}>{totalLessons - completedCount}</div>
-              <div style={{ fontSize: 10, color: 'var(--nv-dim)', fontFamily: 'var(--font-geist-mono), monospace' }}>SISA</div>
+              <div style={{ fontSize: 10, color: 'var(--nv-dim)', fontFamily: 'var(--font-geist-mono), monospace' }}>{language === 'en' ? 'REMAINING' : 'SISA'}</div>
             </div>
           </div>
 
@@ -251,21 +312,21 @@ export default function Dashboard() {
               animate={{ opacity: 1 }}
             >
               <h4 className="text-xs font-bold text-amber-500 flex items-center gap-1.5 uppercase m-0">
-                <Key size={12} /> Aktivasi Kode Akses
+                <Key size={12} /> {t('activationCode')}
               </h4>
               <p className="text-[11px] text-neutral-400 m-0 mt-1 leading-relaxed">
-                Punya kode aktivasi? Masukkan di bawah untuk membuka pelajaran instan.
+                {language === 'en' ? 'Have an activation code? Enter it below to unlock lessons instantly.' : 'Punya kode aktivasi? Masukkan di bawah untuk membuka pelajaran instan.'}
               </p>
               <form onSubmit={handleActivation} className="nv-activation-widget-row">
                 <input
                   type="text"
-                  placeholder="KODE AKTIVASI"
+                  placeholder={language === 'en' ? 'ACTIVATION CODE' : 'KODE AKTIVASI'}
                   className="nv-activation-widget-input"
                   value={activationCode}
                   onChange={(e) => setActivationCode(e.target.value)}
                 />
                 <button type="submit" className="nv-activation-widget-btn">
-                  Aktifkan
+                  {language === 'en' ? 'Activate' : 'Aktifkan'}
                 </button>
               </form>
 
@@ -285,7 +346,7 @@ export default function Dashboard() {
                 onClick={() => setView('community')}
               >
                 <Users size={16} />
-                <span>Masuk Komunitas Privat</span>
+                <span>{language === 'en' ? 'Enter Private Community' : 'Masuk Komunitas Privat'}</span>
               </button>
             </motion.div>
           )}
@@ -293,7 +354,7 @@ export default function Dashboard() {
           {/* Lessons Sidebar list (only visible if tab is lessons) */}
           {activeTab === 'lessons' && (
             <nav className="nv-dash-nav">
-              {ALL_PARTS.map((part, partIdx) => {
+              {curriculumParts.map((part, partIdx) => {
                 const partCompleted = part.lessons.filter((l) => completedLessons.has(l.num)).length
                 return (
                   <div key={part.id} className="nv-dash-nav-section">
@@ -316,7 +377,11 @@ export default function Dashboard() {
                               openLesson(part.id, lesson.num)
                               setSidebarOpen(false)
                             } else {
-                              toast.info('Pelajaran terkunci. Upgrade ke Paket Basic untuk membuka kurikulum.')
+                              toast.info(
+                                language === 'en'
+                                  ? 'Lesson locked. Upgrade to Basic Plan to unlock curriculum.'
+                                  : 'Pelajaran terkunci. Upgrade ke Paket Basic untuk membuka kurikulum.'
+                              )
                               setView('pricing')
                             }
                           }}
@@ -346,21 +411,21 @@ export default function Dashboard() {
               onClick={() => setActiveTab('lessons')}
             >
               <BookOpen size={16} />
-              <span>📚 Kurikulum</span>
+              <span>{language === 'en' ? '📚 Curriculum' : '📚 Kurikulum'}</span>
             </button>
             <button 
               className={`nv-tab-btn ${activeTab === 'meditations' ? 'active' : ''}`}
               onClick={() => setActiveTab('meditations')}
             >
               <Sparkles size={16} />
-              <span>🎧 Meditasi Audio</span>
+              <span>{language === 'en' ? '🎧 Audio Meditations' : '🎧 Meditasi Audio'}</span>
             </button>
             <button 
               className={`nv-tab-btn ${activeTab === 'webinars' ? 'active' : ''}`}
               onClick={() => setActiveTab('webinars')}
             >
               <Users size={16} />
-              <span>🎥 Webinar VIP</span>
+              <span>{language === 'en' ? '🎥 VIP Webinars' : '🎥 Webinar VIP'}</span>
             </button>
           </div>
 
@@ -388,19 +453,25 @@ export default function Dashboard() {
                 >
                   <div style={{ position: 'absolute', top: -30, right: -30, width: 120, height: 120, borderRadius: '50%', background: 'rgba(212, 160, 83, 0.05)', filter: 'blur(30px)' }} />
                   <h2 style={{ fontSize: 20, fontWeight: 800, margin: '0 0 8px', position: 'relative', color: '#e8e4dc' }}>
-                    Selamat belajar kembali, {userName} ✦
+                    {t('dashboardWelcome').replace('{name}', userName)}
                   </h2>
                   <p style={{ fontSize: 13, color: 'var(--nv-muted)', margin: 0, position: 'relative', lineHeight: 1.6 }}>
                     {completedCount === 0
-                      ? "Mulailah melangkah ke Bagian 1: Kesadaran Adalah Satu-satunya Realitas. Ikuti arahan harian secara tertib."
+                      ? (language === 'en' 
+                          ? "Start stepping into Part 1: Consciousness Is The Only Reality. Follow the daily instructions orderly."
+                          : "Mulailah melangkah ke Bagian 1: Kesadaran Adalah Satu-satunya Realitas. Ikuti arahan harian secara tertib.")
                       : completedCount < totalLessons
-                        ? `Kemajuan Anda luar biasa! Anda menyelesaikan ${completedCount} dari ${totalLessons} pelajaran. Teruslah berpersistensi!`
-                        : 'Luar biasa! Anda telah menyelesaikan seluruh pelajaran kurikulum Hukum Asumsi. 🎉'
+                        ? (language === 'en'
+                            ? `Great progress! You have completed ${completedCount} out of ${totalLessons} lessons. Persist on!`
+                            : `Kemajuan Anda luar biasa! Anda menyelesaikan ${completedCount} dari ${totalLessons} pelajaran. Teruslah berpersistensi!`)
+                        : (language === 'en'
+                            ? 'Amazing! You have completed all lessons in the Law of Assumption curriculum. 🎉'
+                            : 'Luar biasa! Anda telah menyelesaikan seluruh pelajaran kurikulum Hukum Asumsi. 🎉')
                     }
                   </p>
                 </div>
 
-                {ALL_PARTS.map((part, partIdx) => (
+                {curriculumParts.map((part, partIdx) => (
                   <section
                     key={part.id}
                     id={`dash-${part.id}`}
@@ -454,7 +525,11 @@ export default function Dashboard() {
                               if (!isLocked) {
                                 openLesson(part.id, lesson.num)
                               } else {
-                                toast.info('Konten ini dikunci. Silakan lakukan pembayaran di halaman pricing.')
+                                toast.info(
+                                  language === 'en'
+                                    ? 'This content is locked. Please make a payment on the pricing page.'
+                                    : 'Konten ini dikunci. Silakan lakukan pembayaran di halaman pricing.'
+                                )
                                 setView('pricing')
                               }
                             }}
@@ -471,9 +546,9 @@ export default function Dashboard() {
                               {isLocked ? (
                                 <span className="text-xs">🔒</span>
                               ) : isComplete ? (
-                                <span style={{ fontSize: 12, color: 'var(--nv-gold)' }}>✓ Selesai</span>
+                                <span style={{ fontSize: 12, color: 'var(--nv-gold)' }}>{language === 'en' ? '✓ Completed' : '✓ Selesai'}</span>
                               ) : isFree ? (
-                                <span className="text-[10px] bg-amber-500/10 text-amber-500 px-1.5 py-0.5 rounded border border-amber-500/20 font-bold uppercase">Gratis</span>
+                                <span className="text-[10px] bg-amber-500/10 text-amber-500 px-1.5 py-0.5 rounded border border-amber-500/20 font-bold uppercase">{language === 'en' ? 'Free' : 'Gratis'}</span>
                               ) : null}
                             </div>
                             
@@ -514,19 +589,19 @@ export default function Dashboard() {
                     <AudioPlayer 
                       src={`/api/media?type=audio&file=${activeAudio.file}`}
                       title={activeAudio.title}
-                      subtitle={`Panduan Meditasi Neville Goddard • ${activeAudio.duration}`}
-                      onComplete={() => toast.success(`✦ Sesi meditasi selesai. Rasakan ketenangan Anda.`)}
+                      subtitle={language === 'en' ? `Neville Goddard Meditation Guide • ${activeAudio.duration}` : `Panduan Meditasi Neville Goddard • ${activeAudio.duration}`}
+                      onComplete={() => toast.success(language === 'en' ? `✦ Meditation session complete. Feel your wish fulfilled.` : `✦ Sesi meditasi selesai. Rasakan ketenangan Anda.`)}
                     />
                   </motion.div>
                 )}
 
                 <div>
-                  <h2 className="text-xl font-bold text-[#e8e4dc] leading-tight m-0">🎧 Meditasi Audio Terbimbing</h2>
-                  <p className="text-xs text-neutral-400 m-0 mt-1">Gunakan audio frekuensi theta ini di tempat tenang sebelum tidur (kondisi SATS) untuk reprogramming bawah sadar.</p>
+                  <h2 className="text-xl font-bold text-[#e8e4dc] leading-tight m-0">{language === 'en' ? '🎧 Guided Audio Meditations' : '🎧 Meditasi Audio Terbimbing'}</h2>
+                  <p className="text-xs text-neutral-400 m-0 mt-1">{language === 'en' ? 'Use these theta frequency audio sessions in a quiet place before sleep (SATS state) for subconscious reprogramming.' : 'Gunakan audio frekuensi theta ini di tempat tenang sebelum tidur (kondisi SATS) untuk reprogramming bawah sadar.'}</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {MEDITATIONS.map((audio, idx) => {
+                  {meditationsList.map((audio, idx) => {
                     const unlocked = hasAudioAccess(audio.minTier)
                     const isCurrent = activeAudio?.slug === audio.slug
                     

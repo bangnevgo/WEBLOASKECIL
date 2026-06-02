@@ -1,32 +1,34 @@
 'use client'
-
+ 
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
+import { useTranslation } from '@/lib/translations'
 import { ExternalLink } from 'lucide-react'
-
+ 
 const LYNK_ID_URL = 'https://lynk.id/bangnevgo'
-
+ 
 export default function LockedLessonModal() {
+  const { t, language } = useTranslation()
   const { lockedLesson, closeLockedLesson, setView, openFreeLesson } = useAppStore()
-
+ 
   if (!lockedLesson) return null
-
+ 
   const handleSubscribe = () => {
     closeLockedLesson()
     setView('pricing')
   }
-
+ 
   const handleTryFree = () => {
     closeLockedLesson()
     openFreeLesson('1.1')
   }
-
+ 
   const handleLynkPay = () => {
     window.open(LYNK_ID_URL, '_blank', 'noopener')
     closeLockedLesson()
     setView('pricing')
   }
-
+ 
   return (
     <AnimatePresence>
       <motion.div
@@ -45,30 +47,33 @@ export default function LockedLessonModal() {
           onClick={(e) => e.stopPropagation()}
         >
           <button className="nv-locked-close" onClick={closeLockedLesson}>✕</button>
-
+ 
           <div className="nv-locked-lock-icon">🔒</div>
-
+ 
           <div className="nv-locked-num">{lockedLesson.num}</div>
           <h3 className="nv-locked-title">{lockedLesson.title}</h3>
-
+ 
           <ul className="nv-locked-bullets">
             {lockedLesson.bullets.map((b, i) => (
               <li key={i}>{b}</li>
             ))}
           </ul>
-
+ 
           {/* Blurred preview area */}
           <div className="nv-locked-blur-area">
             <div className="nv-locked-blur-text">
-              Konten lengkap pelajaran ini tersedia untuk pelanggan. Dapatkan akses ke seluruh
-              49 pelajaran dengan kutipan bersumber, praktik harian, dan poin-poin penting
-              dari seluruh karya Neville Goddard...
+              {language === 'en'
+                ? 'The full content of this lesson is available for subscribers. Access all 49 lessons with sourced quotes, daily practices, and key takeaways from all of Neville Goddard\'s works...'
+                : 'Konten lengkap pelajaran ini tersedia untuk pelanggan. Dapatkan akses ke seluruh 49 pelajaran dengan kutipan bersumber, praktik harian, dan poin-poin penting dari seluruh karya Neville Goddard...'
+              }
             </div>
             <div className="nv-locked-blur-overlay">
-              <span className="nv-locked-blur-lock">✦ Konten Terkunci</span>
+              <span className="nv-locked-blur-lock">
+                {language === 'en' ? '✦ Content Locked' : '✦ Konten Terkunci'}
+              </span>
             </div>
           </div>
-
+ 
           <div className="nv-locked-cta">
             <motion.button
               className="nv-cta-button nv-cta-pulse"
@@ -79,16 +84,16 @@ export default function LockedLessonModal() {
             >
               <ExternalLink style={{ width: 16, height: 16 }} />
               <span className="nv-cta-icon">✦</span>
-              Buka Pelajaran — Bayar via Lynk.id
+              {language === 'en' ? 'Unlock Lesson — Pay via Lynk.id' : 'Buka Pelajaran — Bayar via Lynk.id'}
             </motion.button>
           </div>
-
+ 
           <button className="nv-locked-free-link" onClick={handleTryFree}>
-            Atau coba 3 pelajaran gratis →
+            {language === 'en' ? 'Or try 3 free lessons →' : 'Atau coba 3 pelajaran gratis →'}
           </button>
-
+ 
           <button className="nv-locked-have-code-link" onClick={handleSubscribe}>
-            Sudah punya kode aktivasi? Masukkan di sini →
+            {language === 'en' ? 'Already have an activation code? Enter here →' : 'Sudah punya kode aktivasi? Masukkan di sini →'}
           </button>
         </motion.div>
       </motion.div>

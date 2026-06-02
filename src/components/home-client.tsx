@@ -15,7 +15,7 @@ import AdminPanel from '@/components/admin-panel';
 import CommunityPage from '@/components/community/CommunityPage';
 
 export default function HomeClient() {
-  const { view } = useAppStore();
+  const { view, language } = useAppStore();
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
@@ -24,6 +24,12 @@ export default function HomeClient() {
   useEffect(() => {
     document.documentElement.classList.add('dark');
   }, []);
+
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = language;
+    }
+  }, [language]);
 
   switch (view) {
     case 'landing':

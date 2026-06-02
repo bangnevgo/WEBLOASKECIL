@@ -1,13 +1,15 @@
 'use client'
-
+ 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-
+import { useTranslation } from '@/lib/translations'
+ 
 const STORAGE_KEY = 'nv-cookie-consent'
-
+ 
 export default function CookieConsent() {
+  const { language } = useTranslation()
   const [visible, setVisible] = useState(false)
-
+ 
   useEffect(() => {
     // Sync with external system (localStorage) on mount — legitimate setState in effect
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -19,7 +21,7 @@ export default function CookieConsent() {
       }
     })
   }, [])
-
+ 
   const handleAccept = () => {
     try {
       localStorage.setItem(STORAGE_KEY, 'accepted')
@@ -28,7 +30,7 @@ export default function CookieConsent() {
     }
     setVisible(false)
   }
-
+ 
   return (
     <AnimatePresence>
       {visible && (
@@ -42,18 +44,21 @@ export default function CookieConsent() {
           <div className="nv-cookie-consent-inner">
             <div className="nv-cookie-consent-accent" />
             <p className="nv-cookie-consent-text">
-              Situs ini menggunakan cookie untuk menyimpan preferensi Anda. Dengan melanjutkan, Anda menyetujui penggunaan cookie.
+              {language === 'en'
+                ? 'This site uses cookies to save your preferences. By continuing, you agree to our use of cookies.'
+                : 'Situs ini menggunakan cookie untuk menyimpan preferensi Anda. Dengan melanjutkan, Anda menyetujui penggunaan cookie.'
+              }
             </p>
             <div className="nv-cookie-consent-actions">
               <button className="nv-cookie-consent-accept" onClick={handleAccept}>
-                Terima
+                {language === 'en' ? 'Accept' : 'Terima'}
               </button>
               <a href="#" className="nv-cookie-consent-learn">
-                Pelajari Lebih
+                {language === 'en' ? 'Learn More' : 'Pelajari Lebih'}
               </a>
             </div>
           </div>
-
+ 
           <style jsx>{`
             .nv-cookie-consent {
               position: fixed;
@@ -64,7 +69,7 @@ export default function CookieConsent() {
               padding: 0 16px 16px;
               pointer-events: none;
             }
-
+ 
             .nv-cookie-consent-inner {
               max-width: 720px;
               margin: 0 auto;
@@ -81,7 +86,7 @@ export default function CookieConsent() {
               overflow: hidden;
               flex-wrap: wrap;
             }
-
+ 
             .nv-cookie-consent-accent {
               position: absolute;
               top: 0;
@@ -91,7 +96,7 @@ export default function CookieConsent() {
               background: linear-gradient(180deg, var(--nv-gold), var(--nv-gold-2));
               border-radius: 3px 0 0 3px;
             }
-
+ 
             .nv-cookie-consent-text {
               flex: 1;
               font-size: 13px;
@@ -100,14 +105,14 @@ export default function CookieConsent() {
               margin: 0;
               min-width: 200px;
             }
-
+ 
             .nv-cookie-consent-actions {
               display: flex;
               align-items: center;
               gap: 10px;
               flex-shrink: 0;
             }
-
+ 
             .nv-cookie-consent-accept {
               padding: 8px 20px;
               background: linear-gradient(135deg, var(--nv-gold), var(--nv-gold-2));
@@ -120,11 +125,11 @@ export default function CookieConsent() {
               font-family: var(--font-geist-sans), system-ui, sans-serif;
               transition: box-shadow 0.2s;
             }
-
+ 
             .nv-cookie-consent-accept:hover {
               box-shadow: 0 4px 16px rgba(212, 160, 83, 0.35);
             }
-
+ 
             .nv-cookie-consent-learn {
               font-size: 13px;
               color: var(--nv-dim);
@@ -132,18 +137,18 @@ export default function CookieConsent() {
               transition: color 0.2s;
               white-space: nowrap;
             }
-
+ 
             .nv-cookie-consent-learn:hover {
               color: var(--nv-gold);
             }
-
+ 
             @media (max-width: 640px) {
               .nv-cookie-consent-inner {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 12px;
               }
-
+ 
               .nv-cookie-consent-actions {
                 width: 100%;
                 justify-content: flex-start;

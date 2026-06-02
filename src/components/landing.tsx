@@ -7,6 +7,8 @@ import { useAppStore } from '@/lib/store'
 import { toast } from 'sonner'
 import { Key } from 'lucide-react'
 import { ALL_PARTS, BONUS_ITEMS, MARQUEE_ITEMS, isLessonFree } from '@/lib/curriculum-data'
+import { ALL_PARTS_EN } from '@/lib/curriculum-data-en'
+import { useTranslation } from '@/lib/translations'
 
 const EBOOK_ITEMS = [
   { cover: '/images/ebooks/sukses-praktek-hukum-asumsi.jpg', title: 'Sukses Praktek Hukum Asumsi', tag: 'Hukum Asumsi Series' },
@@ -21,6 +23,7 @@ import AdminLoginModal from '@/components/admin-login-modal'
 import AiHubSection from '@/components/ai-hub-section'
 import FreeDownloadsSection from '@/components/free-downloads-section'
 import KnowledgeBank from '@/components/knowledge-bank'
+import CurriculumGraphView from '@/components/curriculum-graph-view'
 
 const staggerContainer = {
   animate: { transition: { staggerChildren: 0.06 } }
@@ -115,6 +118,8 @@ const partImageAspectRatios = [
 export default function Landing() {
   const { setView, setAdmin, isAuthenticated } = useAppStore()
   const isAdmin = useAppStore((s) => s.isAdmin)
+  const { t, language, setLanguage } = useTranslation()
+  const curriculumParts = language === 'en' ? ALL_PARTS_EN : ALL_PARTS
   const [activeSection, setActiveSection] = useState<string | null>(null)
   const [showBackTop, setShowBackTop] = useState(false)
   const [showAdminLogin, setShowAdminLogin] = useState(false)
@@ -143,7 +148,7 @@ export default function Landing() {
   // Scroll spy for active nav
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ALL_PARTS.map(p => document.getElementById(p.id)).filter(Boolean) as HTMLElement[]
+      const sections = curriculumParts.map(p => document.getElementById(p.id)).filter(Boolean) as HTMLElement[]
       const bonusEl = document.getElementById('bonus')
       if (bonusEl) sections.push(bonusEl)
 
@@ -162,7 +167,7 @@ export default function Landing() {
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [curriculumParts])
 
   const scrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -175,15 +180,44 @@ export default function Landing() {
         <div className="max-w-[1200px] mx-auto flex justify-between items-center">
           <div className="flex items-center gap-2 cursor-pointer" onClick={scrollToTop}>
             <div className="w-8 h-8 rounded-full bg-[#d4a053] flex items-center justify-center text-black font-extrabold shadow-md">✦</div>
-            <span className="font-outfit font-extrabold text-sm sm:text-base text-[#e8e4dc]">HUKUM ASUMSI</span>
+            <span className="font-outfit font-extrabold text-sm sm:text-base text-[#e8e4dc]">{t('navLogo')}</span>
           </div>
           <div className="flex items-center gap-4">
+            {/* Language Toggle */}
+            <div className="relative flex items-center bg-neutral-950 border border-neutral-800 rounded-full p-0.5 w-[72px] h-7">
+              <div 
+                className="absolute top-0.5 bottom-0.5 rounded-full bg-[#d4a053] shadow transition-all duration-300 ease-out"
+                style={{
+                  left: language === 'id' ? '2px' : '36px',
+                  width: '34px',
+                }}
+              />
+              <button 
+                className={`flex-1 text-[10px] font-extrabold text-center z-10 transition-colors duration-200 cursor-pointer ${
+                  language === 'id' ? 'text-black' : 'text-neutral-400 hover:text-neutral-200'
+                }`}
+                onClick={() => setLanguage('id')}
+                title="Bahasa Indonesia"
+              >
+                ID
+              </button>
+              <button 
+                className={`flex-1 text-[10px] font-extrabold text-center z-10 transition-colors duration-200 cursor-pointer ${
+                  language === 'en' ? 'text-black' : 'text-neutral-400 hover:text-neutral-200'
+                }`}
+                onClick={() => setLanguage('en')}
+                title="English"
+              >
+                EN
+              </button>
+            </div>
+
             {isAuthenticated ? (
               <button 
                 className="px-4 py-1.5 bg-[#d4a053]/10 hover:bg-[#d4a053]/20 border border-[#d4a053]/30 text-[#d4a053] text-xs font-bold rounded-lg transition cursor-pointer"
                 onClick={() => setView('dashboard')}
               >
-                Dasbor Saya ✦
+                {t('myDashboard')}
               </button>
             ) : (
               <>
@@ -191,13 +225,13 @@ export default function Landing() {
                   className="text-xs text-neutral-400 hover:text-white transition bg-transparent border-none cursor-pointer"
                   onClick={() => setView('login')}
                 >
-                  Masuk
+                  {t('login')}
                 </button>
                 <button 
                   className="px-4 py-1.5 bg-[#d4a053] hover:bg-[#c4883a] text-black text-xs font-bold rounded-lg transition cursor-pointer"
                   onClick={() => setView('register')}
                 >
-                  Daftar
+                  {t('register')}
                 </button>
               </>
             )}
@@ -253,8 +287,8 @@ export default function Landing() {
                 whileTap={{ scale: 0.97 }}
               >
                 <span className="nv-ai-hero-cta-icon">✦</span>
-                <span className="nv-ai-hero-cta-text">Analisa Perjalanan Manifestasimu</span>
-                <span className="nv-ai-hero-cta-badge">(AI Powered)</span>
+                <span className="nv-ai-hero-cta-text">{t('aiCTA')}</span>
+                <span className="nv-ai-hero-cta-badge">{t('aiCTA_badge')}</span>
               </motion.button>
             </motion.div>
 
@@ -270,10 +304,10 @@ export default function Landing() {
               </motion.div>
 
               <motion.div className="nv-hero-title" variants={staggerContainer} initial="initial" animate="animate">
-                <h1 className="sr-only">Neville Goddard — Hukum Asumsi: Kurikulum Lengkap Ajaran &amp; Praktik</h1>
-                <motion.span className="nv-hero-top" variants={fadeInUp}>Neville Goddard</motion.span>
-                <motion.span className="nv-hero-main" variants={fadeInUp}>HUKUM ASUMSI</motion.span>
-                <motion.span className="nv-hero-sub" variants={fadeInUp}>(Ajaran &amp; Praktik)</motion.span>
+                <h1 className="sr-only">Neville Goddard — {t('heroMain')}: Kurikulum Lengkap Ajaran &amp; Praktik</h1>
+                <motion.span className="nv-hero-top" variants={fadeInUp}>{t('heroTop')}</motion.span>
+                <motion.span className="nv-hero-main" variants={fadeInUp}>{t('heroMain')}</motion.span>
+                <motion.span className="nv-hero-sub" variants={fadeInUp}>{t('heroSub')}</motion.span>
               </motion.div>
 
               <motion.div
@@ -284,11 +318,9 @@ export default function Landing() {
               >
                 <div className="nv-hero-mark-accent" />
                 <p className="nv-hero-mark-quote">
-                  &ldquo;Sebuah asumsi, meskipun salah, jika <em>terus dipegang teguh</em>, akan mengeras menjadi fakta.
-                  Manusia, dengan mengasumsikan perasaan dari keinginan yang telah terwujud, mengubah masa depannya
-                  selaras dengan asumsinya.&rdquo;
+                  {t('heroQuote')}
                 </p>
-                <p className="nv-hero-mark-source">— LIMA PELAJARAN · PELAJARAN 1 · 1948</p>
+                <p className="nv-hero-mark-source">{t('heroQuoteSource')}</p>
               </motion.div>
 
               <motion.div
@@ -298,21 +330,21 @@ export default function Landing() {
                 animate="animate"
               >
                 <span className="nv-meta-item">
-                  <span className="nv-meta-label">KURIKULUM</span>
+                  <span className="nv-meta-label">{t('metaCurriculum')}</span>
                 </span>
                 <span className="nv-meta-sep">·</span>
                 <span className="nv-meta-item">
                   <span className="nv-meta-accent">10</span>
-                  <span className="nv-meta-label">BAGIAN</span>
+                  <span className="nv-meta-label">{t('metaParts')}</span>
                 </span>
                 <span className="nv-meta-sep">·</span>
                 <span className="nv-meta-item">
                   <span className="nv-meta-accent">49</span>
-                  <span className="nv-meta-label">PELAJARAN</span>
+                  <span className="nv-meta-label">{t('metaLessons')}</span>
                 </span>
                 <span className="nv-meta-sep">·</span>
                 <span className="nv-meta-item">
-                  <span className="nv-meta-label">15+ BUKU &amp; 200+ KULIAH</span>
+                  <span className="nv-meta-label">{t('metaSources')}</span>
                 </span>
               </motion.div>
 
@@ -325,7 +357,7 @@ export default function Landing() {
                   transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                 >
                   <span className="nv-cta-icon">✦</span>
-                  Dapatkan Akses Penuh — Berlangganan Sekarang
+                  {t('pricingCTA_hero')}
                 </motion.button>
 
                 {/* ── Header WhatsApp CTA (smaller, centered under gold CTA) ── */}
@@ -344,7 +376,7 @@ export default function Landing() {
                       <svg className="nv-hero-wa-icon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
                         <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                       </svg>
-                      Tanya Bang Nevgo
+                      {t('askBangNevgo')}
                     </a>
                   </motion.div>
                 </div>
@@ -359,7 +391,7 @@ export default function Landing() {
       {/* ─── STICKY NAV ─── */}
       <nav className="nv-nav">
         <div className="nv-nav-inner">
-          {ALL_PARTS.map((p) => (
+          {curriculumParts.map((p) => (
             <a
               key={p.id}
               href={`#${p.id}`}
@@ -382,7 +414,7 @@ export default function Landing() {
             }}
           >
             <span className="nv-nav-num" style={{ color: 'var(--nv-gold)' }}>★</span>
-            <span className="nv-nav-text">Buku-Buku Esensial</span>
+            <span className="nv-nav-text">{t('essentialBooks')}</span>
           </a>
         </div>
       </nav>
@@ -401,7 +433,8 @@ export default function Landing() {
 
       {/* ─── CURRICULUM PARTS ─── */}
       <div className="nv-container">
-        {ALL_PARTS.map((part, partIdx) => {
+        <CurriculumGraphView />
+        {curriculumParts.map((part, partIdx) => {
           const isEven = partIdx % 2 === 0
           const partImage = partImages[partIdx] || partImages[0]
 
@@ -482,7 +515,7 @@ export default function Landing() {
                         }
                       }}
                     >
-                      {free && <span className="nv-card-free-badge">GRATIS ✦</span>}
+                      {free && <span className="nv-card-free-badge">{t('freeBadge')}</span>}
                       <div className="nv-card-accent" style={{ background: `linear-gradient(135deg, ${part.color}, ${part.color}66)` }} />
                       <div className="nv-card-head">
                         <span className="nv-card-num" style={{ color: part.color, background: `${part.color}15` }}>{lesson.num}</span>
@@ -536,11 +569,6 @@ export default function Landing() {
             </div>
           )
         })}
-
-        {/* ─── AI HUB after Part 10 ─── */}
-        <AiHubSection />
-
-        {/* Community CTA Section */}
         <motion.section
           className="nv-community-cta-section nv-glass"
           initial={{ opacity: 0, y: 24 }}
@@ -551,16 +579,15 @@ export default function Landing() {
           <div className="nv-community-cta-glow" />
           <div className="nv-community-cta-content">
             <h2 className="nv-community-cta-title">
-              Join <span className="nv-gold">Komunitas Privat</span> Kami
+              {t('communityCtaTitle')}
             </h2>
             <p className="nv-community-cta-desc">
-              2,400+ builder sudah bergabung. Dapatkan support system, exclusive sessions,
-              dan tersambung dengan sesama pencari kebenaran.
+              {t('communityCtaDesc')}
             </p>
             <div className="nv-community-cta-stats">
-              <div><span className="nv-stat-num">2.4K+</span> Members</div>
-              <div><span className="nv-stat-num">156</span> Discussions</div>
-              <div><span className="nv-stat-num">320</span> Success Stories</div>
+              <div><span className="nv-stat-num">2.4K+</span> {t('membersCount')}</div>
+              <div><span className="nv-stat-num">156</span> {t('discussionsCount')}</div>
+              <div><span className="nv-stat-num">320</span> {t('successStories')}</div>
             </div>
             <motion.button
               className="nv-cta-button nv-community-cta-btn"
@@ -568,7 +595,7 @@ export default function Landing() {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
             >
-              Lihat/Join Komunitas →
+              {t('communityCtaBtn')}
             </motion.button>
           </div>
         </motion.section>
@@ -590,9 +617,9 @@ export default function Landing() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <span className="nv-ebook-etalase-badge">✦ KOLEKSI eBOOK</span>
-            <h2 className="nv-ebook-etalase-title">eBook Panduan Manifestasi</h2>
-            <p className="nv-ebook-etalase-subtitle">Koleksi eBook berbayar oleh Bang Nevgo — praktis, bersumber, dan siap membantu perjalanan manifestasimu</p>
+            <span className="nv-ebook-etalase-badge">{t('ebookBadge')}</span>
+            <h2 className="nv-ebook-etalase-title">{t('ebookTitle')}</h2>
+            <p className="nv-ebook-etalase-subtitle">{t('ebookSubtitle')}</p>
           </motion.div>
           <div className="nv-ebook-marquee-wrap">
             <div className="nv-ebook-marquee">
@@ -628,10 +655,10 @@ export default function Landing() {
         >
           <div className="nv-pricing-cta-glow" />
           <div className="nv-pricing-cta-content">
-            <span className="nv-pricing-cta-badge">AKSES PENUH</span>
-            <h2 className="nv-pricing-cta-title">Buka Kurikulum Lengkap</h2>
+            <span className="nv-pricing-cta-badge">{t('paidBadge')}</span>
+            <h2 className="nv-pricing-cta-title">{t('pricingCtaTitle')}</h2>
             <p className="nv-pricing-cta-desc">
-              Berlangganan untuk mendapatkan akses ke seluruh 49 pelajaran terperinci dengan ajaran lengkap, kutipan bersumber, praktik harian, dan poin-poin penting dari seluruh karya Neville Goddard.
+              {t('pricingCtaDesc')}
             </p>
             <motion.button
               className="nv-cta-button nv-cta-pulse"
@@ -639,8 +666,7 @@ export default function Landing() {
               whileHover={{ scale: 1.03, y: -2 }}
               whileTap={{ scale: 0.97 }}
             >
-              <span className="nv-cta-icon">✦</span>
-              Lihat Paket Berlangganan →
+              {t('pricingCtaBtn')}
             </motion.button>
           </div>
         </motion.div>
@@ -655,15 +681,15 @@ export default function Landing() {
             transition={{ duration: 0.5 }}
           >
             <div className="nv-bonus-head">
-              <h2>✦ Buku &amp; Kuliah Esensial</h2>
-              <span className="nv-bonus-badge">11 SUMBER DAYA</span>
+              <h2>{t('essentialBooksTitle')}</h2>
+              <span className="nv-bonus-badge">11 {t('resourcesCount')}</span>
             </div>
             <p className="nv-bonus-desc">
-              Arsip teks lengkap gratis tersedia di{' '}
+              {t('essentialBooksDesc').split('coolwisdombooks.com/neville')[0]}
               <a href="https://coolwisdombooks.com/neville/" target="_blank" rel="noopener noreferrer" className="nv-bonus-link">
                 coolwisdombooks.com/neville
               </a>
-              . Seluruh karya Neville dari tahun 1939–1972.
+              {t('essentialBooksDesc').split('coolwisdombooks.com/neville')[1]}
             </p>
             <div className="nv-bonus-grid">
               {BONUS_ITEMS.map((item, i) => (
@@ -693,34 +719,34 @@ export default function Landing() {
           transition={{ duration: 0.6 }}
         >
           <div className="nv-faq-head">
-            <h2 className="nv-faq-title">Pertanyaan yang Sering Diajukan</h2>
-            <p className="nv-faq-subtitle">Jawaban untuk pertanyaan umum tentang Hukum Asumsi dan kurikulum ini</p>
+            <h2 className="nv-faq-title">{t('faqTitle')}</h2>
+            <p className="nv-faq-subtitle">{t('faqSubtitle')}</p>
           </div>
           <div className="nv-faq-list">
             {[
               {
-                q: 'Apa itu Hukum Asumsi?',
-                a: 'Hukum Asumsi adalah prinsip inti dari ajaran Neville Goddard yang menyatakan bahwa sebuah asumsi, meskipun salah, jika terus dipegang teguh akan mengeras menjadi fakta. Dengan mengasumsikan perasaan dari keinginan yang telah terwujud, Anda mengubah masa depan selaras dengan asumsi tersebut.',
+                q: t('faq_q1'),
+                a: t('faq_a1'),
               },
               {
-                q: 'Apakah saya perlu latar belakang agama?',
-                a: 'Tidak. Ajaran Neville bersifat universal dan dapat diterapkan oleh siapa saja tanpa memandang latar belakang agama atau keyakinan. Meskipun Neville menggunakan bahasa alkitabiah dalam kuliahnya, prinsip-prinsipnya bersifat praktis dan psikologis.',
+                q: t('faq_q2'),
+                a: t('faq_a2'),
               },
               {
-                q: 'Apa perbedaan antara paket Basic, Premium, dan Master?',
-                a: 'Paket Basic memberikan akses penuh ke 49 pelajaran kurikulum dan Bank Knowledge dasar (non-VIP). Paket Premium menambahkan akses ke forum komunitas privat yang interaktif dan webinar pendukung. Paket Master menyempurnakan perjalanan Anda dengan meditasi audio premium, webinar VIP, dan workbook pemrograman batin harian pribadi.',
+                q: t('faq_q3'),
+                a: t('faq_a3'),
               },
               {
-                q: 'Bagaimana teknik SATS bekerja?',
-                a: 'SATS (State Akin To Sleep) adalah teknik meditasi di mana Anda memasuki kondisi rileks antara terjaga dan tidur, lalu membayangkan adegan yang menyiratkan keinginan Anda telah terwujud. Dalam kondisi ini, pikiran bawah sadar paling reseptif terhadap sugesti baru.',
+                q: t('faq_q4'),
+                a: t('faq_a4'),
               },
               {
-                q: 'Apakah saya bisa membatalkan langganan?',
-                a: 'Ya, Anda dapat membatalkan kapan saja tanpa penalti. Akses Anda akan tetap aktif hingga akhir periode berlangganan yang telah dibayar. Tidak ada biaya tersembunyi atau komitmen jangka panjang.',
+                q: t('faq_q5'),
+                a: t('faq_a5'),
               },
               {
-                q: 'Dari mana sumber materi ini?',
-                a: 'Seluruh materi bersumber dari 15+ buku dan 200+ kuliah asli Neville Goddard dari tahun 1939 hingga 1972. Setiap pelajaran dilengkapi dengan kutipan langsung dan rujukan ke sumber aslinya, memastikan keakuratan dan integritas ajaran.',
+                q: t('faq_q6'),
+                a: t('faq_a6'),
               },
             ].map((item, i) => (
               <FaqItem key={i} question={item.q} answer={item.a} index={i} />
@@ -730,7 +756,7 @@ export default function Landing() {
 
         {/* ─── FOOTER CTA ─── */}
         <div className="nv-footer-cta">
-          Bersumber secara eksklusif dari{' '}
+          {language === 'en' ? 'Sourced exclusively from ' : 'Bersumber secara eksklusif dari '}
           <a href="https://coolwisdombooks.com/neville/" target="_blank" rel="noopener noreferrer">
             CoolWisdomBooks — Neville Goddard Archive →
           </a>
@@ -743,36 +769,36 @@ export default function Landing() {
           <div className="nv-footer-brand">
             <span className="nv-footer-logo">✦</span>
             <div>
-              <div className="nv-footer-brand-name">Hukum Asumsi</div>
-              <div className="nv-footer-brand-tagline">Kurikulum Lengkap Ajaran Neville Goddard</div>
+              <div className="nv-footer-brand-name">{t('navLogo')}</div>
+              <div className="nv-footer-brand-tagline">{t('footerBrandTagline')}</div>
             </div>
           </div>
         </div>
         <div className="nv-footer-columns">
           <div className="nv-footer-col">
-            <h4 className="nv-footer-col-title">Kurikulum</h4>
+            <h4 className="nv-footer-col-title">{t('footerColCurriculum')}</h4>
             <ul className="nv-footer-col-links">
-              <li><a href="#part-1">Bagian 01 — Kesadaran</a></li>
-              <li><a href="#part-2">Bagian 02 — Asumsi</a></li>
-              <li><a href="#part-3">Bagian 03 — Perasaan</a></li>
-              <li><a href="#part-4">Bagian 04 — Diam</a></li>
-              <li><a href="#part-5">Bagian 05 — Kondisi</a></li>
+              <li><a href="#part-1">{language === 'en' ? 'Part 01 — Consciousness' : 'Bagian 01 — Kesadaran'}</a></li>
+              <li><a href="#part-2">{language === 'en' ? 'Part 02 — Assumption' : 'Bagian 02 — Asumsi'}</a></li>
+              <li><a href="#part-3">{language === 'en' ? 'Part 03 — Feeling' : 'Bagian 03 — Perasaan'}</a></li>
+              <li><a href="#part-4">{language === 'en' ? 'Part 04 — Silence' : 'Bagian 04 — Diam'}</a></li>
+              <li><a href="#part-5">{language === 'en' ? 'Part 05 — States' : 'Bagian 05 — Kondisi'}</a></li>
             </ul>
           </div>
           <div className="nv-footer-col">
-            <h4 className="nv-footer-col-title">Sumber Daya</h4>
+            <h4 className="nv-footer-col-title">{t('footerColResources')}</h4>
             <ul className="nv-footer-col-links">
-              <li><a href="#bonus">Buku Esensial</a></li>
+              <li><a href="#bonus">{t('essentialBooks')}</a></li>
               <li><a href="#">FAQ</a></li>
-              <li><a href="#">Meditasi Panduan</a></li>
+              <li><a href="#">{language === 'en' ? 'Guided Meditations' : 'Meditasi Panduan'}</a></li>
             </ul>
           </div>
           <div className="nv-footer-col">
-            <h4 className="nv-footer-col-title">Legal</h4>
+            <h4 className="nv-footer-col-title">{t('footerColLegal')}</h4>
             <ul className="nv-footer-col-links">
-              <li><a href="#">Syarat &amp; Ketentuan</a></li>
-              <li><a href="#">Kebijakan Privasi</a></li>
-              <li><a href="#">Kontak</a></li>
+              <li><a href="#">{language === 'en' ? 'Terms & Conditions' : 'Syarat & Ketentuan'}</a></li>
+              <li><a href="#">{language === 'en' ? 'Privacy Policy' : 'Kebijakan Privasi'}</a></li>
+              <li><a href="#">{language === 'en' ? 'Contact' : 'Kontak'}</a></li>
             </ul>
           </div>
         </div>
@@ -788,13 +814,13 @@ export default function Landing() {
             <svg className="nv-footer-wa-icon" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
               <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
             </svg>
-            <span>Tanya Bang Nevgo</span>
+            <span>{t('askBangNevgo')}</span>
           </a>
         </div>
 
         <div className="nv-footer-bottom">
-          <span>© {new Date().getFullYear()} Hukum Asumsi. Seluruh hak dilindungi.</span>
-          <span className="nv-footer-bottom-accent">Dibuat dengan ✦ untuk pencari kebenaran</span>
+          <span>{t('footerRights').replace('{year}', new Date().getFullYear().toString())}</span>
+          <span className="nv-footer-bottom-accent">{t('footerMadeWith')}</span>
         </div>
 
         {/* ─── ADMIN ACCESS ─── */}
@@ -802,17 +828,17 @@ export default function Landing() {
           <div className="nv-footer-admin-content">
             <button
               onClick={() => {
-                const password = prompt('Masukkan password admin:')
+                const password = prompt(language === 'en' ? 'Enter admin password:' : 'Masukkan password admin:')
                 if (password === 'neville22') {
                   useAppStore.setAdmin(true)
-                  toast.success('Admin mode enabled - Full access granted')
+                  toast.success(language === 'en' ? 'Admin mode enabled - Full access granted' : 'Admin mode enabled - Full access granted')
                   setTimeout(() => location.reload(), 1000)
                 } else if (password !== null) {
-                  toast.error('Password salah')
+                  toast.error(language === 'en' ? 'Wrong password' : 'Password salah')
                 }
               }}
               className="nv-footer-admin-btn"
-              title="Akses Panel Admin"
+              title={language === 'en' ? 'Admin Panel Access' : 'Akses Panel Admin'}
             >
               <Key size={14} /> Admin Panel
             </button>

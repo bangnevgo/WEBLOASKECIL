@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
+import { useTranslation } from '@/lib/translations'
 import { 
   Play, 
   FileText, 
@@ -30,8 +31,8 @@ interface KnowledgeItem {
   isVip?: boolean
 }
 
-// ── Mock Data ──
-const KNOWLEDGE_ITEMS: KnowledgeItem[] = [
+// ── Localized Mock Data ──
+const KNOWLEDGE_ITEMS_ID: KnowledgeItem[] = [
   // Webinars
   {
     id: 'webinar-1',
@@ -182,36 +183,264 @@ const KNOWLEDGE_ITEMS: KnowledgeItem[] = [
   }
 ]
 
+const KNOWLEDGE_ITEMS_EN: KnowledgeItem[] = [
+  // Webinars
+  {
+    id: 'webinar-1',
+    title: 'Where is My Manifestation? The Taboo Dark Side of Manifestation',
+    category: 'webinar',
+    description: 'A thorough dissection of mental diet obstacles, hidden assumptions working against your desires 24 hours a day, and auditing inner leaks.',
+    durationOrPages: '2 hours 45 minutes',
+    sourceUrl: 'https://iframe.mediadelivery.net/play/600939/f6aed327-9c7c-4dd3-a3a0-aebea506ec72',
+    coverImg: '/images/illustrations/gemini-vision.png',
+    isVip: true
+  },
+  {
+    id: 'webinar-2',
+    title: 'Masterclass: Reprogramming Inner Shadow & Self-Concept',
+    category: 'webinar',
+    description: 'How to integrate limiting beliefs at the self-shadow level so that SATS visualization manifests naturally without conflict.',
+    durationOrPages: '1 hour 55 minutes',
+    sourceUrl: 'https://iframe.mediadelivery.net/play/600939/4d551f5b-afd5-4d07-b58d-2f84a47117c0',
+    coverImg: '/images/illustrations/meditation-imagination.webp',
+    isVip: true
+  },
+  {
+    id: 'webinar-3',
+    title: 'Beginning the Journey: Foundations of Neville Goddard\'s Teachings',
+    category: 'webinar',
+    description: 'A 60-minute deep-dive into the I AM concept, consciousness as the only reality, and how to consciously shift self-concept.',
+    durationOrPages: '60 Minutes',
+    sourceUrl: 'https://iframe.mediadelivery.net/play/600939/fb85d795-3365-444f-85c1-48d6a841b87e',
+    coverImg: '/images/illustrations/manifestation-journal.webp',
+    isVip: true
+  },
+  {
+    id: 'webinar-4',
+    title: 'SATS Masterclass: Advanced Visualization Techniques',
+    category: 'webinar',
+    description: 'Learn in detail how to deeply relax into the state akin to sleep (SATS) and construct a natural 3-dimensional imaginary scene.',
+    durationOrPages: '90 Minutes',
+    sourceUrl: 'https://iframe.mediadelivery.net/play/600939/f5f217b6-a6d5-4e2e-98e1-00d21abb2788',
+    coverImg: '/images/illustrations/meditation-imagination.webp',
+    isVip: true
+  },
+  {
+    id: 'webinar-5',
+    title: 'Revision Technique: Rewriting Reality & Clearing Trauma',
+    category: 'webinar',
+    description: 'A special workshop exploring Neville Goddard\'s revision technique. Learn how to change past events in memory to shift future reality.',
+    durationOrPages: '45 Minutes',
+    sourceUrl: 'https://iframe.mediadelivery.net/play/600939/f8f99303-f663-472e-ad80-6e07bc843ef0',
+    coverImg: '/images/illustrations/consciousness-creates-world.png',
+    isVip: true
+  },
+  {
+    id: 'webinar-6',
+    title: 'Imagination Creates Reality: Case Study Proof',
+    category: 'webinar',
+    description: 'A review of 5 Neville Goddard student case studies, with a breakdown of the mental mechanics operating behind the scenes of each success.',
+    durationOrPages: '60 Minutes',
+    sourceUrl: 'https://iframe.mediadelivery.net/play/600939/189a0f56-09fd-4e63-bfb1-884ce6ad049d',
+    coverImg: '/images/neville-profile.jpg',
+    isVip: true
+  },
+  {
+    id: 'webinar-7',
+    title: 'Exclusive Q&A: Overcoming Daily Practice Obstacles',
+    category: 'webinar',
+    description: 'A recording of a live Q&A session discussing time lag, how to assume the feeling without forcing, and persisting when the external environment contradicts.',
+    durationOrPages: '45 Minutes',
+    sourceUrl: 'https://iframe.mediadelivery.net/play/600939/783dc9bc-af50-448a-a620-4f26221ffba4',
+    coverImg: '/images/neville-goddard.png',
+    isVip: true
+  },
+  // TikTok Live
+  {
+    id: 'tiktok-1',
+    title: 'Tiktok Live: SATS Technique vs Daydreaming (Wishful Thinking)',
+    category: 'tiktok',
+    description: 'A lightning Q&A session discussing the feeling of relief when falling asleep and how to control imagination during the day.',
+    durationOrPages: '45 mins',
+    sourceUrl: 'LrklTcrYYFw',
+    coverImg: '/images/illustrations/consciousness-creates-world.png',
+    isVip: false
+  },
+  {
+    id: 'tiktok-2',
+    title: 'Tiktok Live: Why Manifesting a Specific Person (SP) Often Fails?',
+    category: 'tiktok',
+    description: 'Unpacking the concept of attachment, putting people on a pedestal, and how to restore a sovereign inner state.',
+    durationOrPages: '60 mins',
+    sourceUrl: 'LrklTcrYYFw',
+    coverImg: '/images/illustrations/manifestation-journal.webp',
+    isVip: false
+  },
+  // PDFs
+  {
+    id: 'pdf-1',
+    title: 'Daily Assumption Journal & SATS Sheet (Printable)',
+    category: 'pdf',
+    description: 'A daily template for night visualization practice and daytime inner auditing to keep your mental diet aligned.',
+    durationOrPages: '12 Pages',
+    sourceUrl: '/api/media?type=pdf&file=jurnal-harian.pdf',
+    isVip: false
+  },
+  {
+    id: 'pdf-2',
+    title: '30-Day Manifestation Digital Workbook',
+    category: 'pdf',
+    description: 'An interactive workbook to map, audit, and track your self-concept shifts digitally for 30 days.',
+    durationOrPages: 'Interactive HTML',
+    sourceUrl: '/api/media?type=pdf&file=workbook-manifestasi-digital-30hari.html',
+    isVip: true
+  },
+  {
+    id: 'pdf-3',
+    title: 'Guide to Overcoming Negative Emotions',
+    category: 'pdf',
+    description: 'Practical techniques to neutralize anxiety, fear, and negative inner reactions when facing a contradictory 3D physical situation.',
+    durationOrPages: 'Ebook',
+    sourceUrl: '/api/media?type=pdf&file=EMOSI NEGATIF.pdf',
+    isVip: false
+  },
+  // Audios
+  {
+    id: 'audio-1',
+    title: 'Theta Meditation: SATS Induction Before Sleep',
+    category: 'audio',
+    description: 'Binaural frequencies combined with guided inner voice to soothe your brainwaves into a receptive Theta state.',
+    durationOrPages: '15 mins',
+    sourceUrl: '/api/media?type=audio&file=theta_sats.mp3',
+    isVip: false
+  },
+  {
+    id: 'audio-2',
+    title: 'Self-Concept Affirmations: Abundance Consciousness (I AM)',
+    category: 'audio',
+    description: 'High-frequency repetitive affirmations to listen to during sleep to plant feelings of wealth, security, and fulfillment.',
+    durationOrPages: '10 mins',
+    sourceUrl: '/api/media?type=audio&file=prosperity.mp3',
+    isVip: true
+  },
+  {
+    id: 'audio-3',
+    title: 'Guided Meditation: Releasing Mental Obstacles & Shadow Work',
+    category: 'audio',
+    description: 'A guided meditation to release old emotional burdens and forgive the past to pave the way for a smooth bridge of incidents.',
+    durationOrPages: '20 mins',
+    sourceUrl: '/api/media?type=audio&file=shadow_release.mp3',
+    isVip: true
+  }
+]
+
+// ── UI Translations ──
+const UI_TRANSLATIONS = {
+  id: {
+    sectionTag: '🧠 BANK KNOWLEDGE',
+    sectionTitle: 'Pusat Repositori Keilmuan Asumsi',
+    sectionDesc: 'Koleksi rekaman pembelajaran, video diskusi live TikTok, eBook pendukung format PDF, serta meditasi/afirmasi audio batin terpandu dari Bang Nevgo.',
+    tabAll: 'Semua Materi',
+    tabWebinar: 'Rekaman Webinar',
+    tabTiktok: 'TikTok Live',
+    tabPdf: 'PDF Pendukung',
+    tabAudio: 'Meditasi Audio',
+    labelWebinar: '🎥 Webinar',
+    labelTiktok: '📱 TikTok',
+    labelPdf: '📄 PDF',
+    labelAudio: '🎧 Audio',
+    durationLabel: 'Durasi: ',
+    btnOpenWorkbook: 'Buka Workbook',
+    btnDownloadPdf: 'Unduh PDF',
+    btnPlayAudio: 'Putar Audio',
+    btnWatchVideo: 'Tonton Video',
+    noFilesTitle: 'Belum ada file',
+    noFilesDesc: 'Kategori materi ini sedang dalam proses penyusunan.',
+    nowPlaying: 'Sedang Diputar (Bank Knowledge)',
+    videoPlayer: 'Video Player (Bank Knowledge)',
+    upgradeBtn: 'Upgrade Keanggotaan',
+    backBtn: 'Kembali Menjelajah',
+    downloadingToast: 'Mengunduh {title}...',
+  },
+  en: {
+    sectionTag: '🧠 KNOWLEDGE BANK',
+    sectionTitle: 'Repository Center of Assumption Teachings',
+    sectionDesc: 'Collection of lecture recordings, TikTok Live discussion videos, supporting PDF eBooks, and guided inner audio meditations/affirmations by Bang Nevgo.',
+    tabAll: 'All Materials',
+    tabWebinar: 'Webinar Recordings',
+    tabTiktok: 'TikTok Live',
+    tabPdf: 'Supporting PDFs',
+    tabAudio: 'Audio Meditations',
+    labelWebinar: '🎥 Webinar',
+    labelTiktok: '📱 TikTok',
+    labelPdf: '📄 PDF',
+    labelAudio: '🎧 Audio',
+    durationLabel: 'Duration: ',
+    btnOpenWorkbook: 'Open Workbook',
+    btnDownloadPdf: 'Download PDF',
+    btnPlayAudio: 'Play Audio',
+    btnWatchVideo: 'Watch Video',
+    noFilesTitle: 'No files yet',
+    noFilesDesc: 'This category of material is currently being compiled.',
+    nowPlaying: 'Now Playing (Knowledge Bank)',
+    videoPlayer: 'Video Player (Knowledge Bank)',
+    upgradeBtn: 'Upgrade Membership',
+    backBtn: 'Keep Exploring',
+    downloadingToast: 'Downloading {title}...',
+  }
+}
+
 export default function KnowledgeBank({ isCommunityMode = false }: { isCommunityMode?: boolean }) {
   const { hasCommunityAccess, subscriptionTier, setView } = useAppStore()
+  const { language } = useTranslation()
   
   // ── States ──
   const [activeTab, setActiveTab] = useState<'all' | 'webinar' | 'tiktok' | 'pdf' | 'audio'>('all')
   const [activeVideoId, setActiveVideoId] = useState<string | null>(null)
   const [activeAudioItem, setActiveAudioItem] = useState<KnowledgeItem | null>(null)
   const [showUnlockModal, setShowUnlockModal] = useState(false)
-  const [modalText, setModalText] = useState({
-    title: '🔒 MATERI VIP KNOWLEDGE TERKUNCI',
-    subtitle: 'Membutuhkan Akses Premium/Master',
-    description: 'Materi Bank Knowledge bertanda VIP adalah arsip pembelajaran tingkat lanjut. Buka akses penuh sekarang untuk mempelajari rekaman webinar eksklusif dan workbook pemrograman batin harian.'
-  })
 
   const isPremiumUser = hasCommunityAccess()
+  const isIndo = language === 'id'
+  const t = UI_TRANSLATIONS[language] || UI_TRANSLATIONS.id
+  const KNOWLEDGE_ITEMS = isIndo ? KNOWLEDGE_ITEMS_ID : KNOWLEDGE_ITEMS_EN
+
+  // ── Locked Modal Texts ──
+  const modalText = {
+    title: isIndo ? '🔒 MATERI VIP KNOWLEDGE TERKUNCI' : '🔒 VIP KNOWLEDGE MATERIAL LOCKED',
+    subtitle: isIndo ? 'Membutuhkan Akses Premium/Master' : 'Requires Premium/Master Access',
+    description: isIndo 
+      ? 'Materi Bank Knowledge bertanda VIP adalah arsip pembelajaran tingkat lanjut. Buka akses penuh sekarang untuk mempelajari rekaman webinar eksklusif dan workbook pemrograman batin harian.'
+      : 'Knowledge Bank materials marked VIP are advanced learning archives. Unlock full access now to explore exclusive webinar recordings and daily personalized inner programming workbooks.',
+    lockedTitle: isIndo ? '🔒 MATERI KNOWLEDGE TERKUNCI' : '🔒 KNOWLEDGE MATERIAL LOCKED',
+    lockedSubtitle: isIndo ? 'Membutuhkan Akses Basic' : 'Requires Basic Access',
+    lockedDesc: isIndo
+      ? 'Akses Repositori Bank Knowledge (non-VIP) tersedia mulai dari paket Basic. Hubungkan batin Anda dengan materi penunjang pembelajaran Hukum Asumsi.'
+      : 'Knowledge Bank repository access (non-VIP) is available starting from the Basic plan. Connect your inner self with supporting materials for learning the Law of Assumption.'
+  }
+
+  const [activeModalText, setActiveModalText] = useState(modalText)
 
   // ── Access Checker ──
   const handleItemAction = (item: KnowledgeItem) => {
     if (subscriptionTier === 'free') {
       if (item.isVip) {
-        setModalText({
-          title: '🔒 MATERI VIP KNOWLEDGE TERKUNCI',
-          subtitle: 'Membutuhkan Akses Premium/Master',
-          description: 'Materi Bank Knowledge bertanda VIP adalah arsip pembelajaran tingkat lanjut. Buka akses penuh sekarang untuk mempelajari rekaman webinar eksklusif dan workbook pemrograman batin harian.'
+        setActiveModalText({
+          title: modalText.title,
+          subtitle: modalText.subtitle,
+          description: modalText.description,
+          lockedTitle: modalText.lockedTitle,
+          lockedSubtitle: modalText.lockedSubtitle,
+          lockedDesc: modalText.lockedDesc
         })
       } else {
-        setModalText({
-          title: '🔒 MATERI KNOWLEDGE TERKUNCI',
-          subtitle: 'Membutuhkan Akses Basic',
-          description: 'Akses Repositori Bank Knowledge (non-VIP) tersedia mulai dari paket Basic. Hubungkan batin Anda dengan materi penunjang pembelajaran Hukum Asumsi.'
+        setActiveModalText({
+          title: modalText.lockedTitle,
+          subtitle: modalText.lockedSubtitle,
+          description: modalText.lockedDesc,
+          lockedTitle: modalText.lockedTitle,
+          lockedSubtitle: modalText.lockedSubtitle,
+          lockedDesc: modalText.lockedDesc
         })
       }
       setShowUnlockModal(true)
@@ -219,10 +448,13 @@ export default function KnowledgeBank({ isCommunityMode = false }: { isCommunity
     }
 
     if (item.isVip && !isPremiumUser) {
-      setModalText({
-        title: '🔒 MATERI VIP KNOWLEDGE TERKUNCI',
-        subtitle: 'Membutuhkan Akses Premium/Master',
-        description: 'Materi Bank Knowledge bertanda VIP adalah arsip pembelajaran tingkat lanjut. Buka akses penuh sekarang untuk mempelajari rekaman webinar eksklusif dan workbook pemrograman batin harian.'
+      setActiveModalText({
+        title: modalText.title,
+        subtitle: modalText.subtitle,
+        description: modalText.description,
+        lockedTitle: modalText.lockedTitle,
+        lockedSubtitle: modalText.lockedSubtitle,
+        lockedDesc: modalText.lockedDesc
       })
       setShowUnlockModal(true)
       return
@@ -231,8 +463,8 @@ export default function KnowledgeBank({ isCommunityMode = false }: { isCommunity
     if (item.category === 'webinar' || item.category === 'tiktok') {
       setActiveVideoId(item.sourceUrl || null)
     } else if (item.category === 'pdf') {
-      // Simulate download link trigger
-      toast.success(`Mengunduh ${item.title}...`)
+      const msg = t.downloadingToast.replace('{title}', item.title)
+      toast.success(msg)
       window.open(item.sourceUrl, '_blank')
     } else if (item.category === 'audio') {
       setActiveAudioItem(item)
@@ -255,13 +487,13 @@ export default function KnowledgeBank({ isCommunityMode = false }: { isCommunity
         {!isCommunityMode && (
           <div className="text-center mb-12">
             <span className="px-3 py-1 bg-[#d4a053]/10 border border-[#d4a053]/20 text-[#d4a053] rounded-full text-[10px] font-mono font-bold uppercase tracking-widest">
-              🧠 BANK KNOWLEDGE
+              {t.sectionTag}
             </span>
             <h2 className="text-3xl font-bold font-outfit text-white mt-4 m-0 leading-tight">
-              Pusat Repositori Keilmuan Asumsi
+              {t.sectionTitle}
             </h2>
             <p className="text-xs text-neutral-400 mt-2 max-w-lg mx-auto leading-relaxed">
-              Koleksi rekaman pembelajaran, video diskusi live TikTok, eBook pendukung format PDF, serta meditasi/afirmasi audio batin terpandu dari Bang Nevgo.
+              {t.sectionDesc}
             </p>
           </div>
         )}
@@ -269,11 +501,11 @@ export default function KnowledgeBank({ isCommunityMode = false }: { isCommunity
         {/* Tab Filters */}
         <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-none justify-start md:justify-center border-b border-neutral-900 mb-8">
           {[
-            { id: 'all', label: 'Semua Materi', emoji: '📚' },
-            { id: 'webinar', label: 'Rekaman Webinar', emoji: '🎥' },
-            { id: 'tiktok', label: 'TikTok Live', emoji: '📱' },
-            { id: 'pdf', label: 'PDF Pendukung', emoji: '📄' },
-            { id: 'audio', label: 'Meditasi Audio', emoji: '🎧' }
+            { id: 'all', label: t.tabAll, emoji: '📚' },
+            { id: 'webinar', label: t.tabWebinar, emoji: '🎥' },
+            { id: 'tiktok', label: t.tabTiktok, emoji: '📱' },
+            { id: 'pdf', label: t.tabPdf, emoji: '📄' },
+            { id: 'audio', label: t.tabAudio, emoji: '🎧' }
           ].map(tab => (
             <button
               key={tab.id}
@@ -322,7 +554,7 @@ export default function KnowledgeBank({ isCommunityMode = false }: { isCommunity
                 <div>
                   <div className="flex justify-between items-start gap-2 mb-2">
                     <span className="text-[9px] font-mono bg-neutral-900 border border-neutral-800 text-neutral-400 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
-                      {item.category === 'webinar' ? '🎥 Webinar' : item.category === 'tiktok' ? '📱 TikTok' : item.category === 'pdf' ? '📄 PDF' : '🎧 Audio'}
+                      {item.category === 'webinar' ? t.labelWebinar : item.category === 'tiktok' ? t.labelTiktok : item.category === 'pdf' ? t.labelPdf : t.labelAudio}
                     </span>
                     {item.isVip && (
                       <span className="text-[9px] font-bold text-amber-500 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded uppercase tracking-wider flex items-center gap-0.5">
@@ -345,7 +577,7 @@ export default function KnowledgeBank({ isCommunityMode = false }: { isCommunity
                 {/* Footer Action Card */}
                 <div className="border-t border-neutral-900/60 pt-3 mt-4 flex justify-between items-center">
                   <span className="text-[10px] text-neutral-500 font-mono">
-                    {item.category === 'pdf' ? `${item.durationOrPages}` : `Durasi: ${item.durationOrPages}`}
+                    {item.category === 'pdf' ? `${item.durationOrPages}` : `${t.durationLabel}${item.durationOrPages}`}
                   </span>
                   
                   <button
@@ -353,7 +585,7 @@ export default function KnowledgeBank({ isCommunityMode = false }: { isCommunity
                     className="text-[11px] font-bold text-amber-500 hover:text-amber-400 flex items-center gap-1 bg-transparent border-none cursor-pointer"
                   >
                     <span>
-                      {item.category === 'pdf' ? (item.id === 'pdf-2' ? 'Buka Workbook' : 'Unduh PDF') : item.category === 'audio' ? 'Putar Audio' : 'Tonton Video'}
+                      {item.category === 'pdf' ? (item.id === 'pdf-2' ? t.btnOpenWorkbook : t.btnDownloadPdf) : item.category === 'audio' ? t.btnPlayAudio : t.btnWatchVideo}
                     </span>
                     <ChevronRight size={12} />
                   </button>
@@ -364,8 +596,8 @@ export default function KnowledgeBank({ isCommunityMode = false }: { isCommunity
         ) : (
           <div className="text-center py-20 border border-dashed border-neutral-900 rounded-2xl">
             <span className="text-4xl">📁</span>
-            <h4 className="text-sm font-bold text-neutral-400 mt-2">Belum ada file</h4>
-            <p className="text-xs text-neutral-500 mt-1">Kategori materi ini sedang dalam proses penyusunan.</p>
+            <h4 className="text-sm font-bold text-neutral-400 mt-2">{t.noFilesTitle}</h4>
+            <p className="text-xs text-neutral-500 mt-1">{t.noFilesDesc}</p>
           </div>
         )}
 
@@ -381,7 +613,7 @@ export default function KnowledgeBank({ isCommunityMode = false }: { isCommunity
               <div className="nv-premium-glass border border-amber-500/30 overflow-hidden">
                 <div className="bg-neutral-950/80 px-4 py-2 border-b border-neutral-900 flex justify-between items-center">
                   <span className="text-[10px] font-bold text-amber-500 flex items-center gap-1.5 uppercase font-mono">
-                    <Music size={12} /> Sedang Diputar (Bank Knowledge)
+                    <Music size={12} /> {t.nowPlaying}
                   </span>
                   <button 
                     onClick={() => setActiveAudioItem(null)}
@@ -414,7 +646,7 @@ export default function KnowledgeBank({ isCommunityMode = false }: { isCommunity
               >
                 <div className="bg-neutral-950/80 px-5 py-3 border-b border-neutral-900 flex justify-between items-center">
                   <span className="text-xs font-bold text-amber-500 flex items-center gap-1.5">
-                    🎥 Video Player (Bank Knowledge)
+                    🎥 {t.videoPlayer}
                   </span>
                   <button 
                     onClick={() => setActiveVideoId(null)}
@@ -452,7 +684,7 @@ export default function KnowledgeBank({ isCommunityMode = false }: { isCommunity
               >
                 <div className="flex justify-between items-center border-b border-neutral-900 pb-3">
                   <span className="text-xs font-bold text-amber-500 tracking-wider flex items-center gap-1">
-                    {modalText.title}
+                    {activeModalText.title}
                   </span>
                   <button className="text-neutral-400 hover:text-white" onClick={() => setShowUnlockModal(false)}>
                     <X size={16} />
@@ -461,9 +693,9 @@ export default function KnowledgeBank({ isCommunityMode = false }: { isCommunity
 
                 <div className="text-center py-4 flex flex-col items-center gap-3">
                   <div className="text-5xl drop-shadow-lg">👑</div>
-                  <h3 className="text-base font-bold text-white font-outfit m-0">{modalText.subtitle}</h3>
+                  <h3 className="text-base font-bold text-white font-outfit m-0">{activeModalText.subtitle}</h3>
                   <p className="text-xs text-neutral-400 leading-relaxed max-w-sm m-0">
-                    {modalText.description}
+                    {activeModalText.description}
                   </p>
                 </div>
 
@@ -475,13 +707,13 @@ export default function KnowledgeBank({ isCommunityMode = false }: { isCommunity
                     }}
                     className="nv-cta-button nv-cta-pulse w-full py-2.5 rounded-lg text-xs font-bold text-center flex items-center justify-center gap-2"
                   >
-                    <span>Upgrade Keanggotaan</span>
+                    <span>{t.upgradeBtn}</span>
                   </button>
                   <button
                     onClick={() => setShowUnlockModal(false)}
                     className="bg-neutral-900 border border-neutral-850 text-neutral-400 hover:text-white py-2 rounded-lg text-xs font-semibold"
                   >
-                    Kembali Menjelajah
+                    {t.backBtn}
                   </button>
                 </div>
               </motion.div>

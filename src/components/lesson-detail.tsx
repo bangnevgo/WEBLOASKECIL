@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
 import { ALL_PARTS } from '@/lib/curriculum-data'
+import { ALL_PARTS_EN } from '@/lib/curriculum-data-en'
+import { useTranslation } from '@/lib/translations'
 import { FileText, Sparkles, ArrowLeft, ChevronLeft, ChevronRight, Check } from 'lucide-react'
 import AudioPlayer from '@/components/ui/audio-player'
 import { toast } from 'sonner'
@@ -28,6 +30,9 @@ const LESSON_MEDITATION_MAPPING: Record<string, { file: string; title: string; d
 }
 
 export default function LessonDetail() {
+  const { t, language } = useTranslation()
+  const curriculumParts = language === 'en' ? ALL_PARTS_EN : ALL_PARTS
+
   const { 
     activePartId, 
     activeLessonNum, 
@@ -40,7 +45,7 @@ export default function LessonDetail() {
   
   const [readingProgress, setReadingProgress] = useState(0)
 
-  const part = ALL_PARTS.find((p) => p.id === activePartId)
+  const part = curriculumParts.find((p) => p.id === activePartId)
   const lesson = part?.lessons.find((l) => l.num === activeLessonNum)
 
   // Tracking reading scroll progress
@@ -64,9 +69,9 @@ export default function LessonDetail() {
     return (
       <div className="nv-page flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <p className="text-neutral-400 text-base mb-2">Pelajaran tidak ditemukan</p>
+          <p className="text-neutral-400 text-base mb-2">{language === 'en' ? 'Lesson not found' : 'Pelajaran tidak ditemukan'}</p>
           <button className="nv-back-btn mt-4" onClick={closeLesson}>
-            ← Kembali ke Dasbor
+            {t('backToDashboard')}
           </button>
         </div>
       </div>
@@ -75,6 +80,35 @@ export default function LessonDetail() {
 
   const isComplete = completedLessons.has(lesson.num)
   const mappedMeditation = LESSON_MEDITATION_MAPPING[lesson.num]
+
+  const getMappedMeditation = () => {
+    if (!mappedMeditation) return null
+    if (language === 'en') {
+      if (lesson.num === '1.5') {
+        return {
+          file: 'sats-meditation.mp3',
+          title: 'SATS Meditation: Entering the Theta State',
+          desc: 'Guided audio for deep relaxation (State Akin To Sleep) to implant realization assumptions.'
+        }
+      }
+      if (lesson.num === '3.1') {
+        return {
+          file: 'meditasi-gratitude.mp3',
+          title: 'Gratitude Meditation: Living from the End',
+          desc: 'Guided audio to anchor the vibration of gratitude as if your wish has already been granted.'
+        }
+      }
+      if (lesson.num === '3.5') {
+        return {
+          file: 'sats-meditation.mp3',
+          title: 'SATS Meditation: Inducing the Feeling State',
+          desc: 'Guided audio to induce muscle relaxation and stimulate sensory imagination.'
+        }
+      }
+    }
+    return mappedMeditation
+  }
+  const displayMeditation = getMappedMeditation()
   
   // Premium download check helper
   const handlePdfDownload = () => {
@@ -85,28 +119,34 @@ export default function LessonDetail() {
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
-    toast.success(`Unduhan ringkasan PDF Pelajaran ${lesson.num} dimulai!`)
+    toast.success(
+      language === 'en'
+        ? `Download of Lesson ${lesson.num} PDF summary started!`
+        : `Unduhan ringkasan PDF Pelajaran ${lesson.num} dimulai!`
+    )
   }
 
   // Cross-part lesson navigation helpers
-  const partIdx = ALL_PARTS.indexOf(part)
+  const partIdx = curriculumParts.indexOf(part)
   const lessonIdx = part.lessons.indexOf(lesson)
   
   const prevLesson = lessonIdx > 0 
     ? part.lessons[lessonIdx - 1] 
-    : partIdx > 0 ? ALL_PARTS[partIdx - 1].lessons[ALL_PARTS[partIdx - 1].lessons.length - 1] : null
-  const prevPart = prevLesson && lessonIdx === 0 ? ALL_PARTS[partIdx - 1] : part
+    : partIdx > 0 ? curriculumParts[partIdx - 1].lessons[curriculumParts[partIdx - 1].lessons.length - 1] : null
+  const prevPart = prevLesson && lessonIdx === 0 ? curriculumParts[partIdx - 1] : part
 
   const nextLesson = lessonIdx < part.lessons.length - 1 
     ? part.lessons[lessonIdx + 1] 
-    : partIdx < ALL_PARTS.length - 1 ? ALL_PARTS[partIdx + 1].lessons[0] : null
-  const nextPart = nextLesson && lessonIdx === part.lessons.length - 1 ? ALL_PARTS[partIdx + 1] : part
+    : partIdx < curriculumParts.length - 1 ? curriculumParts[partIdx + 1].lessons[0] : null
+  const nextPart = nextLesson && lessonIdx === part.lessons.length - 1 ? curriculumParts[partIdx + 1] : part
 
   // Highlight wrapper processor
   const processParagraph = (para: string) => {
     let processed = para
     // Highlight key Neville words
-    const terms = ['I AM', 'kesadaran', 'asumsi', 'SATS', 'pikiran bawah sadar', 'perasaan', 'persistensi']
+    const terms = language === 'en'
+      ? ['I AM', 'consciousness', 'assumption', 'SATS', 'subconscious mind', 'feeling', 'persistence']
+      : ['I AM', 'kesadaran', 'asumsi', 'SATS', 'pikiran bawah sadar', 'perasaan', 'persistensi']
     terms.forEach(term => {
       const regex = new RegExp(`\\b(${term})\\b`, 'gi')
       processed = processed.replace(regex, `<span class="nv-fl-highlight">$1</span>`)
@@ -128,7 +168,7 @@ export default function LessonDetail() {
             whileHover={{ x: -2 }}
             whileTap={{ scale: 0.98 }}
           >
-            <ArrowLeft size={13} /> Dasbor
+            <ArrowLeft size={13} /> {language === 'en' ? 'Dashboard' : 'Dasbor'}
           </motion.button>
           
           <div className="flex items-center gap-2">
@@ -147,9 +187,17 @@ export default function LessonDetail() {
             onClick={() => {
               toggleCompleted(lesson.num)
               if (isComplete) {
-                toast(`Pelajaran ${lesson.num} ditandai belum selesai`)
+                toast(
+                  language === 'en'
+                    ? `Lesson ${lesson.num} marked as incomplete`
+                    : `Pelajaran ${lesson.num} ditandai belum selesai`
+                )
               } else {
-                toast(`✦ Pelajaran ${lesson.num} selesai dipelajari!`)
+                toast(
+                  language === 'en'
+                    ? `✦ Lesson ${lesson.num} completed!`
+                    : `✦ Pelajaran ${lesson.num} selesai dipelajari!`
+                )
               }
             }}
             whileHover={{ scale: 1.02 }}
@@ -157,9 +205,9 @@ export default function LessonDetail() {
           >
             {isComplete ? (
               <>
-                <Check size={12} /> Selesai
+                <Check size={12} /> {language === 'en' ? 'Completed' : 'Selesai'}
               </>
-            ) : 'Selesai Baca'}
+            ) : (language === 'en' ? 'Mark Completed' : 'Selesai Baca')}
           </motion.button>
         </div>
       </div>
@@ -173,7 +221,7 @@ export default function LessonDetail() {
             {/* Title */}
             <h1 className="text-3xl sm:text-4xl font-extrabold text-[#e8e4dc] leading-tight m-0 mb-6 flex flex-col sm:flex-row gap-3 sm:items-center">
               <span className="text-sm font-mono font-extrabold text-[#d4a053] bg-[#d4a053]/10 border border-[#d4a053]/30 px-3 py-1 rounded-xl w-max">
-                PELAJARAN {lesson.num}
+                {language === 'en' ? `LESSON ${lesson.num}` : `PELAJARAN ${lesson.num}`}
               </span>
               {lesson.title}
             </h1>
@@ -183,11 +231,11 @@ export default function LessonDetail() {
               className="nv-lesson-download-badge mb-6" 
               onClick={handlePdfDownload}
             >
-              <FileText size={14} /> Unduh Ringkasan PDF (Visual Study Guide)
+              <FileText size={14} /> {language === 'en' ? 'Download PDF Summary (Visual Study Guide)' : 'Unduh Ringkasan PDF (Visual Study Guide)'}
             </button>
 
             {/* Mapped audio meditation player embed */}
-            {mappedMeditation && (
+            {displayMeditation && (
               <motion.div 
                 className="nv-meditation-section-embed mb-8"
                 initial={{ opacity: 0, y: 10 }}
@@ -196,14 +244,14 @@ export default function LessonDetail() {
               >
                 <div className="nv-meditation-section-header">
                   <Sparkles size={14} />
-                  <span>🎧 MEDITASI TERBIMBING UNTUK PELAJARAN INI</span>
+                  <span>{language === 'en' ? '🎧 GUIDED MEDITATION FOR THIS LESSON' : '🎧 MEDITASI TERBIMBING UNTUK PELAJARAN INI'}</span>
                 </div>
                 <div className="p-4 bg-[#111114]">
                   <AudioPlayer
-                    src={`/api/media?type=audio&file=${mappedMeditation.file}`}
-                    title={mappedMeditation.title}
-                    subtitle={mappedMeditation.desc}
-                    onComplete={() => toast.success(`✦ Sesi latihan selesai dipraktikkan.`)}
+                    src={`/api/media?type=audio&file=${displayMeditation.file}`}
+                    title={displayMeditation.title}
+                    subtitle={displayMeditation.desc}
+                    onComplete={() => toast.success(language === 'en' ? `✦ Practice session completed.` : `✦ Sesi latihan selesai dipraktikkan.`)}
                   />
                 </div>
               </motion.div>
@@ -223,7 +271,7 @@ export default function LessonDetail() {
             {/* Quotes Panel */}
             <div className="nv-lesson-quotes mt-10 flex flex-col gap-6">
               <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest flex items-center gap-2 border-b border-neutral-900 pb-3 m-0">
-                ✦ KUTIPAN BERSUMBER NEVILLE GODDARD
+                ✦ {language === 'en' ? 'NEVILLE GODDARD SOURCED QUOTES' : 'KUTIPAN BERSUMBER NEVILLE GODDARD'}
               </h3>
               {lesson.quotes.map((q, i) => (
                 <motion.div
@@ -236,7 +284,7 @@ export default function LessonDetail() {
                     &ldquo;{q.highlight ? q.text.replace(q.highlight, `\u00AB${q.highlight}\u00BB`) : q.text}&rdquo;
                   </p>
                   <p className="nv-lesson-quote-source text-xs text-neutral-500 font-mono m-0 mt-2">&mdash; {q.source}</p>
-                  {q.translation && (
+                  {q.translation && language !== 'en' && (
                     <p className="text-xs text-neutral-400 leading-relaxed border-t border-neutral-900 pt-2 m-0 mt-2">{q.translation}</p>
                   )}
                   {lesson.sourceUrl && (
@@ -246,7 +294,7 @@ export default function LessonDetail() {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      Baca Teks Asli Kuliah (Archive Teks Bebas) →
+                      {language === 'en' ? 'Read Original Lecture Text (Free Text Archive) →' : 'Baca Teks Asli Kuliah (Archive Teks Bebas) →'}
                     </a>
                   )}
                 </motion.div>
@@ -256,7 +304,7 @@ export default function LessonDetail() {
             {/* Daily Practice Panel */}
             <div className="nv-lesson-practice nv-glass mt-10 p-6 border border-neutral-900">
               <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest m-0 mb-3">
-                🕯️ PRAKTIK HARIAN ANDA
+                🕯️ {language === 'en' ? 'YOUR DAILY PRACTICE' : 'PRAKTIK HARIAN ANDA'}
               </h3>
               <p className="text-sm text-neutral-300 leading-relaxed m-0">{lesson.practice}</p>
             </div>
@@ -267,7 +315,7 @@ export default function LessonDetail() {
               style={{ background: 'rgba(212,160,83,0.03)', borderColor: 'rgba(212,160,83,0.12)' }}
             >
               <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest m-0 mb-3">
-                🔑 POIN UTAMA BACAAN
+                🔑 {language === 'en' ? 'KEY TAKEAWAYS' : 'POIN UTAMA BACAAN'}
               </h3>
               <p className="text-sm sm:text-base font-bold leading-relaxed text-neutral-200 m-0">{lesson.takeaway}</p>
             </div>
@@ -280,7 +328,7 @@ export default function LessonDetail() {
                   onClick={() => useAppStore.getState().openLesson(prevPart.id, prevLesson.num)}
                 >
                   <span className="text-[10px] text-neutral-500 font-mono flex items-center gap-1 uppercase">
-                    <ChevronLeft size={10} /> Sebelumnya
+                    <ChevronLeft size={10} /> {language === 'en' ? 'Previous' : 'Sebelumnya'}
                   </span>
                   <span className="text-xs sm:text-sm font-bold text-neutral-300 line-clamp-1">{prevLesson.num} {prevLesson.title}</span>
                 </button>
@@ -292,7 +340,7 @@ export default function LessonDetail() {
                   onClick={() => useAppStore.getState().openLesson(nextPart.id, nextLesson.num)}
                 >
                   <span className="text-[10px] text-neutral-500 font-mono flex items-center gap-1 uppercase">
-                    Berikutnya <ChevronRight size={10} />
+                    {language === 'en' ? 'Next' : 'Berikutnya'} <ChevronRight size={10} />
                   </span>
                   <span className="text-xs sm:text-sm font-bold text-neutral-300 line-clamp-1">{nextLesson.num} {nextLesson.title}</span>
                 </button>
@@ -305,7 +353,7 @@ export default function LessonDetail() {
         <aside className="w-full lg:w-[280px] shrink-0 hidden lg:block">
           <div className="nv-lesson-sidebar-card nv-glass p-4 sticky top-24 max-h-[calc(100vh-120px)] overflow-y-auto nv-scroll-premium">
             <h4 className="text-xs font-extrabold uppercase text-amber-500 tracking-wider mb-4 border-b border-neutral-900 pb-2">
-              Bagian {part.num}: {part.title}
+              {language === 'en' ? `Part ${part.num}: ${part.title}` : `Bagian ${part.num}: ${part.title}`}
             </h4>
             <div className="flex flex-col gap-1">
               {part.lessons.map((l, idx) => {

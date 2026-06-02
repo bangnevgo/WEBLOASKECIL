@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
-import { LIMITING_BELIEF_QUESTIONS } from '@/lib/ai-prompts'
+import { useTranslation } from '@/lib/translations'
+import { LIMITING_BELIEF_QUESTIONS, LIMITING_BELIEF_QUESTIONS_EN } from '@/lib/ai-prompts'
 import { toast } from 'sonner'
 
 const EMOJI_SCALE = ['😟', '😕', '😐', '🙂', '😄']
@@ -28,6 +29,7 @@ const staggerItem = {
 
 export default function AiLimitingBelief() {
   const { setView } = useAppStore()
+  const { t, language } = useTranslation()
   const hasAccess = useAppStore((s) => s.hasCurriculumAccess())
   const [step, setStep] = useState<1 | 2>(1)
   const [currentQ, setCurrentQ] = useState(0)
@@ -36,7 +38,7 @@ export default function AiLimitingBelief() {
   const [results, setResults] = useState<LimitingBeliefResult | null>(null)
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null)
 
-  const questions = LIMITING_BELIEF_QUESTIONS
+  const questions = language === 'en' ? LIMITING_BELIEF_QUESTIONS_EN : LIMITING_BELIEF_QUESTIONS
   const progress = ((currentQ + 1) / questions.length) * 100
 
   useEffect(() => {
@@ -46,7 +48,7 @@ export default function AiLimitingBelief() {
   const handleNext = () => {
     const q = questions[currentQ]
     if (answers[q.id] === undefined || answers[q.id] === '') {
-      toast('Harap jawab pertanyaan ini terlebih dahulu')
+      toast(language === 'en' ? 'Please answer this question first' : 'Harap jawab pertanyaan ini terlebih dahulu')
       return
     }
     if (currentQ < questions.length - 1) {
@@ -63,7 +65,7 @@ export default function AiLimitingBelief() {
   const handleSubmit = async () => {
     const q = questions[currentQ]
     if (answers[q.id] === undefined || answers[q.id] === '') {
-      toast('Harap jawab pertanyaan ini terlebih dahulu')
+      toast(language === 'en' ? 'Please answer this question first' : 'Harap jawab pertanyaan ini terlebih dahulu')
       return
     }
     setLoading(true)
@@ -74,6 +76,7 @@ export default function AiLimitingBelief() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           feature: 'limiting-belief',
+          language,
           payload: { answers, questions: questions.map(q => q.question) },
         }),
       })
@@ -82,32 +85,58 @@ export default function AiLimitingBelief() {
         setResults(data.data)
       } else {
         // Fallback mock results
-        setResults({
-          beliefs: [
-            { title: 'Ketidaklayakan Diri', description: 'Anda secara bawah sadar percaya bahwa Anda tidak layak menerima kebaikan dan keberhasilan. Ini muncul sebagai rasa bersalah saat menerima pujian.', icon: '🔒' },
-            { title: 'Ketakutan Akan Keberhasilan', description: 'Keberhasilan terasa berbahaya karena membawa tanggung jawab dan ekspektasi yang lebih tinggi. Anda lebih memilih zona nyaman.', icon: '🏔️' },
-            { title: 'Pola Penundaan Diri', description: 'Anda menunda tindakan karena percaya bahwa persiapan harus sempurna terlebih dahulu — padahal ini adalah bentuk resistensi.', icon: '⏸️' },
-          ],
-          akarKetakutan: [
-            { belief: 'Ketidaklayakan Diri', fear: 'Takut ditolak jika menunjukkan keinginan sebenarnya — seolah-olah meminta berarti tidak layak menerima' },
-            { belief: 'Ketakutan Akan Keberhasilan', fear: 'Takut kehilangan koneksi dengan orang-orang yang Anda cintai jika Anda berubah dan bertumbuh' },
-            { belief: 'Pola Penundaan Diri', fear: 'Takut bahwa upaya Anda tidak akan cukup, jadi lebih aman tidak mencoba sama sekali' },
-          ],
-          reprogramming: [
-            { technique: 'SATS: Adegan Penerimaan', detail: 'Setiap malam sebelum tidur, bayangkan seseorang menatap Anda dengan kekaguman dan berkata "Kamu layak mendapatkan semua ini." Rasakan penerimaan itu secara mendalam.' },
-            { technique: 'Revisi Masa Kecl', detail: 'Setiap malam, revisi 3 momen masa kecil di mana Anda merasa tidak layak. Bayangkan versi di mana Anda merasa berhak dan diterima sepenuhnya.' },
-            { technique: 'Afirmasi I AM', detail: 'Gantikan "Saya tidak layak" dengan "I AM layak menerima semua kebaikan." Rasakan pergeseran di tubuh Anda saat mengucapkannya.' },
-          ],
-          afirmasi: [
-            { belief: 'Ketidaklayakan Diri', afirmasi: 'I AM layak menerima semua kebaikan yang alam semesta tawarkan — ini adalah hak kelahiran saya' },
-            { belief: 'Ketakutan Akan Keberhasilan', afirmasi: 'I AM aman dalam keberhasilan saya — bertumbuh tidak berarti kehilangan orang yang saya cintai' },
-            { belief: 'Pola Penundaan Diri', afirmasi: 'I AM siap bertindak sekarang — kesempurnaan adalah ilusi yang menghalangi kemajuan' },
-          ],
-          timeline: 'Transformasi limiting belief biasanya membutuhkan 30-60 hari praktik konsisten. Minggu pertama Anda akan merasa pergeseran halus. Minggu kedua dan ketiga, pola lama akan mencoba kembali — ini tanda transformasi sedang terjadi. Bertahanlah melalui interval ini.',
-        })
+        if (language === 'en') {
+          setResults({
+            beliefs: [
+              { title: 'Self-Unworthiness', description: 'You subconsciously believe that you are not worthy of receiving goodness and success. This appears as guilt when receiving praise.', icon: '🔒' },
+              { title: 'Fear of Success', description: 'Success feels dangerous because it brings higher responsibilities and expectations. You prefer the comfort zone.', icon: '🏔️' },
+              { title: 'Self-Procrastination Pattern', description: 'You delay action because you believe preparation must be perfect first — which is actually a form of resistance.', icon: '⏸️' },
+            ],
+            akarKetakutan: [
+              { belief: 'Self-Unworthiness', fear: 'Fear of rejection when showing true desires — as if asking implies you are unworthy of receiving' },
+              { belief: 'Fear of Success', fear: 'Fear of losing connection with your loved ones if you change and grow' },
+              { belief: 'Self-Procrastination Pattern', fear: 'Fear that your efforts will not be enough, so it is safer not to try at all' },
+            ],
+            reprogramming: [
+              { technique: 'SATS: Acceptance Scene', detail: 'Every night before sleep, imagine someone looking at you with admiration and saying "You deserve all of this." Feel that acceptance deeply.' },
+              { technique: 'Childhood Revision', detail: 'Every night, revise 3 childhood moments where you felt unworthy. Imagine a version where you felt entitled and fully accepted.' },
+              { technique: 'I AM Affirmation', detail: 'Replace "I am unworthy" with "I AM worthy of receiving all goodness." Feel the shift in your body as you say it.' },
+            ],
+            afirmasi: [
+              { belief: 'Self-Unworthiness', afirmasi: 'I AM worthy of receiving all the goodness the universe offers — this is my birthright' },
+              { belief: 'Fear of Success', afirmasi: 'I AM safe in my success — growing does not mean losing those I love' },
+              { belief: 'Self-Procrastination Pattern', afirmasi: 'I AM ready to act now — perfection is an illusion that hinders progress' },
+            ],
+            timeline: 'Transforming limiting beliefs usually takes 30-60 days of consistent practice. In the first week, you will feel subtle shifts. In the second and third weeks, old patterns will try to return — this is a sign that transformation is happening. Persist through this interval.',
+          })
+        } else {
+          setResults({
+            beliefs: [
+              { title: 'Ketidaklayakan Diri', description: 'Anda secara bawah sadar percaya bahwa Anda tidak layak menerima kebaikan dan keberhasilan. Ini muncul sebagai rasa bersalah saat menerima pujian.', icon: '🔒' },
+              { title: 'Ketakutan Akan Keberhasilan', description: 'Keberhasilan terasa berbahaya karena membawa tanggung jawab dan ekspektasi yang lebih tinggi. Anda lebih memilih zona nyaman.', icon: '🏔️' },
+              { title: 'Pola Penundaan Diri', description: 'Anda menunda tindakan karena percaya bahwa persiapan harus sempurna terlebih dahulu — padahal ini adalah bentuk resistensi.', icon: '⏸️' },
+            ],
+            akarKetakutan: [
+              { belief: 'Ketidaklayakan Diri', fear: 'Takut ditolak jika menunjukkan keinginan sebenarnya — seolah-olah meminta berarti tidak layak menerima' },
+              { belief: 'Ketakutan Akan Keberhasilan', fear: 'Takut kehilangan koneksi dengan orang-orang yang Anda cintai jika Anda berubah dan bertumbuh' },
+              { belief: 'Pola Penundaan Diri', fear: 'Takut bahwa upaya Anda tidak akan cukup, jadi lebih aman tidak mencoba sama sekali' },
+            ],
+            reprogramming: [
+              { technique: 'SATS: Adegan Penerimaan', detail: 'Setiap malam sebelum tidur, bayangkan seseorang menatap Anda dengan kekaguman dan berkata "Kamu layak mendapatkan semua ini." Rasakan penerimaan itu secara mendalam.' },
+              { technique: 'Revisi Masa Kecl', detail: 'Setiap malam, revisi 3 momen masa kecil di mana Anda merasa tidak layak. Bayangkan versi di mana Anda merasa berhak dan diterima sepenuhnya.' },
+              { technique: 'Afirmasi I AM', detail: 'Gantikan "Saya tidak layak" dengan "I AM layak menerima semua kebaikan." Rasakan pergeseran di tubuh Anda saat mengucapkannya.' },
+            ],
+            afirmasi: [
+              { belief: 'Ketidaklayakan Diri', afirmasi: 'I AM layak menerima semua kebaikan yang alam semesta tawarkan — ini adalah hak kelahiran saya' },
+              { belief: 'Ketakutan Akan Keberhasilan', afirmasi: 'I AM aman dalam keberhasilan saya — bertumbuh tidak berarti kehilangan orang yang saya cintai' },
+              { belief: 'Pola Penundaan Diri', afirmasi: 'I AM siap bertindak sekarang — kesempurnaan adalah ilusi yang menghalangi kemajuan' },
+            ],
+            timeline: 'Transformasi limiting belief biasanya membutuhkan 30-60 hari praktik konsisten. Minggu pertama Anda akan merasa pergeseran halus. Minggu kedua dan ketiga, pola lama akan mencoba kembali — ini tanda transformasi sedang terjadi. Bertahanlah melalui interval ini.',
+          })
+        }
       }
     } catch {
-      toast('Terjadi kesalahan. Silakan coba lagi.')
+      toast(language === 'en' ? 'An error occurred. Please try again.' : 'Terjadi kesalahan. Silakan coba lagi.')
     } finally {
       setLoading(false)
     }
@@ -116,7 +145,7 @@ export default function AiLimitingBelief() {
   const handleCopy = (text: string, idx: number) => {
     navigator.clipboard.writeText(text)
     setCopiedIdx(idx)
-    toast('Afirmasi disalin!')
+    toast(language === 'en' ? 'Affirmation copied!' : 'Afirmasi disalin!')
     setTimeout(() => setCopiedIdx(null), 2000)
   }
 
@@ -127,7 +156,7 @@ export default function AiLimitingBelief() {
         <header className="nv-ai-header">
           <div className="nv-ai-header-inner">
             <button className="nv-back-btn" onClick={() => setView('landing')}>
-              ← Kembali
+              {language === 'en' ? '← Back' : '← Kembali'}
             </button>
             <span className="nv-ai-premium-badge">🔒 PREMIUM</span>
           </div>
@@ -136,9 +165,12 @@ export default function AiLimitingBelief() {
         <motion.div className="nv-ai-locked-overlay" {...fadeIn}>
           <div className="nv-ai-locked-glow" />
           <span className="nv-ai-locked-icon">🔒</span>
-          <h2 className="nv-ai-locked-title">Fitur Premium</h2>
+          <h2 className="nv-ai-locked-title">{language === 'en' ? 'Premium Feature' : 'Fitur Premium'}</h2>
           <p className="nv-ai-locked-desc">
-            Diagnosa Limiting Belief tersedia untuk pelanggan. Identifikasi keyakinan tersembunyi yang menghalangi manifestasi Anda.
+            {language === 'en'
+              ? 'Limiting Belief Diagnosis is available for subscribers. Identify hidden beliefs blocking your manifestation.'
+              : 'Diagnosa Limiting Belief tersedia untuk pelanggan. Identifikasi keyakinan tersembunyi yang menghalangi manifestasi Anda.'
+            }
           </p>
           <motion.button
             className="nv-cta-button"
@@ -147,7 +179,7 @@ export default function AiLimitingBelief() {
             whileTap={{ scale: 0.97 }}
           >
             <span className="nv-cta-icon">✦</span>
-            Buka Akses Premium
+            {language === 'en' ? 'Unlock Premium Access' : 'Buka Akses Premium'}
           </motion.button>
         </motion.div>
       </div>
@@ -160,7 +192,7 @@ export default function AiLimitingBelief() {
       <header className="nv-ai-header">
         <div className="nv-ai-header-inner">
           <button className="nv-back-btn" onClick={() => setView('landing')}>
-            ← Kembali
+            {language === 'en' ? '← Back' : '← Kembali'}
           </button>
           <span className="nv-ai-premium-badge">🔒 PREMIUM</span>
         </div>
@@ -171,8 +203,15 @@ export default function AiLimitingBelief() {
         <div className="nv-ai-hero-glow" />
         <div className="nv-ai-hero-content">
           <span className="nv-ai-hero-icon">🔍</span>
-          <h1 className="nv-ai-hero-title">Diagnosa Limiting Belief</h1>
-          <p className="nv-ai-hero-subtitle">Identifikasi keyakinan tersembunyi yang menghalangi manifestasi Anda</p>
+          <h1 className="nv-ai-hero-title">
+            {language === 'en' ? 'Limiting Belief Diagnosis' : 'Diagnosa Limiting Belief'}
+          </h1>
+          <p className="nv-ai-hero-subtitle">
+            {language === 'en'
+              ? 'Identify hidden beliefs blocking your manifestation'
+              : 'Identifikasi keyakinan tersembunyi yang menghalangi manifestasi Anda'
+            }
+          </p>
         </div>
       </motion.section>
 
@@ -183,7 +222,7 @@ export default function AiLimitingBelief() {
           onClick={() => { if (!loading) setStep(1) }}
         >
           <span className="nv-ai-step-tab-num">1</span>
-          Kuesioner
+          {language === 'en' ? 'Questionnaire' : 'Kuesioner'}
         </button>
         <div className="nv-ai-step-connector" />
         <button
@@ -191,7 +230,7 @@ export default function AiLimitingBelief() {
           disabled
         >
           <span className="nv-ai-step-tab-num">2</span>
-          Analisa AI
+          {language === 'en' ? 'AI Analysis' : 'Analisa AI'}
         </button>
       </div>
 
@@ -216,7 +255,12 @@ export default function AiLimitingBelief() {
                 />
               </div>
               <span className="nv-ai-progress-label">
-                Pertanyaan {currentQ + 1} dari {questions.length}
+                {language === 'en'
+                  ? `Question ${currentQ + 1} of ${questions.length}`
+                  : `Pertanyaan {currentQ + 1} dari {questions.length}`
+                      .replace('{currentQ + 1}', String(currentQ + 1))
+                      .replace('{questions.length}', String(questions.length))
+                }
               </span>
             </div>
 
@@ -230,7 +274,7 @@ export default function AiLimitingBelief() {
                 <textarea
                   className="nv-ai-textarea"
                   rows={4}
-                  placeholder={questions[currentQ].placeholder || 'Tuliskan jawaban Anda...'}
+                  placeholder={questions[currentQ].placeholder || (language === 'en' ? 'Write your answer here...' : 'Tuliskan jawaban Anda...')}
                   value={(answers[questions[currentQ].id] as string) || ''}
                   onChange={(e) =>
                     setAnswers({ ...answers, [questions[currentQ].id]: e.target.value })
@@ -263,7 +307,7 @@ export default function AiLimitingBelief() {
                   disabled={currentQ === 0}
                   style={{ opacity: currentQ === 0 ? 0.3 : 1 }}
                 >
-                  ← Sebelumnya
+                  {language === 'en' ? '← Previous' : '← Sebelumnya'}
                 </button>
                 {currentQ < questions.length - 1 ? (
                   <motion.button
@@ -273,7 +317,7 @@ export default function AiLimitingBelief() {
                     whileTap={{ scale: 0.97 }}
                     style={{ padding: '10px 24px', fontSize: 14 }}
                   >
-                    Berikutnya →
+                    {language === 'en' ? 'Next →' : 'Berikutnya →'}
                   </motion.button>
                 ) : (
                   <motion.button
@@ -287,10 +331,10 @@ export default function AiLimitingBelief() {
                     {loading ? (
                       <span className="nv-ai-loading">
                         <span className="nv-ai-spinner" />
-                        Menganalisa...
+                        {language === 'en' ? 'Analyzing...' : 'Menganalisa...'}
                       </span>
                     ) : (
-                      'Kirim & Analisa ✦'
+                      language === 'en' ? 'Submit & Analyze ✦' : 'Kirim & Analisa ✦'
                     )}
                   </motion.button>
                 )}
@@ -312,14 +356,23 @@ export default function AiLimitingBelief() {
               <div className="nv-ai-loading-section">
                 <div className="nv-ai-loading-glow" />
                 <span className="nv-ai-spinner-lg" />
-                <p className="nv-ai-loading-text">AI sedang menganalisa jawaban Anda...</p>
-                <p className="nv-ai-loading-sub">Mengidentifikasi pola limiting belief berdasarkan ajaran Neville Goddard</p>
+                <p className="nv-ai-loading-text">
+                  {language === 'en' ? 'AI is analyzing your answers...' : 'AI sedang menganalisa jawaban Anda...'}
+                </p>
+                <p className="nv-ai-loading-sub">
+                  {language === 'en'
+                    ? 'Identifying limiting belief patterns based on Neville Goddard’s teachings'
+                    : 'Mengidentifikasi pola limiting belief berdasarkan ajaran Neville Goddard'
+                  }
+                </p>
               </div>
             ) : results ? (
               <>
                 {/* Limiting Beliefs */}
                 <section className="nv-ai-results-section">
-                  <h2 className="nv-ai-results-title">🔒 3 Limiting Belief Utama</h2>
+                  <h2 className="nv-ai-results-title">
+                    {language === 'en' ? '🔒 3 Key Limiting Beliefs' : '🔒 3 Limiting Belief Utama'}
+                  </h2>
                   <div className="nv-ai-handicap-grid">
                     {results.beliefs.map((b, i) => (
                       <motion.div
@@ -340,7 +393,9 @@ export default function AiLimitingBelief() {
 
                 {/* Akar Ketakutan */}
                 <section className="nv-ai-results-section">
-                  <h2 className="nv-ai-results-title">🌑 Akar Ketakutan</h2>
+                  <h2 className="nv-ai-results-title">
+                    {language === 'en' ? '🌑 Root Fears' : '🌑 Akar Ketakutan'}
+                  </h2>
                   <div className="nv-ai-ritual-list">
                     {results.akarKetakutan.map((ak, i) => (
                       <motion.div
@@ -363,7 +418,9 @@ export default function AiLimitingBelief() {
 
                 {/* Teknik Reprogramming */}
                 <section className="nv-ai-results-section">
-                  <h2 className="nv-ai-results-title">🧠 Teknik Reprogramming</h2>
+                  <h2 className="nv-ai-results-title">
+                    {language === 'en' ? '🧠 Reprogramming Techniques' : '🧠 Teknik Reprogramming'}
+                  </h2>
                   <div className="nv-ai-ritual-list">
                     {results.reprogramming.map((r, i) => (
                       <motion.div
@@ -386,7 +443,9 @@ export default function AiLimitingBelief() {
 
                 {/* Afirmasi Spesifik */}
                 <section className="nv-ai-results-section">
-                  <h2 className="nv-ai-results-title">✦ Afirmasi Spesifik</h2>
+                  <h2 className="nv-ai-results-title">
+                    {language === 'en' ? '✦ Specific Affirmations' : '✦ Afirmasi Spesifik'}
+                  </h2>
                   <div className="nv-ai-afirmasi-list">
                     {results.afirmasi.map((af, i) => (
                       <motion.div
@@ -405,7 +464,7 @@ export default function AiLimitingBelief() {
                         <button
                           className="nv-ai-copy-btn"
                           onClick={() => handleCopy(af.afirmasi, i)}
-                          title="Salin afirmasi"
+                          title={language === 'en' ? 'Copy affirmation' : 'Salin afirmasi'}
                         >
                           {copiedIdx === i ? '✓' : '📋'}
                         </button>
@@ -416,7 +475,9 @@ export default function AiLimitingBelief() {
 
                 {/* Timeline */}
                 <section className="nv-ai-results-section">
-                  <h2 className="nv-ai-results-title">📅 Timeline Estimasi</h2>
+                  <h2 className="nv-ai-results-title">
+                    {language === 'en' ? '📅 Estimated Timeline' : '📅 Timeline Estimasi'}
+                  </h2>
                   <div className="nv-ai-durasi-box nv-glass" style={{ flexDirection: 'column', gap: 0 }}>
                     <p className="nv-ai-timeline-text">{results.timeline}</p>
                   </div>
