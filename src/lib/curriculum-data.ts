@@ -538,7 +538,7 @@ export const MARQUEE_ITEMS = [
   'Tuhan Within', 'One Reality', 'As Within So Without',
 ]
 
-export const FREE_LESSON_NUMS = ['1.1', '1.2', '1.3']
+export const FREE_LESSON_NUMS = ['1.1', '1.2', '1.3', '2.1', '3.1', '4.1', '5.1']
 
 export function isLessonFree(num: string): boolean {
   return FREE_LESSON_NUMS.includes(num)

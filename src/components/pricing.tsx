@@ -6,6 +6,7 @@ import { useAppStore, SubscriptionTier } from '@/lib/store'
 import { useTranslation } from '@/lib/translations'
 import { Check, Sparkles, Crown, BookOpen, X, Mail, User, Phone, Users } from 'lucide-react'
 import { toast } from 'sonner'
+import { FREE_LESSON_NUMS } from '@/lib/curriculum-data'
 
 interface PricingTier {
   name: string
@@ -28,7 +29,7 @@ const TIERS: PricingTier[] = [
     period: '',
     description: 'Jelajahi dasar-dasar ajaran Neville',
     features: [
-      '3 pelajaran pertama gratis',
+      `${FREE_LESSON_NUMS.length} pelajaran pertama gratis`,
       'Unduh gratis 4 eBook materi pendukung',
       'Ringkasan ajaran & kutipan pilihan',
       '❌ Tanpa akses Bank Knowledge & Komunitas',
@@ -130,7 +131,7 @@ export default function Pricing() {
           period: '',
           description: 'Explore the basics of Neville’s teachings',
           features: [
-            'First 3 lessons for free',
+            `First ${FREE_LESSON_NUMS.length} lessons for free`,
             'Free download of 4 support eBooks',
             'Summary of teachings & selected quotes',
             '❌ No Knowledge Bank & Community access',

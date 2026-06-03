@@ -176,7 +176,7 @@ export default function FreeLessonPage() {
                 <span className="nv-fl-meta-accent">⏱</span> {language === 'en' ? '8 min read' : '8 min baca'}
               </span>
               <span className="nv-fl-meta-item">
-                <span className="nv-fl-meta-accent">📖</span> {language === 'en' ? `Free Lesson ${freeIndex + 1}/3` : `Pelajaran ${freeIndex + 1}/3 gratis`}
+                <span className="nv-fl-meta-accent">📖</span> {language === 'en' ? `Free Lesson ${freeIndex + 1}/${FREE_LESSON_NUMS.length}` : `Pelajaran ${freeIndex + 1}/${FREE_LESSON_NUMS.length} gratis`}
               </span>
               <span className="nv-fl-meta-item">
                 {language === 'en' ? `PART ${part.num}: ${part.title.length > 30 ? part.title.slice(0, 28) + '…' : part.title}` : `BAGIAN ${part.num}: ${part.title.length > 30 ? part.title.slice(0, 28) + '…' : part.title}`}
@@ -392,7 +392,7 @@ export default function FreeLessonPage() {
                   ? (language === 'en' ? '✓ Completed' : '✓ Selesai') 
                   : isActive 
                     ? (language === 'en' ? '● Reading' : '● Sedang dibaca') 
-                    : (language === 'en' ? `${i + 1}/3 free` : `${i + 1}/3 gratis`)}
+                    : (language === 'en' ? `${i + 1}/${FREE_LESSON_NUMS.length} free` : `${i + 1}/${FREE_LESSON_NUMS.length} gratis`)}
               </div>
             </button>
           )

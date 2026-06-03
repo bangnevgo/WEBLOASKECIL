@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
 import { useTranslation } from '@/lib/translations'
 import { ExternalLink } from 'lucide-react'
+import { FREE_LESSON_NUMS } from '@/lib/curriculum-data'
  
 const LYNK_ID_URL = 'https://lynk.id/bangnevgo'
  
@@ -89,7 +90,7 @@ export default function LockedLessonModal() {
           </div>
  
           <button className="nv-locked-free-link" onClick={handleTryFree}>
-            {language === 'en' ? 'Or try 3 free lessons →' : 'Atau coba 3 pelajaran gratis →'}
+            {language === 'en' ? `Or try ${FREE_LESSON_NUMS.length} free lessons →` : `Atau coba ${FREE_LESSON_NUMS.length} pelajaran gratis →`}
           </button>
  
           <button className="nv-locked-have-code-link" onClick={handleSubscribe}>
