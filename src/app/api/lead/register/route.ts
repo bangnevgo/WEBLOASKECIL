@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { db } from '@/lib/db'
 
 const GOOGLE_SHEET_URL = process.env.GOOGLE_SHEET_URL || ''
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || ''
@@ -8,6 +9,15 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
     const { name, email, phone } = body
+
+    // Attribution: explicit source -> utm_source -> referer -> default
+    const utmSource = new URL(request.url).searchParams.get('utm_source')
+    const referer = request.headers.get('referer') || ''
+    const source =
+      (typeof body.source === 'string' && body.source.trim()) ||
+      (utmSource && utmSource.trim()) ||
+      (referer.includes('tiktok') ? 'tiktok' : '') ||
+      'landing'
 
     // Validate required fields
     if (!name || !email || !phone) {
@@ -41,7 +51,7 @@ export async function POST(request: Request) {
             email,
             phone,
             timestamp,
-            source: 'nevgo-landing-page',
+            source,
             ip: ipAddress,
             userAgent
           })
@@ -57,7 +67,7 @@ export async function POST(request: Request) {
     let tgResult = 'not_sent'
     if (TELEGRAM_BOT_TOKEN && TELEGRAM_ADMIN_CHAT_ID) {
       try {
-        const tgMessage = `✦ *Lead Baru Akses Loas!* ✦\n\n👤 *Nama:* ${name}\n📧 *Email:* ${email}\n📱 *No HP/WA:* ${phone}\n🕐 *Waktu:* ${new Date(timestamp).toLocaleString('id-ID')}\n🌐 *IP:* ${ipAddress}\n📱 *UA:* ${userAgent.slice(0, 80)}`
+        const tgMessage = `✦ *Lead Baru Akses Loas!* ✦\n\n👤 *Nama:* ${name}\n📧 *Email:* ${email}\n📱 *No HP/WA:* ${phone}\n🕐 *Waktu:* ${new Date(timestamp).toLocaleString('id-ID')}\n🌐 *Sumber:* ${source}\n🌐 *IP:* ${ipAddress}\n📱 *UA:* ${userAgent.slice(0, 80)}`
 
         const tgRes = await fetch(
           `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
@@ -78,9 +88,20 @@ export async function POST(request: Request) {
       }
     }
 
+    // Persist lead for command-center attribution (best-effort; do not
+    // fail the request if the DB is unavailable — Sheet/Telegram already sent)
+    let dbResult = 'not_saved'
+    try {
+      await db.lead.create({ data: { name, email, phone, source } })
+      dbResult = 'saved'
+    } catch (err) {
+      console.error('Lead DB save error:', err)
+      dbResult = 'error'
+    }
+
     return NextResponse.json({
       success: true,
-      data: { sheet: sheetResult, telegram: tgResult }
+      data: { sheet: sheetResult, telegram: tgResult, db: dbResult, source }
     })
   } catch (error) {
     console.error('Lead registration error:', error)

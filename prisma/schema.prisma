@@ -43,3 +43,18 @@ model Completion {
 
   @@unique([userId, lessonNum])
 }
+
+/// Free-material lead capture (LOAS landing). Forwarded to Google Sheet +
+/// Telegram by /api/lead/register; also persisted here so the command
+/// center can report volume + attribution (source: landing | tiktok | ...).
+model Lead {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String
+  source    String   @default("landing") // landing | tiktok | ...
+  createdAt DateTime @default(now())
+
+  @@index([source])
+  @@index([createdAt])
+}
