@@ -50,7 +50,7 @@ export const translations = {
 
     // Cohort CTA Section
     cohortCtaTitle: 'Program Cohort Terbimbing',
-    cohortCtaDesc: 'Perdalam praktik Anda dalam Cohort 12 minggu terbimbing. Sesi live mingguan, dukungan komunitas, dan latihan manifestasi terstruktur — semua dalam bimbingan langsung.',
+    cohortCtaDesc: 'Perdalam praktik Anda dalam Cohort 1 bulan terbimbing (4 sesi live). Sesi live, dukungan komunitas, dan latihan manifestasi terstruktur — semua dalam bimbingan langsung.',
     cohortCtaBtn: 'Ikut Cohort — Rp 1.000.000',
 
     // Bonus / Books Section
@@ -159,7 +159,7 @@ export const translations = {
 
     // Cohort CTA Section
     cohortCtaTitle: 'Guided Cohort Program',
-    cohortCtaDesc: 'Deepen your practice in a 12-week guided Cohort. Weekly live sessions, community support, and structured manifestation exercises — all under direct guidance.',
+    cohortCtaDesc: 'Deepen your practice in a 1-month guided Cohort (4 live sessions). Weekly live sessions, community support, and structured manifestation exercises — all under direct guidance.',
     cohortCtaBtn: 'Join Cohort — Rp 1.000.000',
 
     // Bonus / Books Section

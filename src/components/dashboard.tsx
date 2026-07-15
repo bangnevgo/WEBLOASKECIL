@@ -260,8 +260,8 @@ export default function Dashboard() {
             </h4>
             <p className="text-[11px] text-neutral-400 leading-relaxed mb-3">
               {language === 'en'
-                ? 'Join the guided Cohort program. 12 weeks of structured manifestation practice.'
-                : 'Ikuti program Cohort terbimbing. 12 minggu praktik manifestasi terstruktur.'}
+                ? 'Join the guided Cohort program. 1 month of structured manifestation practice (4 live sessions).'
+                : 'Ikuti program Cohort terbimbing. 1 bulan praktik manifestasi terstruktur (4 sesi live).'}
             </p>
             <a
               href="https://cohort.nevgoinstitute.com"

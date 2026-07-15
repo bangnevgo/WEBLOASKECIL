@@ -617,16 +617,16 @@ export default function Landing() {
             </h2>
             <p className="nv-cohort-subheadline">
               {language === 'en'
-                ? "That's the promise of the Law of Assumption. But shifting consciousness into possession isn't just knowing the theory — without a systematic method, most people get lost halfway. Cohort is the 12-week guided method that takes you from 'knowing' to 'being'."
-                : 'Itulah janji Hukum Asumsi. Tapi mengubah kesadaran menjadi kepemilikan tak sekadar tahu teorinya — tanpa cara yang sistematis, kebanyakan orang tersesat di tengah jalan. Cohort adalah metode terbimbing 12 minggu yang membawamu dari \'tahu\' menjadi \'menjadi\'.'}
+                ? "That's the promise of the Law of Assumption. But shifting consciousness into possession isn't just knowing the theory — without a systematic method, most people get lost halfway. Cohort is the 1-month guided method (4 live sessions) that takes you from 'knowing' to 'being'."
+                : 'Itulah janji Hukum Asumsi. Tapi mengubah kesadaran menjadi kepemilikan tak sekadar tahu teorinya — tanpa cara yang sistematis, kebanyakan orang tersesat di tengah jalan. Cohort adalah metode terbimbing 1 bulan (4 sesi live) yang membawamu dari \'tahu\' menjadi \'menjadi\'.'}
             </p>
 
             {/* Bridge paragraph */}
             <div className="nv-cohort-bridge">
               <p>
                 {language === 'en'
-                  ? 'Inside the Cohort, you won\'t just read about SATS, "I AM", and the feeling of the wish fulfilled — you\'ll practice them step by step: live guidance, personal feedback, and a systematic 12-week process, shoulder to shoulder with committed practitioners.'
-                  : 'Di dalam Cohort, kamu tak hanya membaca tentang SATS, "I AM", dan perasaan keinginan yang terwujud — kamu mempraktikkannya langkah demi langkah: bimbingan langsung, umpan balik personal, dan proses 12 minggu yang sistematis, bahu-membahu dengan sesama praktisi yang berkomitmen.'}
+                  ? 'Inside the Cohort, you won\'t just read about SATS, "I AM", and the feeling of the wish fulfilled — you\'ll practice them step by step: live guidance, personal feedback, and a systematic 1-month process (4 live sessions), shoulder to shoulder with committed practitioners.'
+                  : 'Di dalam Cohort, kamu tak hanya membaca tentang SATS, "I AM", dan perasaan keinginan yang terwujud — kamu mempraktikkannya langkah demi langkah: bimbingan langsung, umpan balik personal, dan proses 1 bulan yang sistematis (4 sesi live), bahu-membahu dengan sesama praktisi yang berkomitmen.'}
               </p>
             </div>
 
@@ -687,8 +687,8 @@ export default function Landing() {
                 </h3>
                 <p className="nv-cohort-card-desc">
                   {language === 'en'
-                    ? 'Limited to 15–20 participants per Cohort. You\'re not a number — you\'re part of a tribe. Share progress, breakthroughs, and support each other through the bridge of incidents.'
-                    : 'Terbatas 15–20 peserta per Cohort. Kamu bukan nomor — kamu bagian dari suku. Bagikan progres, terobosan, dan saling dukung melalui jembatan peristiwa.'}
+                    ? 'Limited to 10 participants per Cohort. You\'re not a number — you\'re part of a tribe. Share progress, breakthroughs, and support each other through the bridge of incidents.'
+                    : 'Terbatas 10 peserta per Cohort. Kamu bukan nomor — kamu bagian dari suku. Bagikan progres, terobosan, dan saling dukung melalui jembatan peristiwa.'}
                 </p>
               </motion.div>
 
@@ -761,12 +761,12 @@ export default function Landing() {
               </div>
               <div className="nv-cohort-stat-divider" />
               <div className="nv-cohort-stat">
-                <span className="nv-cohort-stat-num">12</span>
-                <span className="nv-cohort-stat-label">{language === 'en' ? 'Weeks' : 'Minggu'}</span>
+                <span className="nv-cohort-stat-num">1</span>
+                <span className="nv-cohort-stat-label">{language === 'en' ? 'Month' : 'Bulan'}</span>
               </div>
               <div className="nv-cohort-stat-divider" />
               <div className="nv-cohort-stat">
-                <span className="nv-cohort-stat-num">15–20</span>
+                <span className="nv-cohort-stat-num">10</span>
                 <span className="nv-cohort-stat-label">{language === 'en' ? 'Participants' : 'Peserta'}</span>
               </div>
               <div className="nv-cohort-stat-divider" />
@@ -780,8 +780,8 @@ export default function Landing() {
             <div className="nv-cohort-testimonial nv-glass" style={{ marginTop: '32px', padding: '24px 28px', borderRadius: '16px' }}>
               <p style={{ fontSize: '0.95rem', lineHeight: 1.6, color: 'var(--nv-text)', fontStyle: 'italic' }}>
                 {language === 'en'
-                  ? '"After 12 weeks I stopped hoping and started living from the end. My first manifestation landed before the batch even ended."'
-                  : '"Setelah 12 minggu, saya berhenti berharap dan mulai hidup dari akhir. Manifestasi pertama saya nyata sebelum batch selesai."'}
+                  ? '"After 1 month I stopped hoping and started living from the end. My first manifestation landed before the batch even ended."'
+                  : '"Setelah 1 bulan, saya berhenti berharap dan mulai hidup dari akhir. Manifestasi pertama saya nyata sebelum batch selesai."'}
               </p>
               <p style={{ marginTop: '12px', fontSize: '0.8rem', color: 'var(--nv-gold)', fontWeight: 700 }}>
                 {language === 'en' ? '— Peserta Cohort Batch 3' : '— Peserta Cohort Batch 3'}
@@ -817,8 +817,8 @@ export default function Landing() {
               </div>
               <p className="nv-cohort-cta-note">
                 {language === 'en'
-                  ? 'Limited to 15–20 participants per batch. Seats fill fast — reserve yours.'
-                  : 'Terbatas 15–20 peserta per batch. Kuota terbatas — amankan seat-mu.'}
+                  ? 'Limited to 10 participants per batch. Seats fill fast — reserve yours.'
+                  : 'Terbatas 10 peserta per batch. Kuota terbatas — amankan seat-mu.'}
               </p>
             </div>
           </div>
