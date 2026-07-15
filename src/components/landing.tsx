@@ -802,6 +802,14 @@ export default function Landing() {
                 <span className="nv-cta-icon">✦</span>
                 {language === 'en' ? 'Join Cohort — Rp 1.000.000 →' : 'Gabung Cohort — Rp 1.000.000 →'}
               </motion.a>
+              <a
+                href="https://cohort.nevgoinstitute.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ display: 'inline-block', marginTop: '14px', fontSize: '13px', color: 'var(--nv-dim)', textDecoration: 'none' }}
+              >
+                {language === 'en' ? 'Learn More About Cohort →' : 'Pelajari Lebih Lanjut →'}
+              </a>
               <p className="nv-cohort-cta-note">
                 {language === 'en'
                   ? 'Limited to 15–20 participants per batch. Seats fill fast — reserve yours.'
