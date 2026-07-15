@@ -790,26 +790,31 @@ export default function Landing() {
 
             {/* CTA */}
             <div className="nv-cohort-cta-wrap">
-              <motion.a
-                href="https://cohort.nevgoinstitute.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="nv-cta-button nv-cta-pulse"
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.97 }}
-                style={{ textDecoration: 'none', fontSize: '16px', padding: '16px 40px' }}
-              >
-                <span className="nv-cta-icon">✦</span>
-                {language === 'en' ? 'Join Cohort — Rp 1.000.000 →' : 'Gabung Cohort — Rp 1.000.000 →'}
-              </motion.a>
-              <a
-                href="https://cohort.nevgoinstitute.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ display: 'inline-block', marginTop: '14px', fontSize: '13px', color: 'var(--nv-dim)', textDecoration: 'none' }}
-              >
-                {language === 'en' ? 'Learn More About Cohort →' : 'Pelajari Lebih Lanjut →'}
-              </a>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px', justifyContent: 'center', alignItems: 'center' }}>
+                <motion.a
+                  href="https://cohort.nevgoinstitute.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="nv-cta-button nv-cta-pulse"
+                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileTap={{ scale: 0.97 }}
+                  style={{ textDecoration: 'none' }}
+                >
+                  <span className="nv-cta-icon">✦</span>
+                  {language === 'en' ? 'Join Cohort — Rp 1.000.000 →' : 'Gabung Cohort — Rp 1.000.000 →'}
+                </motion.a>
+                <motion.a
+                  href="https://cohort.nevgoinstitute.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="nv-cta-button"
+                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileTap={{ scale: 0.97 }}
+                  style={{ textDecoration: 'none' }}
+                >
+                  {language === 'en' ? 'Learn More About Cohort →' : 'Pelajari Lebih Lanjut →'}
+                </motion.a>
+              </div>
               <p className="nv-cohort-cta-note">
                 {language === 'en'
                   ? 'Limited to 15–20 participants per batch. Seats fill fast — reserve yours.'
