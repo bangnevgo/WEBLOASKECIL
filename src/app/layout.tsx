@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://loas.nevgoinstitute.com"),
   title: "Neville Goddard — Hukum Asumsi | Kurikulum Lengkap",
   description:
-    "Pelajari Hukum Asumsi dari Neville Goddard melalui kurikulum terstruktur: 10 bagian, 49 pelajaran, praktik harian, dan kutipan bersumber dari seluruh karyanya. Mulai perjalanan manifestasi Anda sekarang.",
+    "Pelajari Hukum Asumsi dari Neville Goddard melalui kurikulum terstruktur: 10 bagian, 50 pelajaran, praktik harian, dan kutipan bersumber dari seluruh karyanya. Mulai perjalanan manifestasi Anda sekarang.",
   keywords: [
     "Neville Goddard",
     "Law of Assumption",
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Neville Goddard — Hukum Asumsi",
     description:
-      "Kurikulum lengkap ajaran Neville Goddard: 10 bagian, 49 pelajaran, praktik harian, dan kutipan bersumber. Mulai jelajahi kekuatan asumsi Anda.",
+      "Kurikulum lengkap ajaran Neville Goddard: 10 bagian, 50 pelajaran, praktik harian, dan kutipan bersumber. Mulai jelajahi kekuatan asumsi Anda.",
     type: "website",
     locale: "id_ID",
     siteName: "Hukum Asumsi — Neville Goddard",
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Neville Goddard — Hukum Asumsi",
     description:
-      "Kurikulum lengkap ajaran Neville Goddard: 10 bagian, 49 pelajaran, praktik harian, dan kutipan bersumber.",
+      "Kurikulum lengkap ajaran Neville Goddard: 10 bagian, 50 pelajaran, praktik harian, dan kutipan bersumber.",
     images: ["/community-cover.png"],
   },
   robots: {
@@ -105,7 +105,7 @@ export default function RootLayout({
       "@context": "https://schema.org",
       "@type": "Course",
       name: "Neville Goddard — Hukum Asumsi: Kurikulum Lengkap",
-      description: "Pelajari Hukum Asumsi dari Neville Goddard melalui kurikulum terstruktur: 10 bagian, 49 pelajaran, praktik harian, dan kutipan bersumber dari seluruh karyanya.",
+      description: "Pelajari Hukum Asumsi dari Neville Goddard melalui kurikulum terstruktur: 10 bagian, 50 pelajaran, praktik harian, dan kutipan bersumber dari seluruh karyanya.",
       url: "https://loas.nevgoinstitute.com",
       image: "https://loas.nevgoinstitute.com/community-cover.png",
       provider: {
@@ -163,7 +163,7 @@ export default function RootLayout({
           name: "Apa perbedaan antara paket Basic, Premium, dan Master?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Paket Basic memberikan akses ke materi dasar. Premium mencakup semua 49 pelajaran dan praktik harian. Master termasuk sesi AI privat, meditasi audio, dan konsultasi personal."
+            text: "Paket Basic memberikan akses ke materi dasar. Premium mencakup semua 50 pelajaran dan praktik harian. Master termasuk sesi AI privat, meditasi audio, dan konsultasi personal."
           }
         },
         {
