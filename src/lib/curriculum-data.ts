@@ -494,8 +494,6 @@ const P7_TO_P10: PartFull[] = [
     ]),
 ]
 
-export const FULL_CURRICULUM: PartFull[] = [...CURRICULUM, ...P4_LESSONS.map(() => ({} as PartFull))]
-
 // Reconstruct full array
 export const ALL_PARTS: PartFull[] = [
   ...CURRICULUM,
@@ -539,7 +537,3 @@ export const MARQUEE_ITEMS = [
 ]
 
 export const FREE_LESSON_NUMS = ['1.1', '1.2', '1.3', '2.1', '3.1', '4.1', '5.1']
-
-export function isLessonFree(num: string): boolean {
-  return FREE_LESSON_NUMS.includes(num)
-}

@@ -106,9 +106,9 @@ export default function PartPageClient({ part, prevPart, nextPart }: Props) {
             : `Dapatkan akses penuh ke semua ${activePart.lessons.length} pelajaran dalam bagian ini beserta konten lengkap, kutipan bersumber, dan praktik harian.`
           }
         </p>
-        <Link href="/#pricing" className="nv-part-cta-btn">
-          ✦ {language === 'en' ? 'View Subscription Plans' : 'Lihat Paket Berlangganan'}
-        </Link>
+        <a href="/#part-1" className="nv-part-cta-btn">
+          ✦ {language === 'en' ? 'Register Free — Full Access' : 'Daftar Gratis — Full Akses'}
+        </a>
         <Link href="/" className="nv-part-back">
           {language === 'en' ? '← Back to Complete Curriculum' : '← Kembali ke Kurikulum Lengkap'}
         </Link>

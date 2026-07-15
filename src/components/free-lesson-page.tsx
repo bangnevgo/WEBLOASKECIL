@@ -440,9 +440,9 @@ export default function FreeLessonPage() {
           </div>
           <h2 className="nv-fl-conversion-title">{language === 'en' ? 'You have just begun the journey.' : 'Anda baru saja memulai perjalanan.'}</h2>
           <p className="nv-fl-conversion-desc">
-            {language === 'en' 
-              ? <>This lesson is the foundation. But a foundation without a building is empty land. There are still <strong style={{ color: 'var(--nv-gold)' }}>46 lessons</strong> waiting:</>
-              : <>Pelajaran ini adalah fondasi. Tetapi fondasi tanpa bangunan adalah tanah kosong. Masih ada <strong style={{ color: 'var(--nv-gold)' }}>46 pelajaran</strong> yang menunggu:</>
+            {language === 'en'
+              ? <>This is just the beginning. All <strong style={{ color: 'var(--nv-gold)' }}>50 lessons</strong> are free — just register. Ready to go deeper? Join the <strong style={{ color: 'var(--nv-gold)' }}>Cohort Program</strong> for guided group practice.</>
+              : <>Ini baru permulaan. Seluruh <strong style={{ color: 'var(--nv-gold)' }}>50 pelajaran</strong> gratis — cukup daftar. Siap melangkah lebih dalam? Ikuti <strong style={{ color: 'var(--nv-gold)' }}>Program Cohort</strong> untuk latihan kelompok terbimbing.</>
             }
           </p>
           <ul className="nv-fl-conversion-teases">
@@ -455,12 +455,12 @@ export default function FreeLessonPage() {
           </ul>
           <motion.button
             className="nv-cta-button nv-cta-pulse"
-            onClick={() => setView('pricing')}
+            onClick={() => window.open('https://cohort.nevgoinstitute.com', '_blank', 'noopener')}
             whileHover={{ scale: 1.03, y: -2 }}
             whileTap={{ scale: 0.97 }}
           >
             <span className="nv-cta-icon">✦</span>
-            {language === 'en' ? 'Unlock Full Curriculum — $9/month' : 'Buka Kurikulum Lengkap — $9/bulan'}
+            {language === 'en' ? 'Join the Cohort Program — Rp 1.000.000' : 'Ikut Program Cohort — Rp 1.000.000'}
           </motion.button>
           <div className="nv-fl-progress-bar">
             <div className="nv-fl-progress-track">

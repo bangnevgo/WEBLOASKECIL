@@ -15,11 +15,11 @@ export const translations = {
     heroTop: 'Neville Goddard',
     heroMain: 'HUKUM ASUMSI',
     heroSub: '(Ajaran & Praktik)',
-    heroQuote: '“Sebuah asumsi, meskipun salah, jika terus dipegang teguh, akan mengeras menjadi fakta. Manusia, dengan mengasumsikan perasaan dari keinginan yang telah terwujud, mengubah masa depannya selaras dengan asumsinya.”',
+    heroQuote: '"Sebuah asumsi, meskipun salah, jika terus dipegang teguh, akan mengeras menjadi fakta. Manusia, dengan mengasumsikan perasaan dari keinginan yang telah terwujud, mengubah masa depannya selaras dengan asumsinya."',
     heroQuoteSource: '— LIMA PELAJARAN · PELAJARAN 1 · 1948',
     aiCTA: 'Analisa Perjalanan Manifestasimu',
     aiCTA_badge: '(Ditenagai AI)',
-    pricingCTA_hero: 'Dapatkan Akses Penuh — Berlangganan Sekarang',
+    pricingCTA_hero: 'Ikut Program Cohort — Rp 1.000.000',
     askBangNevgo: 'Tanya Bang Nevgo',
     metaCurriculum: 'KURIKULUM',
     metaParts: 'BAGIAN',
@@ -33,7 +33,7 @@ export const translations = {
 
     // General badges
     freeBadge: 'GRATIS ✦',
-    paidBadge: 'AKSES PENUH',
+    paidBadge: '✦ COHORT',
     ebookBadge: '✦ KOLEKSI eBOOK',
 
     // Community CTA Section
@@ -46,12 +46,12 @@ export const translations = {
 
     // Ebook Section
     ebookTitle: 'eBook Panduan Manifestasi',
-    ebookSubtitle: 'Koleksi eBook berbayar oleh Bang Nevgo — praktis, bersumber, dan siap membantu perjalanan manifestasimu',
+    ebookSubtitle: 'Koleksi eBook oleh Bang Nevgo — praktis, bersumber, dan siap membantu perjalanan manifestasimu',
 
-    // Pricing CTA Section
-    pricingCtaTitle: 'Buka Kurikulum Lengkap',
-    pricingCtaDesc: 'Berlangganan untuk mendapatkan akses ke seluruh 49 pelajaran terperinci dengan ajaran lengkap, kutipan bersumber, praktik harian, dan poin-poin penting dari seluruh karya Neville Goddard.',
-    pricingCtaBtn: 'Lihat Paket Berlangganan →',
+    // Cohort CTA Section
+    cohortCtaTitle: 'Program Cohort Terbimbing',
+    cohortCtaDesc: 'Perdalam praktik Anda dalam Cohort 12 minggu terbimbing. Sesi live mingguan, dukungan komunitas, dan latihan manifestasi terstruktur — semua dalam bimbingan langsung.',
+    cohortCtaBtn: 'Ikut Cohort — Rp 1.000.000',
 
     // Bonus / Books Section
     essentialBooksTitle: '✦ Buku & Kuliah Esensial',
@@ -71,24 +71,12 @@ export const translations = {
     dashboardSubtitle: 'Pantau kemajuan Anda dan jelajahi seluruh kurikulum Hukum Asumsi.',
     backToHome: '← Beranda',
     dashboardWelcome: 'Selamat datang kembali, {name}!',
-    dashboardTierFree: 'Paket: GRATIS',
-    dashboardTierBasic: 'Paket: BASIC ✦',
-    dashboardTierPremium: 'Paket: PREMIUM 💎',
-    dashboardTierMaster: 'Paket: MASTER 👑',
+    dashboardFree: 'AKSES GRATIS — Semua Materi Free',
     dashboardProgress: 'Kemajuan Belajar',
     lessonsCompleted: '{completed} dari {total} pelajaran selesai',
     curriculumOverview: 'Ikhtisar Kurikulum',
-    activeTiers: 'Status Anggota',
-    activationCode: 'Aktivasi Kode',
-    redeemBtn: 'Tukarkan Kode',
-    redeemCodePlaceholder: 'Masukkan kode aktivasi Anda',
-    activating: 'Mengaktifkan...',
-    cancelBtn: 'Batal',
     authRequiredDashboard: 'Anda harus masuk untuk mengakses Dasbor.',
-    joinPremiumTitle: 'Tingkatkan ke Premium atau Master',
-    joinPremiumDesc: 'Dapatkan akses ke seluruh 49 pelajaran, meditasi audio VIP, forum komunitas, dan analisis AI interaktif.',
-    explorePricing: 'Lihat Paket & Harga',
-    
+
     // Lesson Detail UI
     backToDashboard: '← Kembali ke Dasbor',
     backToLanding: '← Kembali ke Beranda',
@@ -103,7 +91,7 @@ export const translations = {
     viewOriginalText: 'Akses Sumber Asli →',
     freeLessonTitle: 'Pelajaran Gratis',
 
-    // Locked Lesson Modal
+    // Locked Lesson Modal (tidak dipakai lagi)
     lockedTitle: 'Pelajaran Terkunci 🔒',
     lockedDesc: 'Pelajaran ini memerlukan keanggotaan aktif untuk dibuka.',
     upgradeToAccess: 'Berlangganan untuk Membuka Akses Penuh',
@@ -114,12 +102,12 @@ export const translations = {
     faq_a1: 'Hukum Asumsi adalah prinsip inti dari ajaran Neville Goddard yang menyatakan bahwa sebuah asumsi, meskipun salah, jika terus dipegang teguh akan mengeras menjadi fakta. Dengan mengasumsikan perasaan dari keinginan yang telah terwujud, Anda mengubah masa depan selaras dengan asumsi tersebut.',
     faq_q2: 'Apakah saya perlu latar belakang agama?',
     faq_a2: 'Tidak. Ajaran Neville bersifat universal dan dapat diterapkan oleh siapa saja tanpa memandang latar belakang agama atau keyakinan. Meskipun Neville menggunakan bahasa alkitabiah dalam kuliahnya, prinsip-prinsipnya bersifat praktis dan psikologis.',
-    faq_q3: 'Apa perbedaan antara paket Basic, Premium, dan Master?',
-    faq_a3: 'Paket Basic memberikan akses penuh ke 49 pelajaran kurikulum dan Bank Knowledge dasar (non-VIP). Paket Premium menambahkan akses ke forum komunitas privat yang interaktif dan webinar pendukung. Paket Master menyempurnakan perjalanan Anda dengan meditasi audio premium, webinar VIP, dan workbook pemrograman batin harian pribadi.',
+    faq_q3: 'Apa perbedaan antara Paket Basic, Premium, dan Master?',
+    faq_a3: 'Seluruh kurikulum kini GRATIS. Tidak ada lagi paket berlangganan. Jika Anda ingin pendampingan lebih dalam, silakan bergabung dengan Program Cohort.',
     faq_q4: 'Bagaimana teknik SATS bekerja?',
     faq_a4: 'SATS (State Akin To Sleep) adalah teknik meditasi di mana Anda memasuki kondisi rileks antara terjaga dan tidur, lalu membayangkan adegan yang menyiratkan keinginan Anda telah terwujud. Dalam kondisi ini, pikiran bawah sadar paling reseptif terhadap sugesti baru.',
     faq_q5: 'Apakah saya bisa membatalkan langganan?',
-    faq_a5: 'Ya, Anda dapat membatalkan kapan saja tanpa penalti. Akses Anda akan tetap aktif hingga akhir periode berlangganan yang telah dibayar. Tidak ada biaya tersembunyi atau komitmen jangka panjang.',
+    faq_a5: 'Tidak perlu khawatir — seluruh materi kurikulum kini GRATIS dan dapat diakses tanpa batasan. Tidak ada biaya tersembunyi atau komitmen jangka panjang.',
     faq_q6: 'Dari mana sumber materi ini?',
     faq_a6: 'Seluruh materi bersumber dari 15+ buku dan 200+ kuliah asli Neville Goddard dari tahun 1939 hingga 1972. Setiap pelajaran dilengkapi dengan kutipan langsung dan rujukan ke sumber aslinya, memastikan keakuratan dan integritas ajaran.'
   },
@@ -136,11 +124,11 @@ export const translations = {
     heroTop: 'Neville Goddard',
     heroMain: 'LAW OF ASSUMPTION',
     heroSub: '(Teachings & Practice)',
-    heroQuote: '“An assumption, though false, if persisted in, will harden into fact. Man, by assuming the feeling of his wish fulfilled, alters his future in harmony with his assumption.”',
+    heroQuote: '"An assumption, though false, if persisted in, will harden into fact. Man, by assuming the feeling of his wish fulfilled, alters his future in harmony with his assumption."',
     heroQuoteSource: '— FIVE LESSONS · LESSON 1 · 1948',
     aiCTA: 'Analyze Your Manifestation Journey',
     aiCTA_badge: '(AI Powered)',
-    pricingCTA_hero: 'Get Full Access — Subscribe Now',
+    pricingCTA_hero: 'Join the Cohort — Rp 1.000.000',
     askBangNevgo: 'Ask Bang Nevgo',
     metaCurriculum: 'CURRICULUM',
     metaParts: 'PARTS',
@@ -154,7 +142,7 @@ export const translations = {
 
     // General badges
     freeBadge: 'FREE ✦',
-    paidBadge: 'FULL ACCESS',
+    paidBadge: '✦ COHORT',
     ebookBadge: '✦ eBOOK COLLECTION',
 
     // Community CTA Section
@@ -167,20 +155,20 @@ export const translations = {
 
     // Ebook Section
     ebookTitle: 'Manifestation Guide eBooks',
-    ebookSubtitle: 'Collection of premium eBooks by Bang Nevgo — practical, source-backed, and ready to assist your manifestation journey',
+    ebookSubtitle: 'Collection of eBooks by Bang Nevgo — practical, source-backed, and ready to assist your manifestation journey',
 
-    // Pricing CTA Section
-    pricingCtaTitle: 'Unlock Full Curriculum',
-    pricingCtaDesc: 'Subscribe to get access to all 49 detailed lessons with complete teachings, source-backed quotes, daily practices, and key takeaways from all of Neville Goddard’s works.',
-    pricingCtaBtn: 'View Subscription Plans →',
+    // Cohort CTA Section
+    cohortCtaTitle: 'Guided Cohort Program',
+    cohortCtaDesc: 'Deepen your practice in a 12-week guided Cohort. Weekly live sessions, community support, and structured manifestation exercises — all under direct guidance.',
+    cohortCtaBtn: 'Join Cohort — Rp 1.000.000',
 
     // Bonus / Books Section
     essentialBooksTitle: '✦ Essential Books & Lectures',
-    essentialBooksDesc: 'Free full-text archive available at coolwisdombooks.com/neville. Neville’s complete works from 1939–1972.',
+    essentialBooksDesc: 'Free full-text archive available at coolwisdombooks.com/neville. Neville\'s complete works from 1939–1972.',
     resourcesCount: 'RESOURCES',
 
     // Footer
-    footerBrandTagline: 'Complete Curriculum of Neville Goddard’s Teachings',
+    footerBrandTagline: 'Complete Curriculum of Neville Goddard\'s Teachings',
     footerColCurriculum: 'Curriculum',
     footerColResources: 'Resources',
     footerColLegal: 'Legal',
@@ -192,24 +180,12 @@ export const translations = {
     dashboardSubtitle: 'Track your progress and explore the complete Law of Assumption curriculum.',
     backToHome: '← Back to Home',
     dashboardWelcome: 'Welcome back, {name}!',
-    dashboardTierFree: 'Plan: FREE',
-    dashboardTierBasic: 'Plan: BASIC ✦',
-    dashboardTierPremium: 'Plan: PREMIUM 💎',
-    dashboardTierMaster: 'Plan: MASTER 👑',
+    dashboardFree: 'FREE ACCESS — All Materials Free',
     dashboardProgress: 'Learning Progress',
     lessonsCompleted: '{completed} of {total} lessons completed',
     curriculumOverview: 'Curriculum Overview',
-    activeTiers: 'Membership Status',
-    activationCode: 'Redeem Code',
-    redeemBtn: 'Redeem Code',
-    redeemCodePlaceholder: 'Enter your activation code',
-    activating: 'Activating...',
-    cancelBtn: 'Cancel',
     authRequiredDashboard: 'You must be logged in to access the Dashboard.',
-    joinPremiumTitle: 'Upgrade to Premium or Master',
-    joinPremiumDesc: 'Gain access to all 49 lessons, VIP audio meditations, community forums, and interactive AI analysis.',
-    explorePricing: 'View Plans & Pricing',
-    
+
     // Lesson Detail UI
     backToDashboard: '← Back to Dashboard',
     backToLanding: '← Back to Home',
@@ -224,7 +200,7 @@ export const translations = {
     viewOriginalText: 'Access Original Source →',
     freeLessonTitle: 'Free Lesson',
 
-    // Locked Lesson Modal
+    // Locked Lesson Modal (no longer used)
     lockedTitle: 'Lesson Locked 🔒',
     lockedDesc: 'This lesson requires an active membership to unlock.',
     upgradeToAccess: 'Subscribe to Unlock Full Access',
@@ -232,17 +208,18 @@ export const translations = {
 
     // FAQ items
     faq_q1: 'What is the Law of Assumption?',
-    faq_a1: 'The Law of Assumption is the core principle of Neville Goddard’s teachings, which states that an assumption, though false, if persisted in, will harden into fact. By assuming the feeling of your wish fulfilled, you alter your future in harmony with your assumption.',
+    faq_q1: 'What is the Law of Assumption?',
+    faq_a1: 'The Law of Assumption is the core principle of Neville Goddard\'s teachings, which states that an assumption, though false, if persisted in, will harden into fact. By assuming the feeling of your wish fulfilled, you alter your future in harmony with your assumption.',
     faq_q2: 'Do I need a religious background?',
-    faq_a2: 'No. Neville’s teachings are universal and can be applied by anyone regardless of religious background or belief. While Neville uses biblical language in his lectures, his principles are practical and psychological.',
+    faq_a2: 'No. Neville\'s teachings are universal and can be applied by anyone regardless of religious background or belief. While Neville uses biblical language in his lectures, his principles are practical and psychological.',
     faq_q3: 'What is the difference between Basic, Premium, and Master packages?',
-    faq_a3: 'The Basic package provides full access to the 49 curriculum lessons and the basic Knowledge Bank (non-VIP). The Premium package adds access to the interactive private community forum and support webinars. The Master package elevates your journey with premium audio meditations, VIP webinars, and a personalized daily inner programming workbook.',
+    faq_a3: 'The entire curriculum is now FREE. There are no more subscription packages. If you want deeper guidance, join the Cohort Program.',
     faq_q4: 'How does the SATS technique work?',
     faq_a4: 'SATS (State Akin To Sleep) is a meditative technique where you enter a state of deep relaxation between waking and sleeping, and then imagine a scene implying your wish has already been fulfilled. In this state, the subconscious mind is most receptive to new suggestions.',
     faq_q5: 'Can I cancel my subscription?',
-    faq_a5: 'Yes, you can cancel at any time with no penalty. Your access will remain active until the end of the paid billing period. There are no hidden fees or long-term commitments.',
+    faq_a5: 'No need to worry — all curriculum materials are now FREE and accessible without restrictions. No hidden fees or long-term commitments.',
     faq_q6: 'Where does this material come from?',
-    faq_a6: 'All material is sourced from Neville Goddard’s 15+ original books and 200+ lectures from 1939 to 1972. Every lesson features direct quotes and references to the original sources, ensuring accuracy and integrity of the teachings.'
+    faq_a6: 'All material is sourced from Neville Goddard\'s 15+ original books and 200+ lectures from 1939 to 1972. Every lesson features direct quotes and references to the original sources, ensuring accuracy and integrity of the teachings.'
   }
 }
 

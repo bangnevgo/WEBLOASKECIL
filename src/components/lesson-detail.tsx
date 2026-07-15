@@ -109,22 +109,6 @@ export default function LessonDetail() {
     return mappedMeditation
   }
   const displayMeditation = getMappedMeditation()
-  
-  // Premium download check helper
-  const handlePdfDownload = () => {
-    // Simulated PDF download trigger
-    const link = document.createElement('a')
-    link.href = `/api/media?type=pdf&file=ringkasan-pelajaran-${lesson.num}.pdf`
-    link.download = `ringkasan-pelajaran-${lesson.num}.pdf`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    toast.success(
-      language === 'en'
-        ? `Download of Lesson ${lesson.num} PDF summary started!`
-        : `Unduhan ringkasan PDF Pelajaran ${lesson.num} dimulai!`
-    )
-  }
 
   // Cross-part lesson navigation helpers
   const partIdx = curriculumParts.indexOf(part)
@@ -226,13 +210,14 @@ export default function LessonDetail() {
               {lesson.title}
             </h1>
 
-            {/* Premium PDF download teaser button */}
-            <button 
-              className="nv-lesson-download-badge mb-6" 
-              onClick={handlePdfDownload}
-            >
-              <FileText size={14} /> {language === 'en' ? 'Download PDF Summary (Visual Study Guide)' : 'Unduh Ringkasan PDF (Visual Study Guide)'}
-            </button>
+            {/* Premium PDF download — coming soon */}
+            <div className="nv-lesson-download-badge mb-6 flex items-center gap-2" style={{ opacity: 0.6, cursor: 'default' }}>
+              <FileText size={14} />
+              <span>{language === 'en' ? 'PDF Summary (Visual Study Guide)' : 'Ringkasan PDF (Visual Study Guide)'}</span>
+              <span className="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded uppercase tracking-wider flex items-center gap-0.5" style={{ marginLeft: '4px' }}>
+                {language === 'en' ? 'COMING SOON ✨' : 'SEGERA ✨'}
+              </span>
+            </div>
 
             {/* Mapped audio meditation player embed */}
             {displayMeditation && (
@@ -377,6 +362,40 @@ export default function LessonDetail() {
                   </button>
                 )
               })}
+            </div>
+
+            {/* ✦ Cohort CTA below lesson cards */}
+            <div className="mt-5 pt-4 border-t border-neutral-800">
+              <a
+                href="https://cohort.nevgoinstitute.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full py-3 px-3 rounded-lg text-sm font-bold transition-all duration-200"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(212,160,83,0.12), rgba(184,134,45,0.08))',
+                  border: '1px solid rgba(212,160,83,0.25)',
+                  color: '#d4a053'
+                }}
+                onMouseEnter={(e) => {
+                  const el = e.currentTarget as HTMLElement
+                  el.style.background = 'linear-gradient(135deg, rgba(212,160,83,0.2), rgba(184,134,45,0.15))'
+                  el.style.borderColor = 'rgba(212,160,83,0.4)'
+                }}
+                onMouseLeave={(e) => {
+                  const el = e.currentTarget as HTMLElement
+                  el.style.background = 'linear-gradient(135deg, rgba(212,160,83,0.12), rgba(184,134,45,0.08))'
+                  el.style.borderColor = 'rgba(212,160,83,0.25)'
+                }}
+              >
+                <span style={{ fontSize: '0.75rem' }}>✦</span>
+                <span>{language === 'en' ? 'Master with Live Guidance — Join Cohort →' : 'Kuasai dengan Bimbingan Langsung — Ikut Cohort →'}</span>
+              </a>
+              <p className="text-[10px] text-neutral-600 text-center mt-2 leading-relaxed">
+                {language === 'en'
+                  ? 'Live sessions, direct mentoring, and community support.'
+                  : 'Sesi langsung, bimbingan langsung, dan dukungan komunitas.'
+                }
+              </p>
             </div>
           </div>
         </aside>

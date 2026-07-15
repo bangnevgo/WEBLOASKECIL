@@ -3,13 +3,14 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useAppStore, SubscriptionTier } from '@/lib/store'
+import { useAppStore } from '@/lib/store'
 import { ALL_PARTS } from '@/lib/curriculum-data'
 import { ALL_PARTS_EN } from '@/lib/curriculum-data-en'
 import { useTranslation } from '@/lib/translations'
-import { Users, Crown, BookOpen, Sparkles, Key, Play, Lock, LogOut, CheckCircle2 } from 'lucide-react'
+import { Users, Crown, BookOpen, Sparkles, Play, LogOut, ExternalLink, Lock } from 'lucide-react'
 import AudioPlayer from '@/components/ui/audio-player'
 import WebinarHub from '@/components/webinar-hub'
+import LeadCaptureModal from '@/components/lead-capture-modal'
 import { toast } from 'sonner'
 
 const partImages = [
@@ -32,7 +33,6 @@ const MEDITATIONS = [
     duration: '15:00',
     desc: 'Panduan audio penuntun masuk ke State Akin To Sleep (SATS) untuk menanamkan asumsi di pikiran bawah sadar.',
     file: 'sats-meditation.mp3',
-    minTier: 'basic'
   },
   {
     slug: 'visualisasi-kesehatan',
@@ -40,7 +40,6 @@ const MEDITATIONS = [
     duration: '10:00',
     desc: 'Audio loop untuk membantu visualisasi tubuh yang pulih dan prima dengan perasaan bersyukur.',
     file: 'visualisasi-kesehatan.mp3',
-    minTier: 'basic'
   },
   {
     slug: 'visualisasi-kemakmuran',
@@ -48,7 +47,6 @@ const MEDITATIONS = [
     duration: '10:00',
     desc: 'Mengasumsikan kelimpahan finansial dari perspektif keinginan yang telah terwujud secara natural.',
     file: 'visualisasi-kemakmuran.mp3',
-    minTier: 'master'
   },
   {
     slug: 'revisi-malam',
@@ -56,7 +54,6 @@ const MEDITATIONS = [
     duration: '12:00',
     desc: 'Latihan sebelum tidur untuk merevisi dan mengganti ingatan kejadian buruk hari ini dengan asumsi ideal.',
     file: 'revisi-malam.mp3',
-    minTier: 'master'
   },
   {
     slug: 'afirmasi-iam',
@@ -64,7 +61,6 @@ const MEDITATIONS = [
     duration: '20:00',
     desc: 'Loop afirmasi peneguhan eksistensi ketuhanan dalam diri yang paling reseptif di gelombang theta.',
     file: 'afirmasi-iam.mp3',
-    minTier: 'master'
   },
   {
     slug: 'meditasi-gratitude',
@@ -72,8 +68,7 @@ const MEDITATIONS = [
     duration: '10:00',
     desc: 'Mengunci getaran rasa syukur yang menyiratkan bahwa keinginan Anda sudah terjadi sepenuhnya.',
     file: 'meditasi-gratitude.mp3',
-    minTier: 'master'
-  }
+  },
 ]
 
 const MEDITATIONS_EN = [
@@ -83,7 +78,6 @@ const MEDITATIONS_EN = [
     duration: '15:00',
     desc: 'Audio guide to enter State Akin To Sleep (SATS) to implant assumptions in the subconscious mind.',
     file: 'sats-meditation.mp3',
-    minTier: 'basic'
   },
   {
     slug: 'visualisasi-kesehatan',
@@ -91,7 +85,6 @@ const MEDITATIONS_EN = [
     duration: '10:00',
     desc: 'Audio loop to assist visualization of a recovered and prime body with feelings of gratitude.',
     file: 'visualisasi-kesehatan.mp3',
-    minTier: 'basic'
   },
   {
     slug: 'visualisasi-kemakmuran',
@@ -99,7 +92,6 @@ const MEDITATIONS_EN = [
     duration: '10:00',
     desc: 'Assuming financial abundance from the perspective of the wish fulfilled naturally.',
     file: 'visualisasi-kemakmuran.mp3',
-    minTier: 'master'
   },
   {
     slug: 'revisi-malam',
@@ -107,7 +99,6 @@ const MEDITATIONS_EN = [
     duration: '12:00',
     desc: 'Before-bed exercise to revise and replace negative memories of the day with ideal assumptions.',
     file: 'revisi-malam.mp3',
-    minTier: 'master'
   },
   {
     slug: 'afirmasi-iam',
@@ -115,7 +106,6 @@ const MEDITATIONS_EN = [
     duration: '20:00',
     desc: 'Affirmations loop confirming the divine presence within, most receptive in theta wave state.',
     file: 'afirmasi-iam.mp3',
-    minTier: 'master'
   },
   {
     slug: 'meditasi-gratitude',
@@ -123,8 +113,7 @@ const MEDITATIONS_EN = [
     duration: '10:00',
     desc: 'Locking in the vibration of gratitude implying that your desire has already fully manifested.',
     file: 'meditasi-gratitude.mp3',
-    minTier: 'master'
-  }
+  },
 ]
 
 export default function Dashboard() {
@@ -132,71 +121,31 @@ export default function Dashboard() {
   const curriculumParts = language === 'en' ? ALL_PARTS_EN : ALL_PARTS
   const meditationsList = language === 'en' ? MEDITATIONS_EN : MEDITATIONS
 
-  const { 
-    userName, 
-    subscriptionTier,
-    openLesson, 
-    completedLessons, 
-    logoutUser, 
-    hasCurriculumAccess, 
-    hasCommunityAccess, 
+  const {
+    userName,
+    openLesson,
+    completedLessons,
+    logoutUser,
     setView,
-    redeemCode
+    leadRegistered,
   } = useAppStore()
-  
+
   const [activeTab, setActiveTab] = useState<'lessons' | 'meditations' | 'webinars'>('lessons')
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [activationCode, setActivationCode] = useState('')
   const [activeAudio, setActiveAudio] = useState<typeof MEDITATIONS[0] | null>(null)
+  const [showLeadModal, setShowLeadModal] = useState(false)
 
   const totalLessons = curriculumParts.reduce((acc, p) => acc + p.lessons.length, 0)
   const completedCount = completedLessons.size
   const progressPct = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0
+
+  const isLessonLocked = (partId: string) => partId !== 'part-1' && !leadRegistered
 
   // SVG progress ring calculations
   const radius = 54
   const circumference = 2 * Math.PI * radius
   const strokeDashoffset = circumference - (progressPct / 100) * circumference
   const ringOffset = strokeDashoffset / 2
-
-  const handleActivation = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!activationCode.trim()) {
-      toast.error(language === 'en' ? 'Please enter activation code' : 'Mohon masukkan kode aktivasi')
-      return
-    }
-
-    const res = await redeemCode(activationCode)
-    if (res.success) {
-      toast.success(res.message)
-      setActivationCode('')
-    } else {
-      toast.error(res.message)
-    }
-  }
-
-  // Audio access check helper
-  const hasAudioAccess = (minTier: string) => {
-    if (subscriptionTier === 'master') return true
-    if (subscriptionTier === 'premium') return true // Premium gets master audio access in frontend
-    if (subscriptionTier === 'basic') {
-      return minTier === 'basic'
-    }
-    return false
-  }
-
-  const handleAudioPlay = (audio: typeof meditationsList[0]) => {
-    if (!hasAudioAccess(audio.minTier)) {
-      toast.error(
-        language === 'en' 
-          ? 'Audio locked. Please upgrade to a higher plan to unlock this meditation.' 
-          : 'Audio terkunci. Silakan upgrade ke tier yang lebih tinggi untuk membuka meditasi ini.'
-      )
-      setView('pricing')
-      return
-    }
-    setActiveAudio(audio)
-  }
 
   return (
     <div className="nv-page">
@@ -217,7 +166,7 @@ export default function Dashboard() {
               </div>
             </div>
           </motion.div>
-          
+
           <motion.div
             className="nv-dash-user"
             initial={{ opacity: 0, x: 20 }}
@@ -226,11 +175,11 @@ export default function Dashboard() {
           >
             <div className="flex flex-col text-right hidden sm:flex">
               <span style={{ fontSize: 13, fontWeight: 600 }}>{userName}</span>
-              <span className="text-[10px] text-amber-500 font-bold uppercase tracking-wider flex items-center justify-end gap-1">
-                <Crown size={10} /> Tier: {subscriptionTier}
+              <span className="text-[10px] text-green-500 font-bold uppercase tracking-wider flex items-center justify-end gap-1">
+                <Crown size={10} /> {language === 'en' ? 'FREE ACCESS' : 'AKSES GRATIS'}
               </span>
             </div>
-            
+
             <motion.button
               className="nv-dash-logout flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-neutral-800 text-xs text-neutral-400 hover:text-white"
               onClick={logoutUser}
@@ -304,57 +253,47 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Activation Code input (only visible if subscriptionTier is 'free') */}
-          {subscriptionTier === 'free' && (
-            <motion.div 
-              className="nv-activation-widget nv-premium-glass"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+          {/* Cohort CTA */}
+          <div className="nv-dash-sidebar-cohort p-4 rounded-lg mb-4 border border-amber-500/20 bg-amber-500/5">
+            <h4 className="text-[11px] font-bold text-amber-500 uppercase tracking-wider flex items-center gap-1.5 mb-2">
+              <Sparkles size={12} /> Cohort Nevgo
+            </h4>
+            <p className="text-[11px] text-neutral-400 leading-relaxed mb-3">
+              {language === 'en'
+                ? 'Join the guided Cohort program. 12 weeks of structured manifestation practice.'
+                : 'Ikuti program Cohort terbimbing. 12 minggu praktik manifestasi terstruktur.'}
+            </p>
+            <a
+              href="https://cohort.nevgoinstitute.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nv-dash-cohort-link flex items-center gap-1.5 text-xs font-bold text-amber-500 hover:text-amber-400"
             >
-              <h4 className="text-xs font-bold text-amber-500 flex items-center gap-1.5 uppercase m-0">
-                <Key size={12} /> {t('activationCode')}
-              </h4>
-              <p className="text-[11px] text-neutral-400 m-0 mt-1 leading-relaxed">
-                {language === 'en' ? 'Have an activation code? Enter it below to unlock lessons instantly.' : 'Punya kode aktivasi? Masukkan di bawah untuk membuka pelajaran instan.'}
-              </p>
-              <form onSubmit={handleActivation} className="nv-activation-widget-row">
-                <input
-                  type="text"
-                  placeholder={language === 'en' ? 'ACTIVATION CODE' : 'KODE AKTIVASI'}
-                  className="nv-activation-widget-input"
-                  value={activationCode}
-                  onChange={(e) => setActivationCode(e.target.value)}
-                />
-                <button type="submit" className="nv-activation-widget-btn">
-                  {language === 'en' ? 'Activate' : 'Aktifkan'}
-                </button>
-              </form>
-
-            </motion.div>
-          )}
+              <ExternalLink size={12} />
+              {language === 'en' ? 'Learn More →' : 'Selengkapnya →'}
+            </a>
+          </div>
 
           {/* Community Quick Access */}
-          {hasCommunityAccess() && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              style={{ marginBottom: 20 }}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            style={{ marginBottom: 20 }}
+          >
+            <button
+              className="nv-pdf-download-btn w-full flex items-center justify-center gap-2"
+              onClick={() => setView('community')}
             >
-              <button
-                className="nv-pdf-download-btn w-full flex items-center justify-center gap-2"
-                onClick={() => setView('community')}
-              >
-                <Users size={16} />
-                <span>{language === 'en' ? 'Enter Private Community' : 'Masuk Komunitas Privat'}</span>
-              </button>
-            </motion.div>
-          )}
+              <Users size={16} />
+              <span>{language === 'en' ? 'Join Community' : 'Gabung Komunitas'}</span>
+            </button>
+          </motion.div>
 
           {/* Lessons Sidebar list (only visible if tab is lessons) */}
           {activeTab === 'lessons' && (
             <nav className="nv-dash-nav">
-              {curriculumParts.map((part, partIdx) => {
+              {curriculumParts.map((part) => {
                 const partCompleted = part.lessons.filter((l) => completedLessons.has(l.num)).length
                 return (
                   <div key={part.id} className="nv-dash-nav-section">
@@ -365,33 +304,26 @@ export default function Dashboard() {
                         {partCompleted}/{part.lessons.length}
                       </span>
                     </div>
-                    {part.lessons.map((lesson, lessonIdx) => {
+                    {part.lessons.map((lesson) => {
                       const isComplete = completedLessons.has(lesson.num)
+                      const locked = isLessonLocked(part.id)
                       return (
                         <button
                           key={lesson.num}
                           className={`nv-dash-nav-lesson ${isComplete ? 'nv-dash-nav-lesson-done' : ''}`}
                           onClick={() => {
-                            const isFree = lesson.num === '1.1' || lesson.num === '1.2' || lesson.num === '1.3'
-                            if (isFree || hasCurriculumAccess()) {
-                              openLesson(part.id, lesson.num)
-                              setSidebarOpen(false)
-                            } else {
-                              toast.info(
-                                language === 'en'
-                                  ? 'Lesson locked. Upgrade to Basic Plan to unlock curriculum.'
-                                  : 'Pelajaran terkunci. Upgrade ke Paket Basic untuk membuka kurikulum.'
-                              )
-                              setView('pricing')
-                            }
+                            if (locked) { setShowLeadModal(true); return }
+                            openLesson(part.id, lesson.num)
+                            setSidebarOpen(false)
                           }}
                         >
-                          <span className="nv-dash-nav-lesson-dot" style={{ background: isComplete ? 'var(--nv-gold)' : 'var(--nv-faint)' }} />
-                          <span className="nv-dash-nav-lesson-num" style={{ color: part.color }}>{lesson.num}</span>
-                          <span className="nv-dash-nav-lesson-title">{lesson.title}</span>
-                          {!isComplete && (lesson.num !== '1.1' && lesson.num !== '1.2' && lesson.num !== '1.3') && !hasCurriculumAccess() && (
-                            <span className="text-[10px] ml-auto">🔒</span>
+                          {locked ? (
+                            <Lock size={10} style={{ color: 'var(--nv-faint)', marginRight: 4, flexShrink: 0 }} />
+                          ) : (
+                            <span className="nv-dash-nav-lesson-dot" style={{ background: isComplete ? 'var(--nv-gold)' : 'var(--nv-faint)' }} />
                           )}
+                          <span className="nv-dash-nav-lesson-num" style={{ color: locked ? 'var(--nv-faint)' : part.color }}>{lesson.num}</span>
+                          <span className="nv-dash-nav-lesson-title">{lesson.title}</span>
                         </button>
                       )
                     })}
@@ -406,26 +338,26 @@ export default function Dashboard() {
         <main className="nv-dash-main">
           {/* Tab Navigation header */}
           <div className="nv-tab-nav">
-            <button 
+            <button
               className={`nv-tab-btn ${activeTab === 'lessons' ? 'active' : ''}`}
               onClick={() => setActiveTab('lessons')}
             >
               <BookOpen size={16} />
               <span>{language === 'en' ? '📚 Curriculum' : '📚 Kurikulum'}</span>
             </button>
-            <button 
+            <button
               className={`nv-tab-btn ${activeTab === 'meditations' ? 'active' : ''}`}
               onClick={() => setActiveTab('meditations')}
             >
               <Sparkles size={16} />
               <span>{language === 'en' ? '🎧 Audio Meditations' : '🎧 Meditasi Audio'}</span>
             </button>
-            <button 
+            <button
               className={`nv-tab-btn ${activeTab === 'webinars' ? 'active' : ''}`}
               onClick={() => setActiveTab('webinars')}
             >
               <Users size={16} />
-              <span>{language === 'en' ? '🎥 VIP Webinars' : '🎥 Webinar VIP'}</span>
+              <span>{language === 'en' ? '🎥 Webinar Recordings' : '🎥 Rekaman Webinar'}</span>
             </button>
           </div>
 
@@ -457,7 +389,7 @@ export default function Dashboard() {
                   </h2>
                   <p style={{ fontSize: 13, color: 'var(--nv-muted)', margin: 0, position: 'relative', lineHeight: 1.6 }}>
                     {completedCount === 0
-                      ? (language === 'en' 
+                      ? (language === 'en'
                           ? "Start stepping into Part 1: Consciousness Is The Only Reality. Follow the daily instructions orderly."
                           : "Mulailah melangkah ke Bagian 1: Kesadaran Adalah Satu-satunya Realitas. Ikuti arahan harian secara tertib.")
                       : completedCount < totalLessons
@@ -503,55 +435,56 @@ export default function Dashboard() {
                     </div>
 
                     <div className="nv-dash-lessons-grid mt-4">
-                      {part.lessons.map((lesson, lessonIdx) => {
+                      {part.lessons.map((lesson) => {
                         const isComplete = completedLessons.has(lesson.num)
-                        const isFree = lesson.num === '1.1' || lesson.num === '1.2' || lesson.num === '1.3'
-                        const isLocked = !isFree && !hasCurriculumAccess()
-                        
+                        const locked = isLessonLocked(part.id)
+
                         return (
                           <motion.button
                             key={lesson.num}
-                            className={`nv-dash-lesson-card nv-glass ${isComplete ? 'nv-dash-lesson-card-done' : ''} ${isLocked ? 'opacity-70' : ''}`}
-                            style={{ 
-                              borderColor: isComplete ? `${part.color}44` : undefined, 
+                            className={`nv-dash-lesson-card nv-glass ${isComplete ? 'nv-dash-lesson-card-done' : ''} ${locked ? 'opacity-60' : ''}`}
+                            style={{
+                              borderColor: isComplete ? `${part.color}44` : locked ? 'var(--nv-faint)' : undefined,
                               textAlign: 'left',
                               width: '100%',
                               padding: '16px',
                               display: 'flex',
                               flexDirection: 'column',
-                              gap: '6px'
+                              gap: '6px',
+                              position: 'relative'
                             }}
                             onClick={() => {
-                              if (!isLocked) {
-                                openLesson(part.id, lesson.num)
-                              } else {
-                                toast.info(
-                                  language === 'en'
-                                    ? 'This content is locked. Please make a payment on the pricing page.'
-                                    : 'Konten ini dikunci. Silakan lakukan pembayaran di halaman pricing.'
-                                )
-                                setView('pricing')
-                              }
+                              if (locked) { setShowLeadModal(true); return }
+                              openLesson(part.id, lesson.num)
                             }}
-                            whileHover={!isLocked ? { y: -2, borderColor: `${part.color}66` } : {}}
-                            whileTap={!isLocked ? { scale: 0.99 } : {}}
+                            whileHover={locked ? { scale: 1.02 } : { y: -2, borderColor: `${part.color}66` }}
+                            whileTap={{ scale: 0.99 }}
                           >
+                            {locked && (
+                              <div style={{
+                                position: 'absolute', inset: 0, borderRadius: 'inherit',
+                                background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(2px)',
+                                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                                zIndex: 2, gap: 4
+                              }}>
+                                <Lock size={18} style={{ color: '#d4a053' }} />
+                                <span style={{ color: '#d4a053', fontWeight: 700, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                  {language === 'en' ? 'Register to Unlock' : 'Daftar untuk Membuka'}
+                                </span>
+                              </div>
+                            )}
                             <div className="flex items-center justify-between w-full">
                               <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                                <span style={{ fontFamily: 'var(--font-geist-mono), monospace', fontWeight: 700, fontSize: 12, color: part.color }}>
+                                <span style={{ fontFamily: 'var(--font-geist-mono), monospace', fontWeight: 700, fontSize: 12, color: locked ? 'var(--nv-faint)' : part.color }}>
                                   {lesson.num}
                                 </span>
-                                <span style={{ fontWeight: 700, fontSize: 13, color: 'var(--nv-text)' }}>{lesson.title}</span>
+                                <span style={{ fontWeight: 700, fontSize: 13, color: locked ? 'var(--nv-faint)' : 'var(--nv-text)' }}>{lesson.title}</span>
                               </div>
-                              {isLocked ? (
-                                <span className="text-xs">🔒</span>
-                              ) : isComplete ? (
+                              {isComplete ? (
                                 <span style={{ fontSize: 12, color: 'var(--nv-gold)' }}>{language === 'en' ? '✓ Completed' : '✓ Selesai'}</span>
-                              ) : isFree ? (
-                                <span className="text-[10px] bg-amber-500/10 text-amber-500 px-1.5 py-0.5 rounded border border-amber-500/20 font-bold uppercase">{language === 'en' ? 'Free' : 'Gratis'}</span>
                               ) : null}
                             </div>
-                            
+
                             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                               {lesson.bullets.slice(0, 2).map((b, i) => (
                                 <li key={i} style={{ fontSize: 12, color: 'var(--nv-muted)', paddingLeft: 12, position: 'relative', marginBottom: 2 }}>
@@ -564,6 +497,25 @@ export default function Dashboard() {
                         )
                       })}
                     </div>
+
+                    {/* Cohort CTA */}
+                    <motion.div
+                      className="nv-dash-cohort-cta"
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4 }}
+                    >
+                      <a
+                        href="https://cohort.nevgoinstitute.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="nv-dash-cohort-cta-link"
+                      >
+                        ✦ {language === 'en' ? 'Master with Live Guidance — Join Cohort →' : 'Kuasai dengan Bimbingan Langsung — Ikut Cohort →'}
+                      </a>
+                    </motion.div>
+
                   </section>
                 ))}
               </motion.div>
@@ -581,12 +533,12 @@ export default function Dashboard() {
               >
                 {/* Embed player if active */}
                 {activeAudio && (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, scale: 0.98 }}
                     animate={{ opacity: 1, scale: 1 }}
                     style={{ marginBottom: '12px' }}
                   >
-                    <AudioPlayer 
+                    <AudioPlayer
                       src={`/api/media?type=audio&file=${activeAudio.file}`}
                       title={activeAudio.title}
                       subtitle={language === 'en' ? `Neville Goddard Meditation Guide • ${activeAudio.duration}` : `Panduan Meditasi Neville Goddard • ${activeAudio.duration}`}
@@ -601,32 +553,24 @@ export default function Dashboard() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {meditationsList.map((audio, idx) => {
-                    const unlocked = hasAudioAccess(audio.minTier)
+                  {meditationsList.map((audio) => {
                     const isCurrent = activeAudio?.slug === audio.slug
-                    
+
                     return (
                       <motion.div
                         key={audio.slug}
                         className={`nv-pdf-card nv-premium-glass flex flex-row items-center gap-4 ${isCurrent ? 'border-amber-500/50 bg-amber-500/5' : ''}`}
                         style={{ cursor: 'pointer', padding: '16px' }}
-                        onClick={() => handleAudioPlay(audio)}
+                        onClick={() => setActiveAudio(audio)}
                         whileHover={{ y: -2 }}
                       >
                         <div className="nv-pdf-icon-wrap" style={{ width: '48px', height: '48px', flexShrink: 0 }}>
-                          {unlocked ? (
-                            <Play size={18} fill="currentColor" className="text-[#d4a053]" />
-                          ) : (
-                            <Lock size={16} className="text-neutral-500" />
-                          )}
+                          <Play size={18} fill="currentColor" className="text-[#d4a053]" />
                         </div>
-                        
+
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
                             <span className="text-[10px] text-neutral-500 font-mono">{audio.duration}</span>
-                            {!unlocked && (
-                              <span className="text-[9px] bg-red-500/10 border border-red-500/20 text-red-500 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Locked</span>
-                            )}
                           </div>
                           <h4 className="text-xs sm:text-sm font-bold text-[#e8e4dc] truncate m-0 mt-0.5">{audio.title}</h4>
                           <p className="text-[11px] text-neutral-400 line-clamp-1 m-0 mt-1">{audio.desc}</p>
@@ -638,7 +582,7 @@ export default function Dashboard() {
               </motion.div>
             )}
 
-            {/* 3. VIP WEBINAR RECORDINGS TAB */}
+            {/* 3. WEBINAR RECORDINGS TAB */}
             {activeTab === 'webinars' && (
               <motion.div
                 key="webinars"
@@ -664,6 +608,12 @@ export default function Dashboard() {
       >
         {sidebarOpen ? '✕' : '☰'}
       </motion.button>
+
+      {/* Lead Capture Modal */}
+      <LeadCaptureModal
+        isOpen={showLeadModal}
+        onClose={() => setShowLeadModal(false)}
+      />
     </div>
   )
 }

@@ -1,21 +1,19 @@
 import { create } from 'zustand'
 
-type View = 
-  | 'landing' 
-  | 'dashboard' 
-  | 'lesson' 
-  | 'pricing' 
-  | 'free-lesson' 
-  | 'ai-manifestation' 
-  | 'ai-limiting-belief' 
-  | 'ai-shadow' 
-  | 'ai-private-session' 
-  | 'admin' 
+type View =
+  | 'landing'
+  | 'dashboard'
+  | 'lesson'
+  | 'free-lesson'
+  | 'ai-manifestation'
+  | 'ai-limiting-belief'
+  | 'ai-shadow'
+  | 'ai-private-session'
   | 'community'
   | 'login'
   | 'register'
 
-export type SubscriptionTier = 'free' | 'basic' | 'premium' | 'master'
+export type SubscriptionTier = 'free'
 
 interface SimulatedUser {
   name: string
@@ -23,6 +21,12 @@ interface SimulatedUser {
   passwordHash: string
   tier: SubscriptionTier
   completedLessons: string[]
+}
+
+interface LeadData {
+  name: string
+  email: string
+  phone: string
 }
 
 interface AppState {
@@ -43,28 +47,29 @@ interface AppState {
   subscriptionTier: SubscriptionTier
   setSubscriptionTier: (tier: SubscriptionTier, name: string) => void
   unsubscribe: () => void
-  /** Check if user has full curriculum access (Pelajar tier or higher OR admin) */
+  /** Seluruh konten gratis — selalu true */
   hasCurriculumAccess: () => boolean
-  /** Check if user has community access (Premium tier or higher OR admin) */
+  /** Seluruh konten gratis — selalu true */
   hasCommunityAccess: () => boolean
-  // Admin mode
-  isAdmin: boolean
-  setAdmin: (admin: boolean) => void
   // Freemium lesson state
   freeLessonNum: string | null
   openFreeLesson: (lessonNum: string) => void
   closeFreeLesson: () => void
-  // Locked lesson modal
+  // Locked lesson modal (no-op, all content free)
   lockedLesson: { num: string; title: string; bullets: string[]; partColor: string; partTitle: string } | null
   openLockedLesson: (info: { num: string; title: string; bullets: string[]; partColor: string; partTitle: string }) => void
   closeLockedLesson: () => void
-  
-  // Simulated Authentication & Activation
+
+  // Authentication
   login: (email: string, password: string) => Promise<boolean>
   registerUser: (name: string, email: string, password: string) => Promise<boolean>
   logoutUser: () => Promise<void>
   checkSession: () => Promise<void>
-  redeemCode: (code: string) => Promise<{ success: boolean; tier?: SubscriptionTier; message: string }>
+
+  // Lead registration (email + phone capture)
+  leadRegistered: boolean
+  leadData: LeadData | null
+  registerLead: (data: LeadData) => void
 }
 
 // Load persisted state from localStorage
@@ -79,14 +84,14 @@ function loadPersistedState() {
   }
 }
 
-function persistState(state: { 
+function persistState(state: {
   userName: string
   userEmail: string
   isAuthenticated: boolean
-  subscriptionTier: SubscriptionTier
-  isAdmin: boolean
   completedLessons: string[]
   language?: 'id' | 'en'
+  leadRegistered?: boolean
+  leadData?: { name: string; email: string; phone: string } | null
 }) {
   if (typeof window === 'undefined') return
   try {
@@ -138,8 +143,6 @@ export const useAppStore = create<AppState>((set, get) => ({
       userName: get().userName,
       userEmail: get().userEmail,
       isAuthenticated: get().isAuthenticated,
-      subscriptionTier: get().subscriptionTier,
-      isAdmin: get().isAdmin,
       completedLessons: [...get().completedLessons],
       language
     })
@@ -150,8 +153,6 @@ export const useAppStore = create<AppState>((set, get) => ({
       userName: name,
       userEmail: get().userEmail,
       isAuthenticated: get().isAuthenticated,
-      subscriptionTier: get().subscriptionTier,
-      isAdmin: get().isAdmin,
       completedLessons: [...get().completedLessons]
     })
   },
@@ -160,7 +161,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   openLesson: (partId, lessonNum) =>
     set({ activePartId: partId, activeLessonNum: lessonNum, view: 'lesson' }),
   closeLesson: () =>
-    set({ activePartId: null, activeLessonNum: null, view: 'dashboard' }),
+    set({ activePartId: null, activeLessonNum: null, view: 'landing' }),
   completedLessons: new Set<string>(persisted?.completedLessons || []),
   toggleCompleted: (lessonNum) =>
     set((state) => {
@@ -170,7 +171,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       } else {
         next.add(lessonNum)
       }
-      
+
       // Update in simulated user DB
       if (state.isAuthenticated && state.userEmail) {
         const users = getSimulatedUsers()
@@ -184,96 +185,47 @@ export const useAppStore = create<AppState>((set, get) => ({
         userName: state.userName,
         userEmail: state.userEmail,
         isAuthenticated: state.isAuthenticated,
-        subscriptionTier: state.subscriptionTier,
-        isAdmin: state.isAdmin,
         completedLessons: [...next]
       })
       return { completedLessons: next }
     }),
-  subscriptionTier: (persisted?.subscriptionTier || 'free') as SubscriptionTier,
-  setSubscriptionTier: (tier: SubscriptionTier, name: string) => {
+  subscriptionTier: 'free',
+  setSubscriptionTier: (_tier: SubscriptionTier, name: string) => {
     const email = get().userEmail || `${name.toLowerCase().replace(/\s+/g, '')}@simulated.com`
-    set({ 
-      subscriptionTier: tier, 
-      userName: name, 
+    set({
+      subscriptionTier: 'free',
+      userName: name,
       userEmail: email,
       isAuthenticated: true,
-      view: 'dashboard' 
+      view: 'dashboard'
     })
-    
-    // Save to simulated user database
-    const users = getSimulatedUsers()
-    if (users[email]) {
-      users[email].tier = tier
-      users[email].name = name
-      saveSimulatedUsers(users)
-    } else {
-      users[email] = {
-        name,
-        email,
-        passwordHash: 'simulated',
-        tier,
-        completedLessons: [...get().completedLessons]
-      }
-      saveSimulatedUsers(users)
-    }
 
     persistState({
       userName: name,
       userEmail: email,
       isAuthenticated: true,
-      subscriptionTier: tier,
-      isAdmin: get().isAdmin,
       completedLessons: [...get().completedLessons]
     })
   },
   unsubscribe: () => {
     set({
-      subscriptionTier: 'free',
       userName: '',
       userEmail: '',
       isAuthenticated: false,
       view: 'landing',
       completedLessons: new Set<string>(),
-      isAdmin: false
     })
     persistState({
       userName: '',
       userEmail: '',
       isAuthenticated: false,
-      subscriptionTier: 'free',
-      isAdmin: false,
       completedLessons: []
     })
   },
-  /** Check if user has full curriculum access (Basic tier or higher OR admin) */
-  hasCurriculumAccess: () => {
-    const state = get()
-    if (state.isAdmin) return true
-    return state.subscriptionTier === 'basic' || state.subscriptionTier === 'premium' || state.subscriptionTier === 'master'
-  },
-  /** Check if user has community access (Premium tier or higher OR admin) */
-  hasCommunityAccess: () => {
-    const state = get()
-    if (state.isAdmin) return true
-    return state.subscriptionTier === 'premium' || state.subscriptionTier === 'master'
-  },
-  // Admin mode
-  isAdmin: persisted?.isAdmin || false,
-  setAdmin: (admin) => {
-    set({
-      isAdmin: admin,
-      subscriptionTier: admin ? 'master' : get().subscriptionTier
-    })
-    persistState({
-      userName: get().userName,
-      userEmail: get().userEmail,
-      isAuthenticated: get().isAuthenticated,
-      subscriptionTier: get().subscriptionTier,
-      isAdmin: admin,
-      completedLessons: [...get().completedLessons]
-    })
-  },
+  /** Seluruh konten gratis */
+  hasCurriculumAccess: () => true,
+  /** Seluruh konten gratis */
+  hasCommunityAccess: () => true,
   // Freemium lesson state
   freeLessonNum: null,
   openFreeLesson: (lessonNum) =>
@@ -282,12 +234,26 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ freeLessonNum: null, view: 'landing' }),
   // Locked lesson modal
   lockedLesson: null,
-  openLockedLesson: (info) =>
-    set({ lockedLesson: info }),
+  openLockedLesson: (_info) =>
+    null, // Semua konten gratis — no-op
   closeLockedLesson: () =>
-    set({ lockedLesson: null }),
+    null, // Semua konten gratis — no-op
 
-  // Simulated Authentication & Activation
+  leadRegistered: persisted?.leadRegistered || false,
+  leadData: persisted?.leadData || null,
+  registerLead: (data) => {
+    set({ leadRegistered: true, leadData: data })
+    persistState({
+      userName: get().userName,
+      userEmail: get().userEmail,
+      isAuthenticated: get().isAuthenticated,
+      completedLessons: [...get().completedLessons],
+      leadRegistered: true,
+      leadData: data
+    })
+  },
+
+  // Authentication
   login: async (email, password) => {
     try {
       const res = await fetch('/api/auth/login', {
@@ -301,7 +267,6 @@ export const useAppStore = create<AppState>((set, get) => ({
         set({
           userName: data.user.name,
           userEmail: data.user.email,
-          subscriptionTier: data.user.tier,
           isAuthenticated: true,
           completedLessons: completions,
           view: 'dashboard'
@@ -310,8 +275,6 @@ export const useAppStore = create<AppState>((set, get) => ({
           userName: data.user.name,
           userEmail: data.user.email,
           isAuthenticated: true,
-          subscriptionTier: data.user.tier,
-          isAdmin: data.user.tier === 'master',
           completedLessons: [...completions]
         })
         return true
@@ -333,7 +296,6 @@ export const useAppStore = create<AppState>((set, get) => ({
         set({
           userName: data.user.name,
           userEmail: data.user.email,
-          subscriptionTier: 'free',
           isAuthenticated: true,
           completedLessons: new Set<string>(),
           view: 'dashboard'
@@ -342,8 +304,6 @@ export const useAppStore = create<AppState>((set, get) => ({
           userName: data.user.name,
           userEmail: data.user.email,
           isAuthenticated: true,
-          subscriptionTier: 'free',
-          isAdmin: false,
           completedLessons: []
         })
         return true
@@ -361,59 +321,12 @@ export const useAppStore = create<AppState>((set, get) => ({
     }
     get().unsubscribe()
   },
-  redeemCode: async (code) => {
-    const upperCode = code.trim().toUpperCase()
-    try {
-      const res = await fetch('/api/activation', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: upperCode, userName: get().userName || 'Pengguna' })
-      })
-      const data = await res.json()
-      
-      if (res.ok && data.success) {
-        const tier = data.tier as SubscriptionTier
-        set({ subscriptionTier: tier })
-        
-        // Update simulated user database
-        if (get().isAuthenticated && get().userEmail) {
-          const users = getSimulatedUsers()
-          if (users[get().userEmail]) {
-            users[get().userEmail].tier = tier
-            saveSimulatedUsers(users)
-          }
-        }
-        
-        persistState({
-          userName: get().userName,
-          userEmail: get().userEmail,
-          isAuthenticated: get().isAuthenticated,
-          subscriptionTier: tier,
-          isAdmin: get().isAdmin,
-          completedLessons: [...get().completedLessons]
-        })
-        
-        return { success: true, tier, message: data.message || 'Aktivasi berhasil!' }
-      } else {
-        return { success: false, message: data.error || 'Kode aktivasi tidak valid atau telah kedaluwarsa.' }
-      }
-    } catch (error) {
-      console.error('Activation API error:', error)
-      return { success: false, message: 'Gagal terhubung ke server aktivasi.' }
-    }
-  },
   checkSession: async () => {
     try {
       const res = await fetch('/api/auth/check')
       if (res.ok) {
         const data = await res.json()
         if (data.authenticated) {
-          const state = get()
-          if (state.subscriptionTier !== data.user.tier) {
-            set({ subscriptionTier: data.user.tier })
-            toast.success(`Selamat! Status keanggotaan Anda telah diaktifkan menjadi ${data.user.tier.toUpperCase()} 💎`)
-          }
-          
           // Sync completion list
           const completedSet = new Set<string>(data.user.completedLessons || [])
           set({
@@ -422,13 +335,11 @@ export const useAppStore = create<AppState>((set, get) => ({
             isAuthenticated: true,
             completedLessons: completedSet
           })
-          
+
           persistState({
             userName: data.user.name,
             userEmail: data.user.email,
             isAuthenticated: true,
-            subscriptionTier: data.user.tier,
-            isAdmin: data.user.tier === 'master',
             completedLessons: [...completedSet]
           })
         }

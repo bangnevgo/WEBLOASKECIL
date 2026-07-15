@@ -133,12 +133,12 @@ export default function AiPrivateSession() {
           </p>
           <motion.button
             className="nv-cta-button"
-            onClick={() => setView('pricing')}
+            onClick={() => window.open('https://cohort.nevgoinstitute.com', '_blank', 'noopener')}
             whileHover={{ scale: 1.03, y: -2 }}
             whileTap={{ scale: 0.97 }}
           >
             <span className="nv-cta-icon">✦</span>
-            {language === 'en' ? 'Unlock Premium Access' : 'Buka Akses Premium'}
+            {language === 'en' ? 'Join the Cohort Program' : 'Ikut Program Cohort'}
           </motion.button>
         </motion.div>
       </div>

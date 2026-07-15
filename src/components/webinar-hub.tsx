@@ -110,7 +110,7 @@ export default function WebinarHub() {
 
   const handleCardClick = (webinar: typeof WEBINAR_ITEMS[0]) => {
     if (!isMaster) {
-      setView('pricing')
+      setView('landing')
       return
     }
     setActiveWebinar(webinar)

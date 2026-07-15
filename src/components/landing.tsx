@@ -4,9 +4,7 @@ import { useEffect, useRef, useState, useCallback, useSyncExternalStore } from '
 import Image from 'next/image'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
-import { toast } from 'sonner'
-import { Key } from 'lucide-react'
-import { ALL_PARTS, BONUS_ITEMS, MARQUEE_ITEMS, isLessonFree } from '@/lib/curriculum-data'
+import { ALL_PARTS, BONUS_ITEMS, MARQUEE_ITEMS } from '@/lib/curriculum-data'
 import { ALL_PARTS_EN } from '@/lib/curriculum-data-en'
 import { useTranslation } from '@/lib/translations'
 
@@ -18,12 +16,11 @@ const EBOOK_ITEMS = [
   { cover: '/images/ebooks/memahami-inner-shadow.png', title: 'Kunci Memahami Inner Shadow', tag: 'Bang Nevgo' },
   { cover: '/images/ebooks/koleksi-6-ebook.jpg', title: 'Koleksi 6 eBook Manifestasi', tag: 'Bundle Lengkap' },
 ]
-import LockedLessonModal from '@/components/locked-lesson-modal'
-import AdminLoginModal from '@/components/admin-login-modal'
 import AiHubSection from '@/components/ai-hub-section'
 import FreeDownloadsSection from '@/components/free-downloads-section'
 import KnowledgeBank from '@/components/knowledge-bank'
 import CurriculumGraphView from '@/components/curriculum-graph-view'
+import LeadCaptureModal from '@/components/lead-capture-modal'
 
 const staggerContainer = {
   animate: { transition: { staggerChildren: 0.06 } }
@@ -116,13 +113,12 @@ const partImageAspectRatios = [
 ]
 
 export default function Landing() {
-  const { setView, setAdmin, isAuthenticated } = useAppStore()
-  const isAdmin = useAppStore((s) => s.isAdmin)
+  const { setView, isAuthenticated, leadRegistered } = useAppStore()
   const { t, language, setLanguage } = useTranslation()
   const curriculumParts = language === 'en' ? ALL_PARTS_EN : ALL_PARTS
   const [activeSection, setActiveSection] = useState<string | null>(null)
   const [showBackTop, setShowBackTop] = useState(false)
-  const [showAdminLogin, setShowAdminLogin] = useState(false)
+  const [showLeadModal, setShowLeadModal] = useState(false)
   // Client-only flag to avoid hydration mismatch
   const isMounted = useSyncExternalStore(
     () => () => {},   // subscribe (no-op, value never changes)
@@ -137,10 +133,6 @@ export default function Landing() {
     offset: ['start start', 'end start']
   })
 
-  useEffect(() => {
-    console.log('showAdminLogin changed:', showAdminLogin)
-  }, [showAdminLogin])
-
   const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
   const heroScale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95])
 
@@ -151,6 +143,8 @@ export default function Landing() {
       const sections = curriculumParts.map(p => document.getElementById(p.id)).filter(Boolean) as HTMLElement[]
       const bonusEl = document.getElementById('bonus')
       if (bonusEl) sections.push(bonusEl)
+      const cohortEl = document.getElementById('cohort')
+      if (cohortEl) sections.push(cohortEl)
 
       let current: string | null = null
       for (const section of sections) {
@@ -363,13 +357,13 @@ export default function Landing() {
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
                 <motion.button
                   className="nv-cta-button nv-cta-pulse"
-                  onClick={() => setView('pricing')}
+                  onClick={() => setShowLeadModal(true)}
                   whileHover={{ scale: 1.03, y: -2 }}
                   whileTap={{ scale: 0.97 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                 >
                   <span className="nv-cta-icon">✦</span>
-                  {t('pricingCTA_hero')}
+                  {language === 'en' ? 'Register Free — Full Access All Modules' : 'Daftar Free — Full Akses Semua Modul'}
                 </motion.button>
 
                 {/* ── Header WhatsApp CTA (smaller, centered under gold CTA) ── */}
@@ -392,6 +386,22 @@ export default function Landing() {
                     </a>
                   </motion.div>
                 </div>
+                {/* Subtle Cohort mention in hero */}
+                <motion.div
+                  variants={fadeInUp}
+                  initial="initial"
+                  animate="animate"
+                  style={{ marginTop: '10px' }}
+                >
+                  <a
+                    href="https://cohort.nevgoinstitute.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="nv-hero-cohort-link"
+                  >
+                    ✦ {language === 'en' ? 'Cohort Program Available' : 'Ada Program Cohort'} <span className="nv-hero-cohort-arrow">→</span>
+                  </a>
+                </motion.div>
               </div>
             </div>
           </div>
@@ -427,6 +437,17 @@ export default function Landing() {
           >
             <span className="nv-nav-num" style={{ color: 'var(--nv-gold)' }}>★</span>
             <span className="nv-nav-text">{t('essentialBooks')}</span>
+          </a>
+          <a
+            href="#cohort"
+            className={`nv-nav-link nv-nav-link-cohort ${activeSection === 'cohort' ? 'nv-nav-link-active-cohort' : ''}`}
+            onClick={(e) => {
+              e.preventDefault()
+              document.getElementById('cohort')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            }}
+          >
+            <span className="nv-nav-num">✦</span>
+            <span className="nv-nav-text">{language === 'en' ? 'Cohort' : 'Cohort'}</span>
           </a>
         </div>
       </nav>
@@ -497,37 +518,33 @@ export default function Landing() {
               {/* Lesson Cards Grid */}
               <div className="nv-grid">
                 {part.lessons.map((lesson, lessonIdx) => {
-                  const free = isLessonFree(lesson.num)
+                  const isPartLocked = part.id !== 'part-1' && !leadRegistered
                   return (
                     <motion.div
                       key={lesson.num}
                       className="nv-card nv-glass nv-glow-border"
-                      style={{ position: 'relative', cursor: 'pointer' }}
+                      style={{ position: 'relative', cursor: isPartLocked ? 'pointer' : 'pointer' }}
                       initial={{ opacity: 0, y: 16 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, margin: '-50px' }}
                       transition={{ duration: 0.4, delay: lessonIdx * 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
-                      whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                      whileHover={isPartLocked ? { scale: 1.02 } : { y: -4, transition: { duration: 0.2 } }}
                       onClick={() => {
-                        const hasAccess = free || useAppStore.getState().hasCurriculumAccess()
-                        if (hasAccess) {
-                          if (free) {
-                            useAppStore.getState().openFreeLesson(lesson.num)
-                          } else {
-                            useAppStore.getState().openLesson(part.id, lesson.num)
-                          }
+                        if (isPartLocked) {
+                          setShowLeadModal(true)
                         } else {
-                          useAppStore.getState().openLockedLesson({
-                            num: lesson.num,
-                            title: lesson.title,
-                            bullets: lesson.bullets,
-                            partColor: part.color,
-                            partTitle: part.title,
-                          })
+                          useAppStore.getState().openLesson(part.id, lesson.num)
                         }
                       }}
                     >
-                      {free && <span className="nv-card-free-badge">{t('freeBadge')}</span>}
+                      {isPartLocked ? (
+                        <span style={{
+                          position: 'absolute', top: '8px', right: '10px', zIndex: 2,
+                          fontSize: '1rem', opacity: 0.5
+                        }}>🔒</span>
+                      ) : (
+                        <span className="nv-card-free-badge" style={{ opacity: 0.7 }}>GRATIS ✦</span>
+                      )}
                       <div className="nv-card-accent" style={{ background: `linear-gradient(135deg, ${part.color}, ${part.color}66)` }} />
                       <div className="nv-card-head">
                         <span className="nv-card-num" style={{ color: part.color, background: `${part.color}15` }}>{lesson.num}</span>
@@ -541,11 +558,6 @@ export default function Landing() {
                           </li>
                         ))}
                       </ul>
-                      {!free && (
-                        <div className="nv-card-locked-overlay">
-                          <span className="nv-card-locked-icon">🔒</span>
-                        </div>
-                      )}
                     </motion.div>
                   )
                 })}
@@ -581,34 +593,221 @@ export default function Landing() {
             </div>
           )
         })}
+        {/* ─── PROGRAM COHORT SECTION ─── */}
         <motion.section
-          className="nv-community-cta-section nv-glass"
-          initial={{ opacity: 0, y: 24 }}
+          id="cohort"
+          className="nv-cohort-section"
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.7 }}
         >
-          <div className="nv-community-cta-glow" />
-          <div className="nv-community-cta-content">
-            <h2 className="nv-community-cta-title">
-              {t('communityCtaTitle')}
-            </h2>
-            <p className="nv-community-cta-desc">
-              {t('communityCtaDesc')}
-            </p>
-            <div className="nv-community-cta-stats">
-              <div><span className="nv-stat-num">2.4K+</span> {t('membersCount')}</div>
-              <div><span className="nv-stat-num">156</span> {t('discussionsCount')}</div>
-              <div><span className="nv-stat-num">320</span> {t('successStories')}</div>
+          <div className="nv-cohort-glow" />
+          <div className="nv-cohort-content">
+            {/* Badge */}
+            <div className="nv-cohort-badge-wrap">
+              <span className="nv-pricing-cta-badge">{language === 'en' ? '✦ Interactive Cohort Class' : '✦ Kelas Interaktif Cohort'}</span>
             </div>
-            <motion.button
-              className="nv-cta-button nv-community-cta-btn"
-              onClick={() => setView('community')}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              {t('communityCtaBtn')}
-            </motion.button>
+
+            {/* Headline — the hook */}
+            <h2 className="nv-cohort-headline">
+              {language === 'en'
+                ? 'Becoming the Version of You Who Already Has It.'
+                : 'Menjadi Versi Dirimu yang Sudah Memiliki-nya.'}
+            </h2>
+            <p className="nv-cohort-subheadline">
+              {language === 'en'
+                ? "That's the promise of the Law of Assumption. But shifting consciousness into possession isn't just knowing the theory — without a systematic method, most people get lost halfway. Cohort is the 12-week guided method that takes you from 'knowing' to 'being'."
+                : 'Itulah janji Hukum Asumsi. Tapi mengubah kesadaran menjadi kepemilikan tak sekadar tahu teorinya — tanpa cara yang sistematis, kebanyakan orang tersesat di tengah jalan. Cohort adalah metode terbimbing 12 minggu yang membawamu dari \'tahu\' menjadi \'menjadi\'.'}
+            </p>
+
+            {/* Bridge paragraph */}
+            <div className="nv-cohort-bridge">
+              <p>
+                {language === 'en'
+                  ? 'Inside the Cohort, you won\'t just read about SATS, "I AM", and the feeling of the wish fulfilled — you\'ll practice them step by step: live guidance, personal feedback, and a systematic 12-week process, shoulder to shoulder with committed practitioners.'
+                  : 'Di dalam Cohort, kamu tak hanya membaca tentang SATS, "I AM", dan perasaan keinginan yang terwujud — kamu mempraktikkannya langkah demi langkah: bimbingan langsung, umpan balik personal, dan proses 12 minggu yang sistematis, bahu-membahu dengan sesama praktisi yang berkomitmen.'}
+              </p>
+            </div>
+
+            {/* Benefit Cards */}
+            <div className="nv-cohort-cards">
+              {/* Card 1 */}
+              <motion.div
+                className="nv-cohort-card nv-glass"
+                whileHover={{ y: -6, borderColor: 'rgba(212,160,83,0.4)' }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.05 }}
+              >
+                <div className="nv-cohort-card-icon">🎯</div>
+                <h3 className="nv-cohort-card-title">
+                  {language === 'en' ? '4 Live Seshions' : '4 Sesi Live Intensif'}
+                </h3>
+                <p className="nv-cohort-card-desc">
+                  {language === 'en'
+                    ? 'Interactive Zoom sessions with Bang Nevgo. Each session is 2+ hours of guided practice, direct teaching, and real-time Q&A — not passive lectures.'
+                    : 'Sesi Zoom interaktif bersama Bang Nevgo. Setiap sesi 2+ jam praktik terbimbing, pengajaran langsung, dan tanya-jawab real-time — bukan ceramah pasif.'}
+                </p>
+              </motion.div>
+
+              {/* Card 2 */}
+              <motion.div
+                className="nv-cohort-card nv-glass"
+                whileHover={{ y: -6, borderColor: 'rgba(212,160,83,0.4)' }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.15 }}
+              >
+                <div className="nv-cohort-card-icon">📋</div>
+                <h3 className="nv-cohort-card-title">
+                  {language === 'en' ? 'Homework & Feedback' : 'PR & Umpan Balik'}
+                </h3>
+                <p className="nv-cohort-card-desc">
+                  {language === 'en'
+                    ? 'Weekly practice assignments reviewed personally by Bang Nevgo. You don\'t just learn — you execute, and you get corrected when you drift.'
+                    : 'Tugas praktik mingguan yang diperiksa langsung oleh Bang Nevgo. Kamu tidak hanya belajar — kamu menjalankan, dan kamu dikoreksi saat melenceng.'}
+                </p>
+              </motion.div>
+
+              {/* Card 3 */}
+              <motion.div
+                className="nv-cohort-card nv-glass"
+                whileHover={{ y: -6, borderColor: 'rgba(212,160,83,0.4)' }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.25 }}
+              >
+                <div className="nv-cohort-card-icon">🤝</div>
+                <h3 className="nv-cohort-card-title">
+                  {language === 'en' ? 'Small Group, Deep Bonds' : 'Kelompok Kecil, Ikatan Kuat'}
+                </h3>
+                <p className="nv-cohort-card-desc">
+                  {language === 'en'
+                    ? 'Limited to 15–20 participants per Cohort. You\'re not a number — you\'re part of a tribe. Share progress, breakthroughs, and support each other through the bridge of incidents.'
+                    : 'Terbatas 15–20 peserta per Cohort. Kamu bukan nomor — kamu bagian dari suku. Bagikan progres, terobosan, dan saling dukung melalui jembatan peristiwa.'}
+                </p>
+              </motion.div>
+
+              {/* Card 4 */}
+              <motion.div
+                className="nv-cohort-card nv-glass"
+                whileHover={{ y: -6, borderColor: 'rgba(212,160,83,0.4)' }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.35 }}
+              >
+                <div className="nv-cohort-card-icon">🧠</div>
+                <h3 className="nv-cohort-card-title">
+                  {language === 'en' ? 'Deep-Dive Practice' : 'Praktik Mendalam'}
+                </h3>
+                <p className="nv-cohort-card-desc">
+                  {language === 'en'
+                    ? 'Every module is paired with cohort-specific exercises: SATS drills, revision workshops, shadow work sessions, and living-from-the-end simulations that make the theory real.'
+                    : 'Setiap modul dipasangkan dengan latihan khusus cohort: drill SATS, workshop revisi, sesi shadow work, dan simulasi hidup-dari-akhir yang membuat teori menjadi nyata.'}
+                </p>
+              </motion.div>
+
+              {/* Card 5 */}
+              <motion.div
+                className="nv-cohort-card nv-glass"
+                whileHover={{ y: -6, borderColor: 'rgba(212,160,83,0.4)' }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.45 }}
+              >
+                <div className="nv-cohort-card-icon">📅</div>
+                <h3 className="nv-cohort-card-title">
+                  {language === 'en' ? '12-Week Structure' : 'Struktur 12 Minggu'}
+                </h3>
+                <p className="nv-cohort-card-desc">
+                  {language === 'en'
+                    ? 'A proven progression from foundational consciousness work to advanced manifestation mastery. Each week builds on the last — you emerge transformed, not just informed.'
+                    : 'Progresi terbukti dari kerja kesadaran fundamental menuju penguasaan manifestasi tingkat lanjut. Setiap minggu dibangun di atas minggu sebelumnya — kamu muncul bertransformasi, bukan sekadar terinformasi.'}
+                </p>
+              </motion.div>
+
+              {/* Card 6 */}
+              <motion.div
+                className="nv-cohort-card nv-glass"
+                whileHover={{ y: -6, borderColor: 'rgba(212,160,83,0.4)' }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.55 }}
+              >
+                <div className="nv-cohort-card-icon">🔥</div>
+                <h3 className="nv-cohort-card-title">
+                  {language === 'en' ? 'Direct Q&A with Bang Nevgo' : 'Tanya Jawab Langsung Bang Nevgo'}
+                </h3>
+                <p className="nv-cohort-card-desc">
+                  {language === 'en'
+                    ? 'Your specific blocks, your unique questions, your personal manifestation challenges — addressed in real-time by someone who has guided hundreds through this exact journey.'
+                    : 'Blok spesifikmu, pertanyaan unikmu, tantangan manifestasi pribadimu — dijawab real-time oleh seseorang yang telah membimbing ratusan orang melalui perjalanan persis ini.'}
+                </p>
+              </motion.div>
+            </div>
+
+            {/* Stats Bar */}
+            <div className="nv-cohort-stats">
+              <div className="nv-cohort-stat">
+                <span className="nv-cohort-stat-num">4</span>
+                <span className="nv-cohort-stat-label">{language === 'en' ? 'Live Sessions' : 'Sesi Live'}</span>
+              </div>
+              <div className="nv-cohort-stat-divider" />
+              <div className="nv-cohort-stat">
+                <span className="nv-cohort-stat-num">12</span>
+                <span className="nv-cohort-stat-label">{language === 'en' ? 'Weeks' : 'Minggu'}</span>
+              </div>
+              <div className="nv-cohort-stat-divider" />
+              <div className="nv-cohort-stat">
+                <span className="nv-cohort-stat-num">15–20</span>
+                <span className="nv-cohort-stat-label">{language === 'en' ? 'Participants' : 'Peserta'}</span>
+              </div>
+              <div className="nv-cohort-stat-divider" />
+              <div className="nv-cohort-stat">
+                <span className="nv-cohort-stat-num">Live</span>
+                <span className="nv-cohort-stat-label">Zoom</span>
+              </div>
+            </div>
+
+            {/* Testimonial — ganti dengan testimoni peserta asli */}
+            <div className="nv-cohort-testimonial nv-glass" style={{ marginTop: '32px', padding: '24px 28px', borderRadius: '16px' }}>
+              <p style={{ fontSize: '0.95rem', lineHeight: 1.6, color: 'var(--nv-text)', fontStyle: 'italic' }}>
+                {language === 'en'
+                  ? '"After 12 weeks I stopped hoping and started living from the end. My first manifestation landed before the batch even ended."'
+                  : '"Setelah 12 minggu, saya berhenti berharap dan mulai hidup dari akhir. Manifestasi pertama saya nyata sebelum batch selesai."'}
+              </p>
+              <p style={{ marginTop: '12px', fontSize: '0.8rem', color: 'var(--nv-gold)', fontWeight: 700 }}>
+                {language === 'en' ? '— Peserta Cohort Batch 3' : '— Peserta Cohort Batch 3'}
+              </p>
+            </div>
+
+            {/* CTA */}
+            <div className="nv-cohort-cta-wrap">
+              <motion.a
+                href="https://cohort.nevgoinstitute.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="nv-cta-button nv-cta-pulse"
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                style={{ textDecoration: 'none', fontSize: '16px', padding: '16px 40px' }}
+              >
+                <span className="nv-cta-icon">✦</span>
+                {language === 'en' ? 'Join Cohort — Rp 1.000.000 →' : 'Gabung Cohort — Rp 1.000.000 →'}
+              </motion.a>
+              <p className="nv-cohort-cta-note">
+                {language === 'en'
+                  ? 'Limited to 15–20 participants per batch. Seats fill fast — reserve yours.'
+                  : 'Terbatas 15–20 peserta per batch. Kuota terbatas — amankan seat-mu.'}
+              </p>
+            </div>
           </div>
         </motion.section>
       </div>
@@ -656,32 +855,6 @@ export default function Landing() {
             </div>
           </div>
         </div>
-
-        {/* ─── PRICING CTA SECTION ─── */}
-        <motion.div
-          className="nv-pricing-cta-section nv-glass"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="nv-pricing-cta-glow" />
-          <div className="nv-pricing-cta-content">
-            <span className="nv-pricing-cta-badge">{t('paidBadge')}</span>
-            <h2 className="nv-pricing-cta-title">{t('pricingCtaTitle')}</h2>
-            <p className="nv-pricing-cta-desc">
-              {t('pricingCtaDesc')}
-            </p>
-            <motion.button
-              className="nv-cta-button nv-cta-pulse"
-              onClick={() => setView('pricing')}
-              whileHover={{ scale: 1.03, y: -2 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              {t('pricingCtaBtn')}
-            </motion.button>
-          </div>
-        </motion.div>
 
         {/* ─── BONUS SECTION ─── */}
         <div id="bonus" className="nv-part" style={{ marginTop: 64 }}>
@@ -835,27 +1008,6 @@ export default function Landing() {
           <span className="nv-footer-bottom-accent">{t('footerMadeWith')}</span>
         </div>
 
-        {/* ─── ADMIN ACCESS ─── */}
-        <div className="nv-footer-admin">
-          <div className="nv-footer-admin-content">
-            <button
-              onClick={() => {
-                const password = prompt(language === 'en' ? 'Enter admin password:' : 'Masukkan password admin:')
-                if (password === 'neville22') {
-                  useAppStore.setAdmin(true)
-                  toast.success(language === 'en' ? 'Admin mode enabled - Full access granted' : 'Admin mode enabled - Full access granted')
-                  setTimeout(() => location.reload(), 1000)
-                } else if (password !== null) {
-                  toast.error(language === 'en' ? 'Wrong password' : 'Password salah')
-                }
-              }}
-              className="nv-footer-admin-btn"
-              title={language === 'en' ? 'Admin Panel Access' : 'Akses Panel Admin'}
-            >
-              <Key size={14} /> Admin Panel
-            </button>
-          </div>
-        </div>
       </footer>
 
       {/* ─── BACK TO TOP ─── */}
@@ -877,39 +1029,11 @@ export default function Landing() {
         )}
       </AnimatePresence>
 
-      {/* ─── ADMIN BADGE ─── */}
-      {isMounted && (
-        <AnimatePresence>
-          <motion.div
-            className="nv-admin-badge"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.3 }}
-            onClick={() => {
-              console.log('Admin badge clicked!');
-              setShowAdminLogin(true);
-            }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            style={{ cursor: 'pointer' }}
-            title="Buka Panel Admin"
-          >
-            🔓 ADMIN
-          </motion.div>
-        </AnimatePresence>
-      )}
-
-      {/* ─── LOCKED LESSON MODAL ─── */}
-      <LockedLessonModal />
-
-      {/* ─── ADMIN LOGIN MODAL ─── */}
-      {showAdminLogin && (
-        <AdminLoginModal onLoginSuccess={() => {
-          setShowAdminLogin(false);
-          setAdmin(true);
-        }} />
-      )}
+      {/* ─── LEAD CAPTURE MODAL ─── */}
+      <LeadCaptureModal
+        isOpen={showLeadModal}
+        onClose={() => setShowLeadModal(false)}
+      />
 
       {/* ─── COMMUNITY PREVIEW MODAL ─── */}
     </div>

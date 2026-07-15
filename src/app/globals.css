@@ -349,9 +349,65 @@
   border-color: var(--nv-glass-border);
 }
 
+.nv-nav-link-cohort {
+  border-color: rgba(212, 160, 83, 0.2);
+  background: rgba(212, 160, 83, 0.08);
+  color: var(--nv-gold);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.nv-nav-link-cohort:hover {
+  background: rgba(212, 160, 83, 0.15);
+  border-color: rgba(212, 160, 83, 0.4);
+  color: var(--nv-gold-2);
+}
+
+.nv-nav-link-cohort .nv-nav-num {
+  color: var(--nv-gold);
+}
+
+.nv-nav-link-active-cohort {
+  background: rgba(212, 160, 83, 0.2) !important;
+  border-color: rgba(212, 160, 83, 0.4) !important;
+  color: var(--nv-gold-2) !important;
+}
+
 .nv-nav-num {
   font-family: var(--font-geist-mono), monospace;
   font-weight: 800; font-size: 11px;
+}
+
+/* ===== Hero Cohort Link ===== */
+.nv-hero-cohort-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--nv-gold);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(212, 160, 83, 0.25);
+  background: rgba(212, 160, 83, 0.08);
+  transition: all 0.25s ease;
+}
+
+.nv-hero-cohort-link:hover {
+  color: #fff;
+  border-color: rgba(212, 160, 83, 0.5);
+  background: rgba(212, 160, 83, 0.15);
+}
+
+.nv-hero-cohort-arrow {
+  transition: transform 0.25s ease;
+  display: inline-block;
+}
+
+.nv-hero-cohort-link:hover .nv-hero-cohort-arrow {
+  transform: translateX(3px);
 }
 
 /* ===== Marquee ===== */
@@ -759,6 +815,199 @@
 
 .nv-bonus-icon { font-size: 16px; flex-shrink: 0; }
 
+/* ===== Cohort Section ===== */
+.nv-cohort-section {
+  position: relative;
+  padding: 64px 32px 48px;
+  margin: 48px 0;
+  border: 1px solid var(--nv-border);
+  border-radius: 20px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(212, 160, 83, 0.04), transparent 70%);
+  overflow: hidden;
+  text-align: center;
+}
+
+.nv-cohort-glow {
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 500px;
+  height: 300px;
+  background: radial-gradient(ellipse, rgba(212, 160, 83, 0.08), transparent 70%);
+  pointer-events: none;
+}
+
+.nv-cohort-content {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.nv-cohort-badge-wrap {
+  margin-bottom: 16px;
+}
+
+.nv-cohort-headline {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 800;
+  color: var(--nv-text);
+  margin: 0 0 16px;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.nv-cohort-subheadline {
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  color: var(--nv-muted);
+  line-height: 1.7;
+  margin: 0 auto 20px;
+  max-width: 720px;
+}
+
+/* Bridge paragraph — use premium-quote pattern */
+.nv-cohort-bridge {
+  margin: 0 auto 36px;
+  max-width: 680px;
+}
+
+.nv-cohort-bridge p {
+  font-size: 0.9rem;
+  color: var(--nv-muted);
+  line-height: 1.75;
+  font-style: italic;
+  margin: 0;
+  padding: 20px 24px;
+  border-left: 3px solid var(--nv-gold);
+  background: rgba(212, 160, 83, 0.03);
+  border-radius: 0 8px 8px 0;
+}
+
+/* Cards grid */
+.nv-cohort-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 800px) {
+  .nv-cohort-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .nv-cohort-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+.nv-cohort-card {
+  padding: 24px 20px 20px;
+  border-radius: 14px;
+  border: 1px solid var(--nv-glass-border);
+  background: var(--nv-glass);
+  text-align: left;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.nv-cohort-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--nv-gold), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.nv-cohort-card:hover::before {
+  opacity: 1;
+}
+
+.nv-cohort-card-icon {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+}
+
+.nv-cohort-card-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--nv-gold);
+  margin: 0 0 8px;
+  letter-spacing: 0.02em;
+}
+
+.nv-cohort-card-desc {
+  font-size: 0.8rem;
+  color: var(--nv-muted);
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* Stats bar */
+.nv-cohort-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 32px;
+  padding: 20px 24px;
+  background: var(--nv-glass);
+  border: 1px solid var(--nv-glass-border);
+  border-radius: 14px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.nv-cohort-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 0 20px;
+}
+
+.nv-cohort-stat-num {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--nv-gold);
+  font-family: var(--font-geist-mono), monospace;
+}
+
+.nv-cohort-stat-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--nv-dim);
+  font-weight: 600;
+}
+
+.nv-cohort-stat-divider {
+  width: 1px;
+  height: 32px;
+  background: var(--nv-glass-border);
+}
+
+/* CTA */
+.nv-cohort-cta-wrap {
+  text-align: center;
+}
+
+.nv-cohort-cta-note {
+  font-size: 0.75rem;
+  color: var(--nv-dim);
+  margin: 12px 0 0;
+  letter-spacing: 0.02em;
+}
+
 /* ===== Footer ===== */
 .nv-footer-cta {
   text-align: center; margin-top: 64px;
@@ -962,6 +1211,34 @@
     width: 100%;
     height: 160px;
   }
+}
+
+/* Dashboard Cohort CTA (below lesson cards) */
+.nv-dash-cohort-cta {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.nv-dash-cohort-cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--nv-gold);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(212, 160, 83, 0.2);
+  background: rgba(212, 160, 83, 0.06);
+  transition: all 0.25s ease;
+}
+
+.nv-dash-cohort-cta-link:hover {
+  color: #fff;
+  border-color: rgba(212, 160, 83, 0.4);
+  background: rgba(212, 160, 83, 0.12);
 }
 
 .nv-dash-lesson-card {
@@ -1711,14 +1988,14 @@
 
 .nv-pricing-cta-badge {
   display: inline-block;
-  padding: 4px 12px;
-  border-radius: 4px;
+  padding: 6px 16px;
+  border-radius: 6px;
   background: rgba(212, 160, 83, 0.12);
   color: var(--nv-gold);
-  font-size: 10px;
+  font-size: 0.75rem;
   font-family: var(--font-geist-mono), monospace;
   font-weight: 800;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
   margin-bottom: 16px;
 }
 

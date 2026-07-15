@@ -13,7 +13,8 @@ const DOWNLOAD_ITEMS = [
     description: 'Panduan langkah demi langkah selama seminggu untuk menyelaraskan asumsi batin agar manifestasi terasa natural dan tanpa paksaan.',
     file: '7 Hari Mencapai Kealamian Manifestasi.pdf',
     pages: 'Bootcamp',
-    category: 'Ebook Utama'
+    category: 'Ebook Utama',
+    fileReady: false
   },
   {
     key: 'asumsimu-dahsyat',
@@ -21,7 +22,8 @@ const DOWNLOAD_ITEMS = [
     description: 'Membongkar kekuatan batin dari asumsi Anda yang mampu mendikte realitas luar dan menggerakkan jembatan kejadian secara instan.',
     file: 'Asumsimu Itu Dahsyat.pdf',
     pages: 'Bootcamp',
-    category: 'Ebook Teaser'
+    category: 'Ebook Teaser',
+    fileReady: false
   },
   {
     key: 'imajinasi-menciptakan',
@@ -29,7 +31,8 @@ const DOWNLOAD_ITEMS = [
     description: 'Buku panduan dasar Hukum Asumsi untuk melatih visualisasi subyektif dan membuktikannya ke dalam dunia obyektif.',
     file: 'IMAJINASI MENCIPTAKAN REALITAS.pdf',
     pages: 'Bootcamp',
-    category: 'Panduan Batin'
+    category: 'Panduan Batin',
+    fileReady: false
   },
   {
     key: 'somatic-zero',
@@ -37,15 +40,18 @@ const DOWNLOAD_ITEMS = [
     description: 'Teknik rilis beban tubuh (somatis) untuk menetralkan resistensi fisik agar kondisi batin I AM dapat tercapai dengan sempurna.',
     file: 'Somatic Zero - Jalur Cepat Menuju Manifestasi Impian.pdf',
     pages: 'Bootcamp',
-    category: 'Workbook Somatis'
+    category: 'Workbook Somatis',
+    fileReady: false
   }
 ]
 
 export default function FreeDownloadsSection() {
-  const { isAuthenticated, userEmail } = useAppStore()
+  const { isAuthenticated, userEmail, language } = useAppStore()
   const [activeItem, setActiveItem] = useState<typeof DOWNLOAD_ITEMS[0] | null>(null)
   const [emailInput, setEmailInput] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const isIndo = language === 'id'
 
   const triggerDownload = (fileName: string) => {
     // Generate anchor tag to download file
@@ -59,6 +65,10 @@ export default function FreeDownloadsSection() {
   }
 
   const handleDownloadClick = (item: typeof DOWNLOAD_ITEMS[0]) => {
+    if (!item.fileReady) {
+      toast.info(isIndo ? 'File sedang dipersiapkan. Nantikan segera! ✨' : 'File is being prepared. Coming soon! ✨')
+      return
+    }
     if (isAuthenticated) {
       triggerDownload(item.file)
     } else {
@@ -114,7 +124,14 @@ export default function FreeDownloadsSection() {
               <div className="nv-pdf-card-glow" />
               <div className="flex items-center justify-between">
                 <span className="nv-pdf-meta">{item.category}</span>
-                <span className="nv-pdf-meta text-[#d4a053] font-bold">{item.pages}</span>
+                <div className="flex items-center gap-1.5">
+                  {!item.fileReady && (
+                    <span className="text-[8px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.5 rounded uppercase tracking-wider">
+                      {isIndo ? 'SEGERA ✨' : 'COMING SOON ✨'}
+                    </span>
+                  )}
+                  <span className="nv-pdf-meta text-[#d4a053] font-bold">{item.pages}</span>
+                </div>
               </div>
               <div className="flex gap-3 items-start mt-2">
                 <div className="nv-pdf-icon-wrap">

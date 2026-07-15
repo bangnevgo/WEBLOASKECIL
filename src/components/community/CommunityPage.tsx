@@ -801,7 +801,7 @@ export default function CommunityPage() {
                     className="nv-premium-glass p-4 cursor-pointer flex items-center gap-3 border border-neutral-900 hover:border-amber-500/20 transition"
                     onClick={() => {
                       if (!isAccessAllowed) {
-                        setShowPricingModal(true)
+                        window.open('https://cohort.nevgoinstitute.com', '_blank', 'noopener')
                       } else {
                         setIsCreatingPost(true)
                       }
@@ -937,7 +937,7 @@ export default function CommunityPage() {
                               className="flex items-center gap-1.5 text-xs text-neutral-400 hover:text-white bg-transparent border-none cursor-pointer"
                               onClick={() => {
                                 if (!isAccessAllowed) {
-                                  setShowPricingModal(true)
+                                  window.open('https://cohort.nevgoinstitute.com', '_blank', 'noopener')
                                 } else {
                                   setActivePostComments(post)
                                 }
@@ -1001,7 +1001,7 @@ export default function CommunityPage() {
                       style={{ cursor: 'pointer' }}
                       onClick={() => {
                         if (!isAccessAllowed) {
-                          setShowPricingModal(true)
+                          window.open('https://cohort.nevgoinstitute.com', '_blank', 'noopener')
                         } else {
                           setView('dashboard')
                         }
@@ -1556,7 +1556,7 @@ export default function CommunityPage() {
         )}
       </AnimatePresence>
 
-      {/* ── Pricing / Upgrade Modal for Intercepted Actions ── */}
+      {/* ── Cohort CTA Modal ── */}
       <AnimatePresence>
         {showPricingModal && (
           <div className="nv-modal-overlay" onClick={() => setShowPricingModal(false)}>
@@ -1570,7 +1570,7 @@ export default function CommunityPage() {
             >
               <div className="flex justify-between items-center border-b border-neutral-900 pb-3">
                 <span className="text-xs font-bold text-amber-500 tracking-wider flex items-center gap-1">
-                  🔒 UNLOCK PREMIUM MEMBERSHIP
+                  ✦ COHORT NEVGO
                 </span>
                 <button className="text-neutral-400 hover:text-white" onClick={() => setShowPricingModal(false)}>
                   <X size={16} />
@@ -1578,56 +1578,70 @@ export default function CommunityPage() {
               </div>
 
               <div className="text-center py-4 flex flex-col items-center gap-3">
-                <div className="text-5xl drop-shadow-lg">👑</div>
+                <div className="text-5xl drop-shadow-lg">🚀</div>
                 <h3 className="text-lg font-bold text-white font-outfit m-0">
-                  {language === 'en' ? 'Premium Feature Locked' : 'Fitur Premium Terkunci'}
+                  {language === 'en' ? 'Guided Cohort Program' : 'Program Cohort Terbimbing'}
                 </h3>
                 <p className="text-xs text-neutral-400 leading-relaxed max-w-sm m-0">
                   {language === 'en'
-                    ? 'To like, comment, write new posts, open the Classroom curriculum, or join Live Zoom sessions, please upgrade your account to Premium.'
-                    : 'Untuk menyukai, berkomentar, membuat postingan baru, membuka kurikulum Classroom, atau bergabung sesi Live Zoom, silakan tingkatkan akun Anda ke Premium.'
+                    ? 'Take your practice further with the Cohort program. 4 interactive sessions with direct guidance, structured exercises, and a community of committed practitioners.'
+                    : 'Tingkatkan praktik Anda dalam program Cohort. 4 sesi interaktif dengan bimbingan langsung, latihan terstruktur, dan komunitas praktisi yang berkomitmen.'
                   }
                 </p>
               </div>
 
               <div className="bg-neutral-950/60 border border-neutral-900 rounded-xl p-4 flex flex-col gap-3">
-                <div className="flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500">
+                    <Users size={16} />
+                  </div>
                   <div className="flex flex-col">
-                    <span className="text-xs font-bold text-white">{language === 'en' ? 'Premium Tier' : 'Tier Premium'}</span>
+                    <span className="text-xs font-bold text-white">{language === 'en' ? '4 Interactive Sessions' : '4 Sesi Interaktif'}</span>
                     <span className="text-[10px] text-neutral-500">
-                      {language === 'en' ? 'Access community, meditations, & 49 lessons' : 'Akses komunitas, meditasi, & 49 pelajaran'}
+                      {language === 'en' ? 'Live weekly group sessions with Bang Nevgo' : 'Sesi grup live mingguan bersama Bang Nevgo'}
                     </span>
                   </div>
-                  <span className="text-xs font-bold text-amber-500 font-mono">Rp 149.000 / bln</span>
                 </div>
-                <div className="w-full border-t border-neutral-900" />
-                <div className="flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500">
+                    <BookOpen size={16} />
+                  </div>
                   <div className="flex flex-col">
-                    <span className="text-xs font-bold text-[#a78bfa]">{language === 'en' ? 'Master Tier (VIP)' : 'Tier Master (VIP)'}</span>
+                    <span className="text-xs font-bold text-white">{language === 'en' ? 'Structured Practice' : 'Praktik Terstruktur'}</span>
                     <span className="text-[10px] text-neutral-500">
-                      {language === 'en' ? 'All Premium benefits + Exclusive Webinars' : 'Semua benefit Premium + Webinar Eksklusif'}
+                      {language === 'en' ? 'Step-by-step manifestation exercises' : 'Latihan manifestasi langkah demi langkah'}
                     </span>
                   </div>
-                  <span className="text-xs font-bold text-[#a78bfa] font-mono">Rp 299.000 / bln</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500">
+                    <MessageCircle size={16} />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-white">{language === 'en' ? 'Community Support' : 'Dukungan Komunitas'}</span>
+                    <span className="text-[10px] text-neutral-500">
+                      {language === 'en' ? 'Connect with fellow practitioners' : 'Terhubung dengan sesama praktisi'}
+                    </span>
+                  </div>
                 </div>
               </div>
 
               <div className="flex flex-col gap-2 mt-2">
-                <button
-                  onClick={() => {
-                    setShowPricingModal(false)
-                    setView('pricing')
-                  }}
+                <a
+                  href="https://cohort.nevgoinstitute.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="nv-cta-button nv-cta-pulse w-full py-2.5 rounded-lg text-xs font-bold text-center flex items-center justify-center gap-2"
+                  onClick={() => setShowPricingModal(false)}
                 >
                   <UserPlus size={14} />
-                  <span>{language === 'en' ? 'Upgrade & Unlock Access Now' : 'Upgrade & Buka Akses Sekarang'}</span>
-                </button>
+                  <span>{language === 'en' ? 'Join Cohort — Rp 1.000.000' : 'Ikut Cohort — Rp 1.000.000'}</span>
+                </a>
                 <button
                   onClick={() => setShowPricingModal(false)}
                   className="bg-neutral-900 border border-neutral-800 text-neutral-450 hover:text-white py-2 rounded-lg text-xs font-semibold"
                 >
-                  {language === 'en' ? 'Go Back to Browsing (Preview)' : 'Kembali Menjelajah (Pratinjau)'}
+                  {language === 'en' ? 'Continue Browsing (All Free)' : 'Lanjut Jelajah (Semua Gratis)'}
                 </button>
               </div>
             </motion.div>

@@ -5,7 +5,6 @@ import "@/styles/community.css";
 import "@/styles/premium.css";
 import { Toaster } from "sonner";
 import CookieConsent from "@/components/cookie-consent";
-import AdminShortcut from "@/components/admin-shortcut";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -193,7 +192,6 @@ export default function RootLayout({
         className={`${inter.variable} ${outfit.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
         {children}
-        <AdminShortcut />
         <Toaster
           position="top-center"
           toastOptions={{
@@ -221,8 +219,11 @@ export default function RootLayout({
 
         {/* Midtrans */}
         <Script
-          src="https://app.midtrans.com/snap/snap.js"
+          src={process.env.MIDTRANS_IS_PRODUCTION === 'true'
+            ? "https://app.midtrans.com/snap/snap.js"
+            : "https://app.sandbox.midtrans.com/snap/snap.js"}
           strategy="afterInteractive"
+          data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
         />
 
         {/* Google Analytics */}

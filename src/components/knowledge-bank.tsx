@@ -2,19 +2,17 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useAppStore } from '@/lib/store'
 import { useTranslation } from '@/lib/translations'
-import { 
-  Play, 
-  FileText, 
-  Music, 
-  Video, 
-  Download, 
+import {
+  Play,
+  FileText,
+  Music,
+  Video,
+  Download,
   ExternalLink,
   ChevronRight,
   X,
-  Lock,
-  PhoneCall
+  Lock
 } from 'lucide-react'
 import { toast } from 'sonner'
 import CustomAudioPlayer from '@/components/ui/audio-player'
@@ -111,7 +109,6 @@ const KNOWLEDGE_ITEMS_ID: KnowledgeItem[] = [
     category: 'tiktok',
     description: 'Sesi tanya jawab kilat membahas detail perasaan relief saat tidur dan bagaimana mengendalikan imajinasi di siang hari.',
     durationOrPages: '45 mnt',
-    sourceUrl: 'LrklTcrYYFw',
     coverImg: '/images/illustrations/consciousness-creates-world.png',
     isVip: false
   },
@@ -121,8 +118,17 @@ const KNOWLEDGE_ITEMS_ID: KnowledgeItem[] = [
     category: 'tiktok',
     description: 'Membongkar konsep keterikatan (attachment), menempatkan orang di atas pedestal, dan cara merestorasi status batin bertahta.',
     durationOrPages: '60 mnt',
-    sourceUrl: 'LrklTcrYYFw',
     coverImg: '/images/illustrations/manifestation-journal.webp',
+    isVip: false
+  },
+  // Coming Soon — TikTok
+  {
+    id: 'tiktok-3',
+    title: 'Tiktok Live: Mental Diet & Teknik Mengawasi Pikiran',
+    category: 'tiktok',
+    description: 'Cara praktis mengawasi dan menggeser pikiran otomatis negatif sehari-hari agar selaras dengan asumsi baru.',
+    durationOrPages: '45 mnt',
+    coverImg: '/images/illustrations/meditation-imagination.webp',
     isVip: false
   },
   // PDFs
@@ -132,7 +138,6 @@ const KNOWLEDGE_ITEMS_ID: KnowledgeItem[] = [
     category: 'pdf',
     description: 'Template isian harian untuk melatih visualisasi malam dan audit batin di siang hari agar mental diet tetap selaras.',
     durationOrPages: '12 Halaman',
-    sourceUrl: '/api/media?type=pdf&file=jurnal-harian.pdf',
     isVip: false
   },
   {
@@ -141,7 +146,6 @@ const KNOWLEDGE_ITEMS_ID: KnowledgeItem[] = [
     category: 'pdf',
     description: 'Workbook interaktif untuk memetakan, mengaudit, dan melacak pergeseran konsep diri Anda secara digital selama 30 hari.',
     durationOrPages: 'Interactive HTML',
-    sourceUrl: '/api/media?type=pdf&file=workbook-manifestasi-digital-30hari.html',
     isVip: true
   },
   {
@@ -150,7 +154,6 @@ const KNOWLEDGE_ITEMS_ID: KnowledgeItem[] = [
     category: 'pdf',
     description: 'Teknik praktis menetralisir kecemasan, ketakutan, dan reaksi batin negatif saat menghadapi situasi fisik 3D yang berlawanan.',
     durationOrPages: 'Ebook',
-    sourceUrl: '/api/media?type=pdf&file=EMOSI NEGATIF.pdf',
     isVip: false
   },
   // Audios
@@ -160,7 +163,6 @@ const KNOWLEDGE_ITEMS_ID: KnowledgeItem[] = [
     category: 'audio',
     description: 'Frekuensi binaural dipadukan suara panduan batin untuk menenangkan gelombang otak Anda ke kondisi Theta yang reseptif.',
     durationOrPages: '15 mnt',
-    sourceUrl: '/api/media?type=audio&file=theta_sats.mp3',
     isVip: false
   },
   {
@@ -169,7 +171,6 @@ const KNOWLEDGE_ITEMS_ID: KnowledgeItem[] = [
     category: 'audio',
     description: 'Afirmasi repetitif frekuensi tinggi untuk didengarkan saat tidur guna menanamkan perasaan kaya, aman, dan terpenuhi.',
     durationOrPages: '10 mnt',
-    sourceUrl: '/api/media?type=audio&file=prosperity.mp3',
     isVip: true
   },
   {
@@ -178,8 +179,25 @@ const KNOWLEDGE_ITEMS_ID: KnowledgeItem[] = [
     category: 'audio',
     description: 'Meditasi terpandu untuk melepaskan beban emosi lama dan memaafkan masa lalu demi kelancaran bridges of incidents.',
     durationOrPages: '20 mnt',
-    sourceUrl: '/api/media?type=audio&file=shadow_release.mp3',
     isVip: true
+  },
+  // Coming Soon — PDF
+  {
+    id: 'pdf-4',
+    title: 'Panduan Lengkap Law of Assumption: Dari A-Z',
+    category: 'pdf',
+    description: 'Ebook komprehensif yang merangkum seluruh ajaran Neville Goddard dari 1939–1972, dilengkapi latihan harian dan lembar audit mental.',
+    durationOrPages: '100+ Halaman',
+    isVip: false
+  },
+  // Coming Soon — Audio
+  {
+    id: 'audio-4',
+    title: 'Afirmasi Tidur: Saya Adalah Kesuksesan',
+    category: 'audio',
+    description: 'Afirmasi malam hari untuk menanamkan identitas diri sebagai manusia yang sudah sukses, cukup, dan layak menerima keberlimpahan.',
+    durationOrPages: '30 mnt',
+    isVip: false
   }
 ]
 
@@ -262,7 +280,6 @@ const KNOWLEDGE_ITEMS_EN: KnowledgeItem[] = [
     category: 'tiktok',
     description: 'A lightning Q&A session discussing the feeling of relief when falling asleep and how to control imagination during the day.',
     durationOrPages: '45 mins',
-    sourceUrl: 'LrklTcrYYFw',
     coverImg: '/images/illustrations/consciousness-creates-world.png',
     isVip: false
   },
@@ -272,8 +289,17 @@ const KNOWLEDGE_ITEMS_EN: KnowledgeItem[] = [
     category: 'tiktok',
     description: 'Unpacking the concept of attachment, putting people on a pedestal, and how to restore a sovereign inner state.',
     durationOrPages: '60 mins',
-    sourceUrl: 'LrklTcrYYFw',
     coverImg: '/images/illustrations/manifestation-journal.webp',
+    isVip: false
+  },
+  // Coming Soon — TikTok
+  {
+    id: 'tiktok-3',
+    title: 'Tiktok Live: Mental Diet & Thought Monitoring Techniques',
+    category: 'tiktok',
+    description: 'Practical ways to observe and shift daily negative automatic thoughts to align with your new assumption.',
+    durationOrPages: '45 mins',
+    coverImg: '/images/illustrations/meditation-imagination.webp',
     isVip: false
   },
   // PDFs
@@ -283,7 +309,6 @@ const KNOWLEDGE_ITEMS_EN: KnowledgeItem[] = [
     category: 'pdf',
     description: 'A daily template for night visualization practice and daytime inner auditing to keep your mental diet aligned.',
     durationOrPages: '12 Pages',
-    sourceUrl: '/api/media?type=pdf&file=jurnal-harian.pdf',
     isVip: false
   },
   {
@@ -292,7 +317,6 @@ const KNOWLEDGE_ITEMS_EN: KnowledgeItem[] = [
     category: 'pdf',
     description: 'An interactive workbook to map, audit, and track your self-concept shifts digitally for 30 days.',
     durationOrPages: 'Interactive HTML',
-    sourceUrl: '/api/media?type=pdf&file=workbook-manifestasi-digital-30hari.html',
     isVip: true
   },
   {
@@ -301,7 +325,6 @@ const KNOWLEDGE_ITEMS_EN: KnowledgeItem[] = [
     category: 'pdf',
     description: 'Practical techniques to neutralize anxiety, fear, and negative inner reactions when facing a contradictory 3D physical situation.',
     durationOrPages: 'Ebook',
-    sourceUrl: '/api/media?type=pdf&file=EMOSI NEGATIF.pdf',
     isVip: false
   },
   // Audios
@@ -311,7 +334,6 @@ const KNOWLEDGE_ITEMS_EN: KnowledgeItem[] = [
     category: 'audio',
     description: 'Binaural frequencies combined with guided inner voice to soothe your brainwaves into a receptive Theta state.',
     durationOrPages: '15 mins',
-    sourceUrl: '/api/media?type=audio&file=theta_sats.mp3',
     isVip: false
   },
   {
@@ -320,7 +342,6 @@ const KNOWLEDGE_ITEMS_EN: KnowledgeItem[] = [
     category: 'audio',
     description: 'High-frequency repetitive affirmations to listen to during sleep to plant feelings of wealth, security, and fulfillment.',
     durationOrPages: '10 mins',
-    sourceUrl: '/api/media?type=audio&file=prosperity.mp3',
     isVip: true
   },
   {
@@ -329,8 +350,25 @@ const KNOWLEDGE_ITEMS_EN: KnowledgeItem[] = [
     category: 'audio',
     description: 'A guided meditation to release old emotional burdens and forgive the past to pave the way for a smooth bridge of incidents.',
     durationOrPages: '20 mins',
-    sourceUrl: '/api/media?type=audio&file=shadow_release.mp3',
     isVip: true
+  },
+  // Coming Soon — PDF
+  {
+    id: 'pdf-4',
+    title: 'Complete Law of Assumption Guide: A-Z',
+    category: 'pdf',
+    description: 'A comprehensive ebook summarizing all of Neville Goddard\'s teachings from 1939–1972, complete with daily exercises and mental audit sheets.',
+    durationOrPages: '100+ Pages',
+    isVip: false
+  },
+  // Coming Soon — Audio
+  {
+    id: 'audio-4',
+    title: 'Sleep Affirmations: I Am Success',
+    category: 'audio',
+    description: 'Nighttime affirmations to embed a self-identity as already successful, complete, and deserving of abundance.',
+    durationOrPages: '30 mins',
+    isVip: false
   }
 ]
 
@@ -391,77 +429,31 @@ const UI_TRANSLATIONS = {
 }
 
 export default function KnowledgeBank({ isCommunityMode = false }: { isCommunityMode?: boolean }) {
-  const { hasCommunityAccess, subscriptionTier, setView } = useAppStore()
   const { language } = useTranslation()
-  
+
   // ── States ──
   const [activeTab, setActiveTab] = useState<'all' | 'webinar' | 'tiktok' | 'pdf' | 'audio'>('all')
   const [activeVideoId, setActiveVideoId] = useState<string | null>(null)
   const [activeAudioItem, setActiveAudioItem] = useState<KnowledgeItem | null>(null)
-  const [showUnlockModal, setShowUnlockModal] = useState(false)
 
-  const isPremiumUser = hasCommunityAccess()
   const isIndo = language === 'id'
   const t = UI_TRANSLATIONS[language] || UI_TRANSLATIONS.id
   const KNOWLEDGE_ITEMS = isIndo ? KNOWLEDGE_ITEMS_ID : KNOWLEDGE_ITEMS_EN
 
-  // ── Locked Modal Texts ──
-  const modalText = {
-    title: isIndo ? '🔒 MATERI VIP KNOWLEDGE TERKUNCI' : '🔒 VIP KNOWLEDGE MATERIAL LOCKED',
-    subtitle: isIndo ? 'Membutuhkan Akses Premium/Master' : 'Requires Premium/Master Access',
-    description: isIndo 
-      ? 'Materi Bank Knowledge bertanda VIP adalah arsip pembelajaran tingkat lanjut. Buka akses penuh sekarang untuk mempelajari rekaman webinar eksklusif dan workbook pemrograman batin harian.'
-      : 'Knowledge Bank materials marked VIP are advanced learning archives. Unlock full access now to explore exclusive webinar recordings and daily personalized inner programming workbooks.',
-    lockedTitle: isIndo ? '🔒 MATERI KNOWLEDGE TERKUNCI' : '🔒 KNOWLEDGE MATERIAL LOCKED',
-    lockedSubtitle: isIndo ? 'Membutuhkan Akses Basic' : 'Requires Basic Access',
-    lockedDesc: isIndo
-      ? 'Akses Repositori Bank Knowledge (non-VIP) tersedia mulai dari paket Basic. Hubungkan batin Anda dengan materi penunjang pembelajaran Hukum Asumsi.'
-      : 'Knowledge Bank repository access (non-VIP) is available starting from the Basic plan. Connect your inner self with supporting materials for learning the Law of Assumption.'
-  }
-
-  const [activeModalText, setActiveModalText] = useState(modalText)
-
   // ── Access Checker ──
   const handleItemAction = (item: KnowledgeItem) => {
-    if (subscriptionTier === 'free') {
-      if (item.isVip) {
-        setActiveModalText({
-          title: modalText.title,
-          subtitle: modalText.subtitle,
-          description: modalText.description,
-          lockedTitle: modalText.lockedTitle,
-          lockedSubtitle: modalText.lockedSubtitle,
-          lockedDesc: modalText.lockedDesc
-        })
+    // Coming soon / no file yet
+    if (!item.sourceUrl) {
+      if (isIndo) {
+        toast.info('Materi ini sedang dipersiapkan. Nantikan segera! ✨')
       } else {
-        setActiveModalText({
-          title: modalText.lockedTitle,
-          subtitle: modalText.lockedSubtitle,
-          description: modalText.lockedDesc,
-          lockedTitle: modalText.lockedTitle,
-          lockedSubtitle: modalText.lockedSubtitle,
-          lockedDesc: modalText.lockedDesc
-        })
+        toast.info('This material is being prepared. Coming soon! ✨')
       }
-      setShowUnlockModal(true)
-      return
-    }
-
-    if (item.isVip && !isPremiumUser) {
-      setActiveModalText({
-        title: modalText.title,
-        subtitle: modalText.subtitle,
-        description: modalText.description,
-        lockedTitle: modalText.lockedTitle,
-        lockedSubtitle: modalText.lockedSubtitle,
-        lockedDesc: modalText.lockedDesc
-      })
-      setShowUnlockModal(true)
       return
     }
 
     if (item.category === 'webinar' || item.category === 'tiktok') {
-      setActiveVideoId(item.sourceUrl || null)
+      setActiveVideoId(item.sourceUrl)
     } else if (item.category === 'pdf') {
       const msg = t.downloadingToast.replace('{title}', item.title)
       toast.success(msg)
@@ -556,7 +548,11 @@ export default function KnowledgeBank({ isCommunityMode = false }: { isCommunity
                     <span className="text-[9px] font-mono bg-neutral-900 border border-neutral-800 text-neutral-400 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
                       {item.category === 'webinar' ? t.labelWebinar : item.category === 'tiktok' ? t.labelTiktok : item.category === 'pdf' ? t.labelPdf : t.labelAudio}
                     </span>
-                    {item.isVip && (
+                    {!item.sourceUrl ? (
+                      <span className="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded uppercase tracking-wider flex items-center gap-0.5">
+                        {isIndo ? 'SEGERA ✨' : 'COMING SOON ✨'}
+                      </span>
+                    ) : item.isVip && (
                       <span className="text-[9px] font-bold text-amber-500 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded uppercase tracking-wider flex items-center gap-0.5">
                         <Lock size={8} /> VIP
                       </span>
@@ -664,57 +660,6 @@ export default function KnowledgeBank({ isCommunityMode = false }: { isCommunity
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   />
-                </div>
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
-
-        {/* ── VIP Locked Activation Prompt Modal ── */}
-        <AnimatePresence>
-          {showUnlockModal && (
-            <div className="nv-modal-overlay" onClick={() => setShowUnlockModal(false)}>
-              <motion.div
-                className="nv-modal-content nv-premium-glass"
-                style={{ maxWidth: '460px', display: 'flex', flexDirection: 'column', gap: '20px', border: '1px solid #d4a053' }}
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.95, opacity: 0 }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="flex justify-between items-center border-b border-neutral-900 pb-3">
-                  <span className="text-xs font-bold text-amber-500 tracking-wider flex items-center gap-1">
-                    {activeModalText.title}
-                  </span>
-                  <button className="text-neutral-400 hover:text-white" onClick={() => setShowUnlockModal(false)}>
-                    <X size={16} />
-                  </button>
-                </div>
-
-                <div className="text-center py-4 flex flex-col items-center gap-3">
-                  <div className="text-5xl drop-shadow-lg">👑</div>
-                  <h3 className="text-base font-bold text-white font-outfit m-0">{activeModalText.subtitle}</h3>
-                  <p className="text-xs text-neutral-400 leading-relaxed max-w-sm m-0">
-                    {activeModalText.description}
-                  </p>
-                </div>
-
-                <div className="flex flex-col gap-2 mt-2">
-                  <button
-                    onClick={() => {
-                      setShowUnlockModal(false)
-                      setView('pricing')
-                    }}
-                    className="nv-cta-button nv-cta-pulse w-full py-2.5 rounded-lg text-xs font-bold text-center flex items-center justify-center gap-2"
-                  >
-                    <span>{t.upgradeBtn}</span>
-                  </button>
-                  <button
-                    onClick={() => setShowUnlockModal(false)}
-                    className="bg-neutral-900 border border-neutral-850 text-neutral-400 hover:text-white py-2 rounded-lg text-xs font-semibold"
-                  >
-                    {t.backBtn}
-                  </button>
                 </div>
               </motion.div>
             </div>

@@ -61,10 +61,10 @@ export default function AiHubSection() {
   const handleCardClick = (feature: typeof FEATURES[0]) => {
     if (feature.badgeType === 'free') {
       setView(feature.view)
-    } else if (hasAccess) {
-      setView(feature.view)
+    } else if (feature.view === 'ai-private-session') {
+      window.open('https://cohort.nevgoinstitute.com', '_blank', 'noopener')
     } else {
-      setView('pricing')
+      window.open('https://cohort.nevgoinstitute.com', '_blank', 'noopener')
     }
   }
 
