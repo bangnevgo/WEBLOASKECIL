@@ -952,6 +952,70 @@ export default function Landing() {
           </div>
         </motion.section>
 
+        {/* ─── BLOG NEVGO: RELATED ARTICLES → cohort blog (topical cluster) ─── */}
+        <section className="nv-blog-bridge" aria-label="Blog Nevgo Institute">
+          <div className="nv-blog-bridge-head">
+            <span className="nv-blog-bridge-eyebrow">
+              {language === 'en' ? '📝 FROM THE BLOG' : '📝 DARI BLOG NEVGO'}
+            </span>
+            <h2 className="nv-blog-bridge-title-main">
+              {language === 'en'
+                ? 'Deep Dives from the Nevgo Institute Blog'
+                : 'Bedah Mendalam dari Blog Nevgo Institute'}
+            </h2>
+            <p className="nv-blog-bridge-sub">
+              {language === 'en'
+                ? 'Why manifestation often stalls — and how to fix it from the root.'
+                : 'Kenapa manifestasi sering mandek — dan cara menuntaskannya dari akar.'}
+            </p>
+          </div>
+
+          <div className="nv-blog-bridge-grid">
+            {[
+              {
+                slug: 'afirmasi-cemas',
+                tag: language === 'en' ? 'Neurology' : 'Neurologi',
+                title: 'Kenapa Afirmasi Positif Justru Membuatmu Cemas?',
+              },
+              {
+                slug: 'file-asli',
+                tag: language === 'en' ? 'Self-Concept' : 'Konsep Diri',
+                title: "Konsep Diri: 'File Asli' yang Menentukan Cetakan Hidupmu",
+              },
+              {
+                slug: 'pola-sabotase',
+                tag: language === 'en' ? 'Subconscious' : 'Bawah Sadar',
+                title: 'Mengenal Pola Sabotase: Cara Bawah Sadar Melindungimu',
+              },
+              {
+                slug: 'regulasi-emosi',
+                tag: language === 'en' ? 'Somatic' : 'Somatic',
+                title: 'Regulasi Emosi: Kunci Manifestasi yang Stabil & Permanen',
+              },
+              {
+                slug: 'sistem-saraf-manifestasi',
+                tag: language === 'en' ? 'Nervous System' : 'Sistem Saraf',
+                title:
+                  'Merasakan Sudah Terjadi: Jalur Sistem Saraf Menuju Manifestasi Tanpa Resistensi',
+              },
+            ].map((a) => (
+              <a
+                key={a.slug}
+                href={`https://cohort.nevgoinstitute.com/blog/${a.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="nv-blog-bridge-card"
+              >
+                <span className="nv-blog-bridge-tag">{a.tag}</span>
+                <h3 className="nv-blog-bridge-title">{a.title}</h3>
+                <span className="nv-blog-bridge-cta">
+                  {language === 'en' ? 'Read article →' : 'Baca artikel →'}
+                </span>
+              </a>
+            ))}
+          </div>
+        </section>
+
         {/* ─── FOOTER CTA ─── */}
         <div className="nv-footer-cta">
           {language === 'en' ? 'Sourced exclusively from ' : 'Bersumber secara eksklusif dari '}
