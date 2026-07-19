@@ -366,30 +366,85 @@ export default function LessonDetail() {
 
             {/* ✦ Cohort CTA below lesson cards */}
             <div className="mt-5 pt-4 border-t border-neutral-800">
-              <a
-                href="https://cohort.nevgoinstitute.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full py-3 px-3 rounded-lg text-sm font-bold transition-all duration-200"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(212,160,83,0.12), rgba(184,134,45,0.08))',
-                  border: '1px solid rgba(212,160,83,0.25)',
-                  color: '#d4a053'
-                }}
-                onMouseEnter={(e) => {
-                  const el = e.currentTarget as HTMLElement
-                  el.style.background = 'linear-gradient(135deg, rgba(212,160,83,0.2), rgba(184,134,45,0.15))'
-                  el.style.borderColor = 'rgba(212,160,83,0.4)'
-                }}
-                onMouseLeave={(e) => {
-                  const el = e.currentTarget as HTMLElement
-                  el.style.background = 'linear-gradient(135deg, rgba(212,160,83,0.12), rgba(184,134,45,0.08))'
-                  el.style.borderColor = 'rgba(212,160,83,0.25)'
-                }}
-              >
-                <span style={{ fontSize: '0.75rem' }}>✦</span>
-                <span>{language === 'en' ? 'Master with Live Guidance — Join Cohort →' : 'Kuasai dengan Bimbingan Langsung — Ikut Cohort →'}</span>
-              </a>
+              {(() => {
+                const partNum = part?.num ?? 1
+                const cohortCtasId: Record<number, string> = {
+                  1: 'Latih kesadarannya bareng Bang Nevgo →',
+                  2: 'Lihat cara Cohort membimbingmu →',
+                  3: 'Dapatkan panduan saat kamu "lupa" →',
+                  4: 'Pelajari praktik diam yang aktif →',
+                  5: 'Mulai method terbimbing di Cohort →',
+                  6: 'Praktik Revisi bersama mentor →',
+                  7: 'Arahkan imajinasimu di Cohort →',
+                  8: 'Masuk ke keadaan barumu →',
+                  9: 'Lewati fase ini bareng Cohort →',
+                  10: 'Ubah kesadaran jadi kepemilikan →',
+                }
+                const cohortCtasEn: Record<number, string> = {
+                  1: 'Train your awareness with Bang Nevgo →',
+                  2: 'See how Cohort guides you →',
+                  3: 'Get guidance when you "forget" →',
+                  4: 'Learn the active practice of stillness →',
+                  5: 'Start the guided method in Cohort →',
+                  6: 'Practice Revision with a mentor →',
+                  7: 'Direct your imagination in Cohort →',
+                  8: 'Step into your new state →',
+                  9: 'Pass this phase with Cohort →',
+                  10: 'Turn awareness into ownership →',
+                }
+                const subId: Record<number, string> = {
+                  1: 'Rutin harian, bukan cuma teori.',
+                  2: 'Konsistensi merasa "sudah punya".',
+                  3: 'Ingatkan kamu balik ke perasaan.',
+                  4: 'Diam yang aktif, bukan menyerah.',
+                  5: 'Method sistematis yang menahan.',
+                  6: 'Dipraktikkan langsung, bukan dibaca.',
+                  7: 'Imajinasi jadi alat yang disiplin.',
+                  8: 'Langkah harian yang diawasi.',
+                  9: 'Komunitas + mentor di fase ini.',
+                  10: 'Dari "tahu" jadi "menjadi".',
+                }
+                const subEn: Record<number, string> = {
+                  1: 'Daily routine, not just theory.',
+                  2: 'Consistency in feeling "already have".',
+                  3: 'Brings you back to the feeling.',
+                  4: 'Active stillness, not giving up.',
+                  5: 'A systematic method that holds.',
+                  6: 'Practiced live, not just read.',
+                  7: 'Imagination as a disciplined tool.',
+                  8: 'Daily steps, closely guided.',
+                  9: 'Community + mentor for this phase.',
+                  10: 'From "knowing" to "being".',
+                }
+                const ctaText = language === 'en' ? (cohortCtasEn[partNum] ?? cohortCtasEn[10]) : (cohortCtasId[partNum] ?? cohortCtasId[10])
+                const subText = language === 'en' ? (subEn[partNum] ?? subEn[10]) : (subId[partNum] ?? subId[10])
+                return (
+                  <a
+                    href="https://cohort.nevgoinstitute.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full py-3 px-3 rounded-lg text-sm font-bold transition-all duration-200"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(212,160,83,0.12), rgba(184,134,45,0.08))',
+                      border: '1px solid rgba(212,160,83,0.25)',
+                      color: '#d4a053'
+                    }}
+                    onMouseEnter={(e) => {
+                      const el = e.currentTarget as HTMLElement
+                      el.style.background = 'linear-gradient(135deg, rgba(212,160,83,0.2), rgba(184,134,45,0.15))'
+                      el.style.borderColor = 'rgba(212,160,83,0.4)'
+                    }}
+                    onMouseLeave={(e) => {
+                      const el = e.currentTarget as HTMLElement
+                      el.style.background = 'linear-gradient(135deg, rgba(212,160,83,0.12), rgba(184,134,45,0.08))'
+                      el.style.borderColor = 'rgba(212,160,83,0.25)'
+                    }}
+                  >
+                    <span style={{ fontSize: '0.75rem' }}>✦</span>
+                    <span>{ctaText}</span>
+                  </a>
+                )
+              })()}
               <p className="text-[10px] text-neutral-600 text-center mt-2 leading-relaxed">
                 {language === 'en'
                   ? 'Live sessions, direct mentoring, and community support.'
