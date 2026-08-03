@@ -174,6 +174,17 @@ export default function Dashboard() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4 }}
           >
+            <a
+              href="https://lynk.id/bangnevgo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#d4a053]/40 text-xs font-bold text-[#d4a053] hover:bg-[#d4a053]/10 transition"
+              title="Toko Digital & Event Bang Nevgo"
+            >
+              <span>🛒 Toko Digital & Event</span>
+              <ExternalLink size={12} />
+            </a>
+
             <div className="flex flex-col text-right hidden sm:flex">
               <span style={{ fontSize: 13, fontWeight: 600 }}>{userName}</span>
               <span className="text-[10px] text-green-500 font-bold uppercase tracking-wider flex items-center justify-end gap-1">

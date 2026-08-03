@@ -153,7 +153,18 @@ export default function FreeDownloadsSection() {
                 <span>Daftar Free</span>
               </button>
             </motion.div>
-          ))}
+        </div>
+
+        <div className="flex justify-center mt-6">
+          <a
+            href="https://lynk.id/bangnevgo"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-neutral-900 hover:bg-neutral-800 border border-[#d4a053]/40 text-[#d4a053] font-bold text-xs sm:text-sm rounded-full transition shadow-md hover:scale-105"
+          >
+            <span>🛍️ Ingin Ebook Lengkap, Event & Produk Digital Bang Nevgo? Kunjungi Lynk.id/bangnevgo</span>
+            <span>↗</span>
+          </a>
         </div>
       </div>
 

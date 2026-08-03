@@ -199,7 +199,19 @@ export default function Landing() {
             <div className="w-8 h-8 rounded-full bg-[#d4a053] flex items-center justify-center text-black font-extrabold shadow-md">✦</div>
             <span className="font-outfit font-extrabold text-sm sm:text-base text-[#e8e4dc]">{t('navLogo')}</span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            {/* Toko & Event Lynk.id Link */}
+            <a
+              href="https://lynk.id/bangnevgo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-[#e8e4dc] text-xs font-bold rounded-lg transition"
+              title="Toko Ebook, Event & Produk Digital Bang Nevgo"
+            >
+              <span>🛒 Toko & Event</span>
+              <span className="text-[10px] text-[#d4a053]">↗</span>
+            </a>
+
             {/* Language Toggle */}
             <div className="relative flex items-center bg-neutral-950 border border-neutral-800 rounded-full p-0.5 w-[72px] h-7">
               <div 
@@ -934,6 +946,17 @@ export default function Landing() {
                 </div>
               ))}
             </div>
+          </div>
+          <div className="flex justify-center mt-6">
+            <a
+              href="https://lynk.id/bangnevgo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#d4a053] hover:bg-[#c39043] text-black font-extrabold text-sm sm:text-base rounded-full shadow-lg transition hover:scale-105"
+            >
+              <span>🛒 Buka Toko Digital, Ebook & Event Bang Nevgo</span>
+              <span>↗</span>
+            </a>
           </div>
         </div>
 
