@@ -130,12 +130,12 @@ export default function Landing() {
     const timer = window.setTimeout(() => setShowLeadModal(true), 0)
     return () => window.clearTimeout(timer)
   }, [])
+
   // Client-only flag to avoid hydration mismatch
-  const isMounted = useSyncExternalStore(
-    () => () => {},   // subscribe (no-op, value never changes)
-    () => true,       // getSnapshot (client)
-    () => false       // getServerSnapshot (server)
-  )
+  const [isMounted, setIsMounted] = useState(false)
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
   const mainRef = useRef<HTMLDivElement>(null)
   const heroRef = useRef<HTMLDivElement>(null)
 
@@ -542,7 +542,7 @@ export default function Landing() {
               <div className="nv-grid">
                 {part.lessons.map((lesson, lessonIdx) => {
                   const isFreePreview = ['1.1', '1.2', '1.3'].includes(lesson.num)
-                  const isPartLocked = !leadRegistered && !isFreePreview
+                  const isPartLocked = isMounted ? (!leadRegistered && !isFreePreview) : !isFreePreview
                   return (
                     <motion.div
                       key={lesson.num}
