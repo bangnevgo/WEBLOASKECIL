@@ -111,7 +111,8 @@ export default function RootLayout({
       provider: {
         "@type": "Organization",
         name: "Nevgo Institute",
-        url: "https://nevgoinstitute.com"
+        url: "https://nevgoinstitute.com",
+        sameAs: ["https://www.tiktok.com/@bangnevgo"]
       },
       educationalLevel: "Semua Level",
       inLanguage: ["id", "en"],
