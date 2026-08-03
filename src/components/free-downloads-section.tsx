@@ -153,6 +153,7 @@ export default function FreeDownloadsSection() {
                 <span>Daftar Free</span>
               </button>
             </motion.div>
+          ))}
         </div>
 
         <div className="flex justify-center mt-6">

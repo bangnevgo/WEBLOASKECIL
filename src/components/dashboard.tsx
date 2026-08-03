@@ -304,45 +304,71 @@ export default function Dashboard() {
 
           {/* Lessons Sidebar list (only visible if tab is lessons) */}
           {activeTab === 'lessons' && (
-            <nav className="nv-dash-nav">
-              {curriculumParts.map((part) => {
-                const partCompleted = part.lessons.filter((l) => completedLessons.has(l.num)).length
-                return (
-                  <div key={part.id} className="nv-dash-nav-section">
-                    <div className="nv-dash-nav-part">
-                      <span className="nv-dash-nav-num" style={{ color: part.color }}>{part.num}</span>
-                      <span className="nv-dash-nav-title">{part.title}</span>
-                      <span className="nv-dash-nav-count">
-                        {partCompleted}/{part.lessons.length}
-                      </span>
+            <>
+              <nav className="nv-dash-nav">
+                {curriculumParts.map((part) => {
+                  const partCompleted = part.lessons.filter((l) => completedLessons.has(l.num)).length
+                  return (
+                    <div key={part.id} className="nv-dash-nav-section">
+                      <div className="nv-dash-nav-part">
+                        <span className="nv-dash-nav-num" style={{ color: part.color }}>{part.num}</span>
+                        <span className="nv-dash-nav-title">{part.title}</span>
+                        <span className="nv-dash-nav-count">
+                          {partCompleted}/{part.lessons.length}
+                        </span>
+                      </div>
+                      {part.lessons.map((lesson) => {
+                        const isComplete = completedLessons.has(lesson.num)
+                        const locked = isLessonLocked(part.id, lesson.num)
+                        return (
+                          <button
+                            key={lesson.num}
+                            className={`nv-dash-nav-lesson ${isComplete ? 'nv-dash-nav-lesson-done' : ''}`}
+                            onClick={() => {
+                              if (locked) { setShowLeadModal(true); return }
+                              openLesson(part.id, lesson.num)
+                              setSidebarOpen(false)
+                            }}
+                          >
+                            {locked ? (
+                              <Lock size={10} style={{ color: 'var(--nv-faint)', marginRight: 4, flexShrink: 0 }} />
+                            ) : (
+                              <span className="nv-dash-nav-lesson-dot" style={{ background: isComplete ? 'var(--nv-gold)' : 'var(--nv-faint)' }} />
+                            )}
+                            <span className="nv-dash-nav-lesson-num" style={{ color: locked ? 'var(--nv-faint)' : part.color }}>{lesson.num}</span>
+                            <span className="nv-dash-nav-lesson-title">{lesson.title}</span>
+                          </button>
+                        )
+                      })}
                     </div>
-                    {part.lessons.map((lesson) => {
-                      const isComplete = completedLessons.has(lesson.num)
-                      const locked = isLessonLocked(part.id, lesson.num)
-                      return (
-                        <button
-                          key={lesson.num}
-                          className={`nv-dash-nav-lesson ${isComplete ? 'nv-dash-nav-lesson-done' : ''}`}
-                          onClick={() => {
-                            if (locked) { setShowLeadModal(true); return }
-                            openLesson(part.id, lesson.num)
-                            setSidebarOpen(false)
-                          }}
-                        >
-                          {locked ? (
-                            <Lock size={10} style={{ color: 'var(--nv-faint)', marginRight: 4, flexShrink: 0 }} />
-                          ) : (
-                            <span className="nv-dash-nav-lesson-dot" style={{ background: isComplete ? 'var(--nv-gold)' : 'var(--nv-faint)' }} />
-                          )}
-                          <span className="nv-dash-nav-lesson-num" style={{ color: locked ? 'var(--nv-faint)' : part.color }}>{lesson.num}</span>
-                          <span className="nv-dash-nav-lesson-title">{lesson.title}</span>
-                        </button>
-                      )
-                    })}
-                  </div>
-                )
-              })}
-            </nav>
+                  )
+                })}
+              </nav>
+
+              {/* Sidebar CTA Links: Cohort & Lynk.id */}
+              <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-neutral-900">
+                <a
+                  href="https://lynk.id/bangnevgo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-1.5 w-full py-2.5 px-3 rounded-lg text-xs font-bold text-black transition shadow-md hover:scale-[1.02]"
+                  style={{ background: 'linear-gradient(135deg, #d4a053, #b8862d)' }}
+                >
+                  <span>✦ {language === 'en' ? 'Join Cohort Program (Live Sesi)' : 'Ikuti Program Cohort Terbimbing'}</span>
+                  <span className="text-[10px]">↗</span>
+                </a>
+
+                <a
+                  href="https://lynk.id/bangnevgo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-1.5 w-full py-2 px-3 rounded-lg text-xs font-bold text-neutral-300 hover:text-white bg-neutral-900/80 hover:bg-neutral-800 border border-neutral-800 transition"
+                >
+                  <span>🛒 Toko Ebook & Produk Digital</span>
+                  <span className="text-[10px] text-amber-500">↗</span>
+                </a>
+              </div>
+            </>
           )}
         </aside>
 

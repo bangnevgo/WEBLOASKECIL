@@ -106,9 +106,33 @@ export default function PartPageClient({ part, prevPart, nextPart }: Props) {
             : `Dapatkan akses penuh ke semua ${activePart.lessons.length} pelajaran dalam bagian ini beserta konten lengkap, kutipan bersumber, dan praktik harian.`
           }
         </p>
-        <a href="/#part-1" className="nv-part-cta-btn">
-          ✦ {language === 'en' ? 'Register Free — Full Access' : 'Daftar Free — Full Akses'}
-        </a>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', maxWidth: '380px', margin: '0 auto' }}>
+          <a href="https://lynk.id/bangnevgo" target="_blank" rel="noopener noreferrer" className="nv-part-cta-btn" style={{ textDecoration: 'none' }}>
+            ✦ {language === 'en' ? 'Join Cohort Program (4 Live Sessions)' : 'Ikuti Program Cohort Terbimbing (4 Sesi Live)'}
+          </a>
+          <a
+            href="https://lynk.id/bangnevgo"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              padding: '0.75rem 1.25rem',
+              borderRadius: '0.5rem',
+              background: '#121212',
+              border: '1px solid #333',
+              color: '#e8e4dc',
+              fontWeight: 'bold',
+              fontSize: '0.875rem',
+              textDecoration: 'none'
+            }}
+          >
+            <span>🛒 Toko Ebook & Produk Digital (Lynk.id)</span>
+            <span style={{ color: '#d4a053' }}>↗</span>
+          </a>
+        </div>
         <Link href="/" className="nv-part-back">
           {language === 'en' ? '← Back to Complete Curriculum' : '← Kembali ke Kurikulum Lengkap'}
         </Link>

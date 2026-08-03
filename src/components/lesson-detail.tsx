@@ -420,7 +420,7 @@ export default function LessonDetail() {
                 const subText = language === 'en' ? (subEn[partNum] ?? subEn[10]) : (subId[partNum] ?? subId[10])
                 return (
                   <a
-                    href="https://cohort.nevgoinstitute.com"
+                    href="https://lynk.id/bangnevgo"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-2 w-full py-3 px-3 rounded-lg text-sm font-bold transition-all duration-200"
@@ -445,10 +445,22 @@ export default function LessonDetail() {
                   </a>
                 )
               })()}
+
+              {/* Lynk.id Store & Event Link */}
+              <a
+                href="https://lynk.id/bangnevgo"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full py-2.5 px-3 mt-2 rounded-lg text-xs font-bold transition-all duration-200 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-[#e8e4dc]"
+              >
+                <span>🛒 Toko Ebook, Event & Produk Digital</span>
+                <span className="text-[10px] text-[#d4a053]">↗</span>
+              </a>
+
               <p className="text-[10px] text-neutral-600 text-center mt-2 leading-relaxed">
                 {language === 'en'
-                  ? 'Live sessions, direct mentoring, and community support.'
-                  : 'Sesi langsung, bimbingan langsung, dan dukungan komunitas.'
+                  ? 'Live sessions, direct mentoring, and digital products.'
+                  : 'Sesi langsung, bimbingan langsung, dan produk digital.'
                 }
               </p>
             </div>
