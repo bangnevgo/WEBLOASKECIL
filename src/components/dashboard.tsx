@@ -348,13 +348,13 @@ export default function Dashboard() {
               {/* Sidebar CTA Links: Cohort & Lynk.id */}
               <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-neutral-900">
                 <a
-                  href="https://lynk.id/bangnevgo"
+                  href="https://cohort.nevgoinstitute.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-1.5 w-full py-2.5 px-3 rounded-lg text-xs font-bold text-black transition shadow-md hover:scale-[1.02]"
+                  className="flex items-center justify-center gap-1.5 w-full py-2.5 px-3 rounded-lg text-xs font-bold text-black transition shadow-md hover:scale-[1.02] text-center"
                   style={{ background: 'linear-gradient(135deg, #d4a053, #b8862d)' }}
                 >
-                  <span>✦ {language === 'en' ? 'Join Cohort Program (Live Sesi)' : 'Ikuti Program Cohort Terbimbing'}</span>
+                  <span>✦ {language === 'en' ? 'Decided to Transform Yourself → Join 30-Day Cohort/Bootcamp' : 'Sudah memutuskan untuk Transformasi diri → Ikut Program Bootcamp/Cohort 30 Hari'}</span>
                   <span className="text-[10px]">↗</span>
                 </a>
 

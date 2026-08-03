@@ -106,9 +106,9 @@ export default function PartPageClient({ part, prevPart, nextPart }: Props) {
             : `Dapatkan akses penuh ke semua ${activePart.lessons.length} pelajaran dalam bagian ini beserta konten lengkap, kutipan bersumber, dan praktik harian.`
           }
         </p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', maxWidth: '380px', margin: '0 auto' }}>
-          <a href="https://lynk.id/bangnevgo" target="_blank" rel="noopener noreferrer" className="nv-part-cta-btn" style={{ textDecoration: 'none' }}>
-            ✦ {language === 'en' ? 'Join Cohort Program (4 Live Sessions)' : 'Ikuti Program Cohort Terbimbing (4 Sesi Live)'}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', maxWidth: '440px', margin: '0 auto' }}>
+          <a href="https://cohort.nevgoinstitute.com" target="_blank" rel="noopener noreferrer" className="nv-part-cta-btn" style={{ textDecoration: 'none', textAlign: 'center' }}>
+            ✦ {language === 'en' ? 'Decided to Transform Yourself → Join 30-Day Cohort/Bootcamp' : 'Sudah memutuskan untuk Transformasi diri → Ikut Program Bootcamp/Cohort 30 Hari'}
           </a>
           <a
             href="https://lynk.id/bangnevgo"

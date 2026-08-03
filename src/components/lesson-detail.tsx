@@ -378,7 +378,7 @@ export default function LessonDetail() {
                   7: 'Arahkan imajinasimu di Cohort →',
                   8: 'Masuk ke keadaan barumu →',
                   9: 'Lewati fase ini bareng Cohort →',
-                  10: 'Ubah kesadaran jadi kepemilikan →',
+                  10: 'Sudah memutuskan untuk Transformasi diri → Ikut Program Bootcamp/Cohort 30 Hari',
                 }
                 const cohortCtasEn: Record<number, string> = {
                   1: 'Train your awareness with Bang Nevgo →',
@@ -390,7 +390,7 @@ export default function LessonDetail() {
                   7: 'Direct your imagination in Cohort →',
                   8: 'Step into your new state →',
                   9: 'Pass this phase with Cohort →',
-                  10: 'Turn awareness into ownership →',
+                  10: 'Decided to Transform Yourself → Join 30-Day Cohort/Bootcamp',
                 }
                 const subId: Record<number, string> = {
                   1: 'Rutin harian, bukan cuma teori.',
@@ -402,7 +402,7 @@ export default function LessonDetail() {
                   7: 'Imajinasi jadi alat yang disiplin.',
                   8: 'Langkah harian yang diawasi.',
                   9: 'Komunitas + mentor di fase ini.',
-                  10: 'Dari "tahu" jadi "menjadi".',
+                  10: 'Bimbingan 30 hari bersama Bang Nevgo.',
                 }
                 const subEn: Record<number, string> = {
                   1: 'Daily routine, not just theory.',
@@ -414,13 +414,13 @@ export default function LessonDetail() {
                   7: 'Imagination as a disciplined tool.',
                   8: 'Daily steps, closely guided.',
                   9: 'Community + mentor for this phase.',
-                  10: 'From "knowing" to "being".',
+                  10: '30-day guided mentoring with Bang Nevgo.',
                 }
                 const ctaText = language === 'en' ? (cohortCtasEn[partNum] ?? cohortCtasEn[10]) : (cohortCtasId[partNum] ?? cohortCtasId[10])
                 const subText = language === 'en' ? (subEn[partNum] ?? subEn[10]) : (subId[partNum] ?? subId[10])
                 return (
                   <a
-                    href="https://lynk.id/bangnevgo"
+                    href="https://cohort.nevgoinstitute.com"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-2 w-full py-3 px-3 rounded-lg text-sm font-bold transition-all duration-200"
