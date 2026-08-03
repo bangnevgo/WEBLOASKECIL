@@ -176,7 +176,7 @@ export default function FreeLessonPage() {
                 <span className="nv-fl-meta-accent">⏱</span> {language === 'en' ? '8 min read' : '8 min baca'}
               </span>
               <span className="nv-fl-meta-item">
-                <span className="nv-fl-meta-accent">📖</span> {language === 'en' ? `Free Lesson ${freeIndex + 1}/${FREE_LESSON_NUMS.length}` : `Pelajaran ${freeIndex + 1}/${FREE_LESSON_NUMS.length} gratis`}
+                <span className="nv-fl-meta-accent">📖</span> {language === 'en' ? `Free Lesson ${freeIndex + 1}/${FREE_LESSON_NUMS.length}` : `Preview ${freeIndex + 1}/${FREE_LESSON_NUMS.length}`}
               </span>
               <span className="nv-fl-meta-item">
                 {language === 'en' ? `PART ${part.num}: ${part.title.length > 30 ? part.title.slice(0, 28) + '…' : part.title}` : `BAGIAN ${part.num}: ${part.title.length > 30 ? part.title.slice(0, 28) + '…' : part.title}`}
@@ -392,7 +392,7 @@ export default function FreeLessonPage() {
                   ? (language === 'en' ? '✓ Completed' : '✓ Selesai') 
                   : isActive 
                     ? (language === 'en' ? '● Reading' : '● Sedang dibaca') 
-                    : (language === 'en' ? `${i + 1}/${FREE_LESSON_NUMS.length} free` : `${i + 1}/${FREE_LESSON_NUMS.length} gratis`)}
+                    : (language === 'en' ? `${i + 1}/${FREE_LESSON_NUMS.length} free` : `Preview ${i + 1}/${FREE_LESSON_NUMS.length}`)}
               </div>
             </button>
           )
@@ -442,7 +442,7 @@ export default function FreeLessonPage() {
           <p className="nv-fl-conversion-desc">
             {language === 'en'
               ? <>This is just the beginning. All <strong style={{ color: 'var(--nv-gold)' }}>50 lessons</strong> are free — just register. Ready to go deeper? Join the <strong style={{ color: 'var(--nv-gold)' }}>Cohort Program</strong> for guided group practice.</>
-              : <>Ini baru permulaan. Seluruh <strong style={{ color: 'var(--nv-gold)' }}>50 pelajaran</strong> gratis — cukup daftar. Siap melangkah lebih dalam? Ikuti <strong style={{ color: 'var(--nv-gold)' }}>Program Cohort</strong> untuk latihan kelompok terbimbing.</>
+              : <>Ini baru permulaan. Lanjutkan dengan <strong style={{ color: 'var(--nv-gold)' }}>Daftar Free</strong> untuk membuka seluruh pelajaran. Siap melangkah lebih dalam? Ikuti <strong style={{ color: 'var(--nv-gold)' }}>Program Cohort</strong> untuk latihan kelompok terbimbing.</>
             }
           </p>
           <ul className="nv-fl-conversion-teases">

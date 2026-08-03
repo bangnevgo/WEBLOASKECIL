@@ -107,7 +107,7 @@ export default function PartPageClient({ part, prevPart, nextPart }: Props) {
           }
         </p>
         <a href="/#part-1" className="nv-part-cta-btn">
-          ✦ {language === 'en' ? 'Register Free — Full Access' : 'Daftar Gratis — Full Akses'}
+          ✦ {language === 'en' ? 'Register Free — Full Access' : 'Daftar Free — Full Akses'}
         </a>
         <Link href="/" className="nv-part-back">
           {language === 'en' ? '← Back to Complete Curriculum' : '← Kembali ke Kurikulum Lengkap'}

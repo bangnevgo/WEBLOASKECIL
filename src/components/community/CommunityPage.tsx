@@ -307,7 +307,7 @@ const INITIAL_LEADERBOARD = [
 ]
 
 const LEVEL_REWARDS_ID = [
-  { level: 1, name: 'Pengembara Kesadaran', pointsReq: 0, reward: 'Akses 3 Pelajaran Dasar & Buku Panduan Gratis' },
+  { level: 1, name: 'Pengembara Kesadaran', pointsReq: 0, reward: 'Akses 3 Pelajaran Dasar & Buku Panduan Daftar Free' },
   { level: 2, name: 'Asumtif Junior', pointsReq: 200, reward: 'Membuka Audio Meditasi SATS & Diagnosa Limiting Belief' },
   { level: 3, name: 'Penyelaras Perasaan', pointsReq: 600, reward: 'Membuka Meditasi Kemakmuran & Reprogramming Diri' },
   { level: 4, name: 'Guru Imajinasi', pointsReq: 1000, reward: 'Membuka Jurnal SATS PDF & Akses Shadow Work Diagnosa' },
@@ -1641,7 +1641,7 @@ export default function CommunityPage() {
                   onClick={() => setShowPricingModal(false)}
                   className="bg-neutral-900 border border-neutral-800 text-neutral-450 hover:text-white py-2 rounded-lg text-xs font-semibold"
                 >
-                  {language === 'en' ? 'Continue Browsing (All Free)' : 'Lanjut Jelajah (Semua Gratis)'}
+                  {language === 'en' ? 'Continue Browsing (All Free)' : 'Lanjut Jelajah (Daftar Free)'}
                 </button>
               </div>
             </motion.div>

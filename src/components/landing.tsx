@@ -119,6 +119,17 @@ export default function Landing() {
   const [activeSection, setActiveSection] = useState<string | null>(null)
   const [showBackTop, setShowBackTop] = useState(false)
   const [showLeadModal, setShowLeadModal] = useState(false)
+  const [pendingLesson, setPendingLesson] = useState<{ partId: string; lessonNum: string } | null>(null)
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('register') !== '1') return
+
+    // Defer until after hydration; this URL is only used when a protected
+    // lesson redirects an anonymous visitor to the registration form.
+    const timer = window.setTimeout(() => setShowLeadModal(true), 0)
+    return () => window.clearTimeout(timer)
+  }, [])
   // Client-only flag to avoid hydration mismatch
   const isMounted = useSyncExternalStore(
     () => () => {},   // subscribe (no-op, value never changes)
@@ -235,7 +246,7 @@ export default function Landing() {
                 </button>
                 <button 
                   className="px-4 py-1.5 bg-[#d4a053] hover:bg-[#c4883a] text-black text-xs font-bold rounded-lg transition cursor-pointer"
-                  onClick={() => setView('register')}
+                  onClick={() => setShowLeadModal(true)}
                 >
                   {t('register')}
                 </button>
@@ -518,7 +529,8 @@ export default function Landing() {
               {/* Lesson Cards Grid */}
               <div className="nv-grid">
                 {part.lessons.map((lesson, lessonIdx) => {
-                  const isPartLocked = part.id !== 'part-1' && !leadRegistered
+                  const isFreePreview = ['1.1', '1.2', '1.3'].includes(lesson.num)
+                  const isPartLocked = !leadRegistered && !isFreePreview
                   return (
                     <motion.div
                       key={lesson.num}
@@ -531,19 +543,27 @@ export default function Landing() {
                       whileHover={isPartLocked ? { scale: 1.02 } : { y: -4, transition: { duration: 0.2 } }}
                       onClick={() => {
                         if (isPartLocked) {
+                          setPendingLesson({ partId: part.id, lessonNum: lesson.num })
                           setShowLeadModal(true)
                         } else {
                           useAppStore.getState().openLesson(part.id, lesson.num)
                         }
                       }}
                     >
-                      {isPartLocked ? (
-                        <span style={{
-                          position: 'absolute', top: '8px', right: '10px', zIndex: 2,
-                          fontSize: '1rem', opacity: 0.5
-                        }}>🔒</span>
-                      ) : (
-                        <span className="nv-card-free-badge" style={{ opacity: 0.7 }}>GRATIS ✦</span>
+                      {isPartLocked && (
+                        <span
+                          aria-label={language === 'en' ? 'Register Free to unlock' : 'Daftar Free untuk membuka'}
+                          style={{
+                            position: 'absolute', top: '8px', right: '10px', zIndex: 3,
+                            display: 'inline-flex', alignItems: 'center', gap: 4,
+                            padding: '4px 7px', borderRadius: 999,
+                            background: 'rgba(5, 5, 7, 0.86)', border: '1px solid rgba(212, 160, 83, 0.45)',
+                            color: '#d4a053', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase',
+                            pointerEvents: 'none'
+                          }}
+                        >
+                          🔒 {language === 'en' ? 'Register Free' : 'Daftar Free'}
+                        </span>
                       )}
                       <div className="nv-card-accent" style={{ background: `linear-gradient(135deg, ${part.color}, ${part.color}66)` }} />
                       <div className="nv-card-head">
@@ -589,6 +609,54 @@ export default function Landing() {
                     <p className="nv-quote-source">{part.partQuote.source}</p>
                   </motion.div>
                 </div>
+              )}
+              {[2, 5, 8].includes(partIdx) && (
+                <motion.aside
+                  aria-label={language === 'en' ? 'Cohort invitation' : 'Ajakan Cohort'}
+                  style={{
+                    maxWidth: '620px',
+                    margin: '88px auto 96px',
+                    padding: '30px 28px',
+                    border: '1px solid rgba(212, 160, 83, 0.22)',
+                    borderRadius: '18px',
+                    background: 'radial-gradient(ellipse at 50% 0%, rgba(212, 160, 83, 0.13), rgba(212, 160, 83, 0.035) 62%, rgba(255, 255, 255, 0.015))',
+                    boxShadow: '0 16px 42px rgba(0, 0, 0, 0.2)',
+                    textAlign: 'center',
+                  }}
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-60px' }}
+                  transition={{ duration: 0.45 }}
+                >
+                  <p style={{ margin: 0, color: 'var(--nv-muted)', fontSize: '0.95rem', lineHeight: 1.75 }}>
+                    {partIdx === 2
+                      ? (language === 'en'
+                        ? 'Knowing the method is only the beginning. The deeper work is returning to the feeling of the wish fulfilled until it feels natural.'
+                        : 'Mengetahui metodenya baru permulaan. Pekerjaan yang lebih dalam adalah kembali pada perasaan keinginan yang terwujud sampai terasa alami.')
+                      : partIdx === 5
+                        ? (language === 'en'
+                          ? 'Revision is not only about understanding the past differently. Its power is revealed when you practise it consistently and receive the right guidance.'
+                          : 'Revisi bukan hanya soal memahami masa lalu secara berbeda. Kekuatannya terasa ketika kamu mempraktikkannya dengan konsisten dan mendapat arahan yang tepat.')
+                        : (language === 'en'
+                          ? 'Imagination creates, the future can be entered now, and the old self can be released. The real work is learning to live from that new identity.'
+                          : 'Imajinasi mencipta, masa depan dapat dimasuki sekarang, dan diri lama dapat dilepaskan. Pekerjaan sesungguhnya adalah belajar hidup dari identitas yang baru itu.')}
+                  </p>
+                  <a
+                    href="https://cohort.nevgoinstitute.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '6px', marginTop: '14px',
+                      padding: '7px 13px', border: '1px solid rgba(212, 160, 83, 0.5)', borderRadius: '999px',
+                      background: 'rgba(212, 160, 83, 0.06)', color: 'var(--nv-gold)',
+                      fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.01em', textDecoration: 'none',
+                    }}
+                  >
+                    {language === 'en'
+                      ? '✦ Explore Cohort →'
+                      : '✦ Lihat Cohort →'}
+                  </a>
+                </motion.aside>
               )}
             </div>
           )
@@ -1109,7 +1177,21 @@ export default function Landing() {
       {/* ─── LEAD CAPTURE MODAL ─── */}
       <LeadCaptureModal
         isOpen={showLeadModal}
-        onClose={() => setShowLeadModal(false)}
+        onClose={() => {
+          setShowLeadModal(false)
+          setPendingLesson(null)
+        }}
+        onRegistered={pendingLesson ? () => {
+          setShowLeadModal(false)
+          useAppStore.getState().openLesson(pendingLesson.partId, pendingLesson.lessonNum)
+          setPendingLesson(null)
+        } : undefined}
+        onStartLearning={() => {
+          setShowLeadModal(false)
+          window.setTimeout(() => {
+            document.getElementById('part-1')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }, 0)
+        }}
       />
 
       {/* ─── COMMUNITY PREVIEW MODAL ─── */}

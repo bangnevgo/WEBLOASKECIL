@@ -103,10 +103,10 @@ export default function FreeDownloadsSection() {
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
       >
-        <span className="nv-ebook-etalase-badge">✦ UNDUHAN GRATIS</span>
+        <span className="nv-ebook-etalase-badge">✦ DAFTAR FREE</span>
         <h2 className="nv-ebook-etalase-title">Sumber Daya Pelengkap</h2>
         <p className="nv-ebook-etalase-subtitle">
-          Unduh panduan ringkas, cheatsheet, dan jurnal praktik gratis untuk mempercepat pemahaman Hukum Asumsi Anda.
+          Daftar Free untuk membuka panduan ringkas, cheatsheet, dan jurnal praktik pendukung.
         </p>
       </motion.div>
 
@@ -150,7 +150,7 @@ export default function FreeDownloadsSection() {
                 onClick={() => handleDownloadClick(item)}
               >
                 <Download size={14} />
-                <span>Unduh Gratis</span>
+                <span>Daftar Free</span>
               </button>
             </motion.div>
           ))}

@@ -9,9 +9,11 @@ import { toast } from 'sonner'
 interface Props {
   isOpen: boolean
   onClose: () => void
+  onRegistered?: () => void
+  onStartLearning?: () => void
 }
 
-export default function LeadCaptureModal({ isOpen, onClose }: Props) {
+export default function LeadCaptureModal({ isOpen, onClose, onRegistered, onStartLearning }: Props) {
   const { language, registerLead } = useAppStore()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -64,6 +66,24 @@ export default function LeadCaptureModal({ isOpen, onClose }: Props) {
           email: email.trim(),
           phone: phone.trim()
         })
+
+        // Direct lesson URLs send anonymous visitors back here with a safe,
+        // same-origin destination. Return them to that lesson only after the
+        // lead has been stored and the server has set the access cookie.
+        const next = new URLSearchParams(window.location.search).get('next')
+        if (next?.startsWith('/belajar/')) {
+          window.location.assign(next)
+          return
+        }
+
+        // When the form was opened by a locked lesson card, return the
+        // visitor directly to that exact lesson rather than leaving them in
+        // the success state and requiring a second click.
+        if (onRegistered) {
+          onRegistered()
+          return
+        }
+
         toast.success(isIndo ? '✦ Pendaftaran berhasil! Akses penuh ke semua modul telah dibuka.' : '✦ Registration successful! Full access to all modules is now unlocked.')
         setJustRegistered(true)
       } else {
@@ -103,19 +123,18 @@ export default function LeadCaptureModal({ isOpen, onClose }: Props) {
                 </h3>
                 <p className="nv-modal-desc mt-2" style={{ fontSize: '0.85rem' }}>
                   {isIndo
-                    ? 'Semua 50 modul Hukum Asumsi sudah bisa kamu pelajari. Langkah selanjutnya — bimbingan langsung di Program Cohort.'
-                    : 'All 50 Law of Assumption modules are now yours. Next step — live guidance in the Cohort Program.'
+                    ? 'Seluruh materi Hukum Asumsi sekarang sudah bisa kamu pelajari.'
+                    : 'All Law of Assumption materials are now available for you to study.'
                   }
                 </p>
-                <a
-                  href="https://cohort.nevgoinstitute.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  type="button"
+                  onClick={onStartLearning || onClose}
                   className="nv-auth-submit-btn mt-5"
-                  style={{ display: 'block', textDecoration: 'none', background: 'linear-gradient(135deg, #d4a053, #b8862d)', color: '#000', fontWeight: 700 }}
+                  style={{ display: 'block', width: '100%', background: 'linear-gradient(135deg, #d4a053, #b8862d)', color: '#000', fontWeight: 700 }}
                 >
-                  {isIndo ? '✦ Lanjut ke Program Cohort →' : '✦ Continue to Cohort Program →'}
-                </a>
+                  {isIndo ? '✦ Buka Semua Materi →' : '✦ Open All Lessons →'}
+                </button>
                 <button
                   type="button"
                   onClick={onClose}
@@ -131,12 +150,12 @@ export default function LeadCaptureModal({ isOpen, onClose }: Props) {
                 <Sparkles size={24} />
               </div>
               <h3 className="nv-modal-title mt-2" style={{ fontSize: '1.1rem' }}>
-                {isIndo ? '✨ Daftar Gratis — Full Akses' : '✨ Register Free — Full Access'}
+                {isIndo ? '✨ Daftar Free — Full Akses' : '✨ Register Free — Full Access'}
               </h3>
               <p className="nv-modal-desc mt-1" style={{ fontSize: '0.85rem' }}>
                 {isIndo
-                  ? 'Isi data Anda untuk membuka akses penuh ke 50 modul lengkap Hukum Asumsi beserta materi pendukung.'
-                  : 'Fill in your details to unlock full access to all 50 complete Law of Assumption modules and supporting materials.'
+                  ? 'Isi data Anda untuk membuka akses penuh ke seluruh modul Hukum Asumsi beserta materi pendukung.'
+                  : 'Fill in your details to unlock full access to all Law of Assumption modules and supporting materials.'
                 }
               </p>
             </div>
@@ -208,7 +227,7 @@ export default function LeadCaptureModal({ isOpen, onClose }: Props) {
               >
                 {isSubmitting
                   ? (isIndo ? 'Mendaftarkan...' : 'Registering...')
-                  : (isIndo ? '✦ Daftar Gratis — Buka Semua Modul' : '✦ Register Free — Unlock All Modules')
+                  : (isIndo ? '✦ Daftar Free — Buka Semua Modul' : '✦ Register Free — Unlock All Modules')
                 }
               </motion.button>
             </form>

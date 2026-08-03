@@ -139,7 +139,8 @@ export default function Dashboard() {
   const completedCount = completedLessons.size
   const progressPct = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0
 
-  const isLessonLocked = (partId: string) => partId !== 'part-1' && !leadRegistered
+  const isLessonLocked = (_partId: string, lessonNum: string) =>
+    !leadRegistered && !['1.1', '1.2', '1.3'].includes(lessonNum)
 
   // SVG progress ring calculations
   const radius = 54
@@ -176,7 +177,7 @@ export default function Dashboard() {
             <div className="flex flex-col text-right hidden sm:flex">
               <span style={{ fontSize: 13, fontWeight: 600 }}>{userName}</span>
               <span className="text-[10px] text-green-500 font-bold uppercase tracking-wider flex items-center justify-end gap-1">
-                <Crown size={10} /> {language === 'en' ? 'FREE ACCESS' : 'AKSES GRATIS'}
+                <Crown size={10} /> {language === 'en' ? 'FREE ACCESS' : 'DAFTAR FREE'}
               </span>
             </div>
 
@@ -306,7 +307,7 @@ export default function Dashboard() {
                     </div>
                     {part.lessons.map((lesson) => {
                       const isComplete = completedLessons.has(lesson.num)
-                      const locked = isLessonLocked(part.id)
+                      const locked = isLessonLocked(part.id, lesson.num)
                       return (
                         <button
                           key={lesson.num}
@@ -437,7 +438,7 @@ export default function Dashboard() {
                     <div className="nv-dash-lessons-grid mt-4">
                       {part.lessons.map((lesson) => {
                         const isComplete = completedLessons.has(lesson.num)
-                        const locked = isLessonLocked(part.id)
+                        const locked = isLessonLocked(part.id, lesson.num)
 
                         return (
                           <motion.button

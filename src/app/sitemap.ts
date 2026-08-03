@@ -4,8 +4,8 @@ import { getAllPartSlugs } from '@/lib/slug-utils';
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://loas.nevgoinstitute.com';
 
-  const partPages: MetadataRoute.Sitemap = getAllPartSlugs().map((p) => ({
-    url: `${baseUrl}/belajar/${p.slug}`,
+  const partEntries = getAllPartSlugs().map(({ slug }) => ({
+    url: `${baseUrl}/belajar/${slug}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.9,
@@ -16,7 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: baseUrl,
       lastModified: new Date(),
       changeFrequency: 'daily',
-      priority: 1,
+      priority: 1.0,
     },
     {
       url: `${baseUrl}/community`,
@@ -24,6 +24,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 0.8,
     },
-    ...partPages,
+    ...partEntries,
   ];
 }
+

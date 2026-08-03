@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { createLeadAccessToken, leadAccessMaxAge } from '@/lib/lead-access'
 
 const GOOGLE_SHEET_URL = process.env.GOOGLE_SHEET_URL || ''
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || ''
@@ -88,8 +89,8 @@ export async function POST(request: Request) {
       }
     }
 
-    // Persist lead for command-center attribution (best-effort; do not
-    // fail the request if the DB is unavailable — Sheet/Telegram already sent)
+    // A browser must not receive curriculum access unless we have durably
+    // recorded the lead. This is the primary source of truth for access.
     let dbResult = 'not_saved'
     try {
       await db.lead.create({ data: { name, email, phone, source } })
@@ -99,10 +100,37 @@ export async function POST(request: Request) {
       dbResult = 'error'
     }
 
-    return NextResponse.json({
+    if (dbResult !== 'saved') {
+      return NextResponse.json(
+        { success: false, error: 'Data pendaftaran belum tersimpan. Silakan coba lagi.' },
+        { status: 503 }
+      )
+    }
+
+    // If a Google Sheet webhook is configured, treat a failed delivery as a
+    // failed registration. Otherwise the visitor would receive access while
+    // the lead is missing from the operational database.
+    if (GOOGLE_SHEET_URL && sheetResult !== 'sent') {
+      return NextResponse.json(
+        { success: false, error: 'Data belum tersinkron ke sistem. Silakan coba lagi.' },
+        { status: 502 }
+      )
+    }
+
+    const response = NextResponse.json({
       success: true,
       data: { sheet: sheetResult, telegram: tgResult, db: dbResult, source }
     })
+
+    response.cookies.set('nv-lead-access', createLeadAccessToken(), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: leadAccessMaxAge,
+      path: '/',
+    })
+
+    return response
   } catch (error) {
     console.error('Lead registration error:', error)
     return NextResponse.json(

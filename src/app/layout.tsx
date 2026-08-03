@@ -125,7 +125,7 @@ export default function RootLayout({
         "@type": "Offer",
         price: "0",
         priceCurrency: "IDR",
-        description: "Akses gratis ke materi dasar. Berlangganan untuk akses penuh.",
+        description: "Daftar Free untuk mengakses materi pembelajaran lengkap.",
         availability: "https://schema.org/InStock",
         url: "https://loas.nevgoinstitute.com"
       }

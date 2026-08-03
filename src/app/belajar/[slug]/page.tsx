@@ -1,12 +1,17 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import { getPartBySlug, getAllPartSlugs, titleToSlug } from '@/lib/slug-utils';
 import { ALL_PARTS } from '@/lib/curriculum-data';
 import PartPageClient from './part-page-client';
+import { hasValidLeadAccess } from '@/lib/lead-access';
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
+
+export const dynamic = 'force-dynamic';
 
 // Generate static params untuk semua 10 bagian
 export async function generateStaticParams() {
@@ -52,6 +57,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PartPage({ params }: Props) {
   const { slug } = await params;
+  const cookieStore = await cookies();
+
+  // These SEO pages contain real lessons. Do not render them until the
+  // visitor has successfully left their details through the free form.
+  if (!hasValidLeadAccess(cookieStore.get('nv-lead-access')?.value)) {
+    redirect(`/?register=1&next=/belajar/${encodeURIComponent(slug)}`);
+  }
+
   const part = getPartBySlug(slug);
 
   if (!part) notFound();

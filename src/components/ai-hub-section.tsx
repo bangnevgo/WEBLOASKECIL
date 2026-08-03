@@ -8,7 +8,7 @@ const FEATURES = [
     id: 'ai-manifestation',
     icon: '✦',
     title: 'Analisa Manifestasi',
-    badge: 'GRATIS',
+    badge: 'DAFTAR FREE',
     badgeType: 'free' as const,
     desc: 'Temukan handicap terbesar dalam manifestasi Anda dan dapatkan afirmasi penguatan serta ritual harian yang dipersonalisasi',
     view: 'ai-manifestation' as const,

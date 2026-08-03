@@ -47,15 +47,15 @@ interface AppState {
   subscriptionTier: SubscriptionTier
   setSubscriptionTier: (tier: SubscriptionTier, name: string) => void
   unsubscribe: () => void
-  /** Seluruh konten gratis — selalu true */
+  /** Konten gratis setelah pengunjung mengisi formulir akses. */
   hasCurriculumAccess: () => boolean
-  /** Seluruh konten gratis — selalu true */
+  /** Komunitas tetap bebas diakses. */
   hasCommunityAccess: () => boolean
   // Freemium lesson state
   freeLessonNum: string | null
   openFreeLesson: (lessonNum: string) => void
   closeFreeLesson: () => void
-  // Locked lesson modal (no-op, all content free)
+  // Locked lesson modal
   lockedLesson: { num: string; title: string; bullets: string[]; partColor: string; partTitle: string } | null
   openLockedLesson: (info: { num: string; title: string; bullets: string[]; partColor: string; partTitle: string }) => void
   closeLockedLesson: () => void
@@ -222,9 +222,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       completedLessons: []
     })
   },
-  /** Seluruh konten gratis */
-  hasCurriculumAccess: () => true,
-  /** Seluruh konten gratis */
+  hasCurriculumAccess: () => get().leadRegistered,
+  /** Komunitas tetap bebas diakses */
   hasCommunityAccess: () => true,
   // Freemium lesson state
   freeLessonNum: null,
@@ -232,12 +231,12 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ freeLessonNum: lessonNum, view: 'free-lesson' }),
   closeFreeLesson: () =>
     set({ freeLessonNum: null, view: 'landing' }),
-  // Locked lesson modal
+  // Locked lesson modal is handled by the lead form in the current UI.
   lockedLesson: null,
   openLockedLesson: (_info) =>
-    null, // Semua konten gratis — no-op
+    null,
   closeLockedLesson: () =>
-    null, // Semua konten gratis — no-op
+    null,
 
   leadRegistered: persisted?.leadRegistered || false,
   leadData: persisted?.leadData || null,

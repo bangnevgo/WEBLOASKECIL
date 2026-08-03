@@ -32,7 +32,7 @@ export const translations = {
     faqSubtitle: 'Jawaban untuk pertanyaan umum tentang Hukum Asumsi dan kurikulum ini',
 
     // General badges
-    freeBadge: 'GRATIS ✦',
+    freeBadge: 'DAFTAR FREE ✦',
     paidBadge: '✦ COHORT',
     ebookBadge: '✦ KOLEKSI eBOOK',
 
@@ -55,7 +55,7 @@ export const translations = {
 
     // Bonus / Books Section
     essentialBooksTitle: '✦ Buku & Kuliah Esensial',
-    essentialBooksDesc: 'Arsip teks lengkap gratis tersedia di coolwisdombooks.com/neville. Seluruh karya Neville dari tahun 1939–1972.',
+    essentialBooksDesc: 'Daftar Free untuk membuka seluruh materi pendamping dan sumber belajar Neville Goddard.',
     resourcesCount: 'SUMBER DAYA',
 
     // Footer
@@ -71,7 +71,7 @@ export const translations = {
     dashboardSubtitle: 'Pantau kemajuan Anda dan jelajahi seluruh kurikulum Hukum Asumsi.',
     backToHome: '← Beranda',
     dashboardWelcome: 'Selamat datang kembali, {name}!',
-    dashboardFree: 'AKSES GRATIS — Semua Materi Free',
+    dashboardFree: 'DAFTAR FREE — Buka Semua Materi',
     dashboardProgress: 'Kemajuan Belajar',
     lessonsCompleted: '{completed} dari {total} pelajaran selesai',
     curriculumOverview: 'Ikhtisar Kurikulum',
@@ -89,7 +89,7 @@ export const translations = {
     sourcedQuotes: 'Kutipan Bersumber',
     lessonTranslation: 'Teks Terjemahan:',
     viewOriginalText: 'Akses Sumber Asli →',
-    freeLessonTitle: 'Pelajaran Gratis',
+    freeLessonTitle: 'Preview Pelajaran',
 
     // Locked Lesson Modal (tidak dipakai lagi)
     lockedTitle: 'Pelajaran Terkunci 🔒',
@@ -103,11 +103,11 @@ export const translations = {
     faq_q2: 'Apakah saya perlu latar belakang agama?',
     faq_a2: 'Tidak. Ajaran Neville bersifat universal dan dapat diterapkan oleh siapa saja tanpa memandang latar belakang agama atau keyakinan. Meskipun Neville menggunakan bahasa alkitabiah dalam kuliahnya, prinsip-prinsipnya bersifat praktis dan psikologis.',
     faq_q3: 'Apa perbedaan antara Paket Basic, Premium, dan Master?',
-    faq_a3: 'Seluruh kurikulum kini GRATIS. Tidak ada lagi paket berlangganan. Jika Anda ingin pendampingan lebih dalam, silakan bergabung dengan Program Cohort.',
+    faq_a3: 'Seluruh kurikulum terbuka setelah Daftar Free. Tidak ada paket berlangganan untuk materi ini. Jika Anda ingin pendampingan lebih dalam, silakan bergabung dengan Program Cohort.',
     faq_q4: 'Bagaimana teknik SATS bekerja?',
     faq_a4: 'SATS (State Akin To Sleep) adalah teknik meditasi di mana Anda memasuki kondisi rileks antara terjaga dan tidur, lalu membayangkan adegan yang menyiratkan keinginan Anda telah terwujud. Dalam kondisi ini, pikiran bawah sadar paling reseptif terhadap sugesti baru.',
     faq_q5: 'Apakah saya bisa membatalkan langganan?',
-    faq_a5: 'Tidak perlu khawatir — seluruh materi kurikulum kini GRATIS dan dapat diakses tanpa batasan. Tidak ada biaya tersembunyi atau komitmen jangka panjang.',
+    faq_a5: 'Tidak perlu khawatir — setelah Daftar Free, seluruh materi kurikulum dapat diakses tanpa biaya tersembunyi atau komitmen jangka panjang.',
     faq_q6: 'Dari mana sumber materi ini?',
     faq_a6: 'Seluruh materi bersumber dari 15+ buku dan 200+ kuliah asli Neville Goddard dari tahun 1939 hingga 1972. Setiap pelajaran dilengkapi dengan kutipan langsung dan rujukan ke sumber aslinya, memastikan keakuratan dan integritas ajaran.'
   },
