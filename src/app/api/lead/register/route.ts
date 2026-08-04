@@ -9,6 +9,42 @@ const TELEGRAM_ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID || ''
 export async function POST(request: Request) {
   try {
     const body = await request.json()
+
+    // Support Lynk.id Webhook Payload sent directly to /api/lead/register
+    if (body.event === 'payment.received' || body.data?.message_data || body.test || body.source === 'lena_test') {
+      const msgData = body.data?.message_data || body.message_data || body
+      const customer = msgData.customer || body.customer || {}
+      const items = msgData.items || body.items || []
+      const totals = msgData.totals || body.totals || {}
+
+      const email = (customer.email || body.email || '').trim().toLowerCase()
+      let name = (customer.name || body.name || email.split('@')[0]).trim()
+      let phone = (customer.phone || body.phone || '').trim()
+      if (phone && phone !== '-' && !phone.startsWith('0') && !phone.startsWith('+')) {
+        phone = '0' + phone
+      }
+      const itemTitle = items[0]?.title || body.product || 'Lynk.id Product'
+      const source = `lynk.id (${itemTitle.slice(0, 30)})`
+
+      if (email && email.includes('@')) {
+        try {
+          const existing = await db.lead.findFirst({ where: { email } })
+          if (existing) {
+            await db.lead.update({
+              where: { id: existing.id },
+              data: { source, phone: existing.phone || (phone === '-' ? '' : phone) }
+            })
+          } else {
+            await db.lead.create({ data: { name, email, phone: phone === '-' ? '' : phone, source } })
+          }
+        } catch (dbErr) {
+          console.error('Lynk webhook Neon save error:', dbErr)
+        }
+
+        return NextResponse.json({ success: true, message: 'Lynk.id webhook registered' })
+      }
+    }
+
     const { name, email, phone } = body
 
     // Attribution: explicit source -> utm_source -> referer -> default
