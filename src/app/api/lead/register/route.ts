@@ -89,8 +89,9 @@ export async function POST(request: Request) {
       }
     }
 
-    // A browser must not receive curriculum access unless we have durably
-    // recorded the lead. This is the primary source of truth for access.
+    // Neon is a downstream mirror for reporting. The Google Sheet intake is
+    // the durable capture boundary while Neon is being repaired. A database
+    // outage must not make a successfully captured lead disappear.
     let dbResult = 'not_saved'
     try {
       await db.lead.create({ data: { name, email, phone, source } })
@@ -100,26 +101,18 @@ export async function POST(request: Request) {
       dbResult = 'error'
     }
 
-    if (dbResult !== 'saved') {
-      return NextResponse.json(
-        { success: false, error: 'Data pendaftaran belum tersimpan. Silakan coba lagi.' },
-        { status: 503 }
-      )
-    }
-
-    // If a Google Sheet webhook is configured, treat a failed delivery as a
-    // failed registration. Otherwise the visitor would receive access while
-    // the lead is missing from the operational database.
+    // Google Sheet is the intake system. If it accepted the lead, return
+    // success even when the downstream Neon mirror is temporarily unavailable.
     if (GOOGLE_SHEET_URL && sheetResult !== 'sent') {
       return NextResponse.json(
-        { success: false, error: 'Data belum tersinkron ke sistem. Silakan coba lagi.' },
+        { success: false, error: 'Data belum diterima sistem. Silakan coba lagi.' },
         { status: 502 }
       )
     }
 
     const response = NextResponse.json({
       success: true,
-      data: { sheet: sheetResult, telegram: tgResult, db: dbResult, source }
+      data: { sheet: sheetResult, telegram: tgResult, db: dbResult, syncPending: dbResult !== 'saved', source }
     })
 
     response.cookies.set('nv-lead-access', createLeadAccessToken(), {
