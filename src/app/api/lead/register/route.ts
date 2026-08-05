@@ -102,7 +102,7 @@ export async function POST(request: Request) {
 
     // 2. Send Telegram notification
     let tgResult = 'not_sent'
-    if (TELEGRAM_BOT_TOKEN && TELEGRAM_ADMIN_CHAT_ID) {
+    if (TELEGRAM_BOT_TOKEN && TELEGRAM_ADMIN_CHAT_ID && !body.skipTelegram) {
       try {
         const tgMessage = `✦ *Lead Baru Akses Loas!* ✦\n\n👤 *Nama:* ${name}\n📧 *Email:* ${email}\n📱 *No HP/WA:* ${phone}\n🕐 *Waktu:* ${new Date(timestamp).toLocaleString('id-ID')}\n🌐 *Sumber:* ${source}\n🌐 *IP:* ${ipAddress}\n📱 *UA:* ${userAgent.slice(0, 80)}`
 
