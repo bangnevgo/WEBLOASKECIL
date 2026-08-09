@@ -1260,8 +1260,8 @@
   (function () {
     const grid = document.getElementById('testi-grid');
     if (!grid) return;
-    // 36 file asli, 4 duplikat persis di-skip (28, 29, 31, 32) → 32 unik
-    const keep = Array.from({ length: 27 }, (_, i) => i + 1).concat([30, 33, 34, 35, 36]);
+    // 37 file asli, 4 duplikat persis di-skip (28, 29, 31, 32) → 33 unik
+    const keep = Array.from({ length: 27 }, (_, i) => i + 1).concat([30, 33, 34, 35, 36, 37]);
     const srcs = keep.map(n => `/testimoni/testimoni-${String(n).padStart(2, '0')}.jpeg`);
 
     // Build grid

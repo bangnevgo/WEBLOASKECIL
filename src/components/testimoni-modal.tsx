@@ -10,8 +10,8 @@ interface Props {
   initialIndex?: number
 }
 
-// 36 WA screenshot testimony images
-const TESTIMONI_IMAGES = Array.from({ length: 36 }, (_, i) => {
+// 37 WA screenshot testimony images
+const TESTIMONI_IMAGES = Array.from({ length: 37 }, (_, i) => {
   const num = String(i + 1).padStart(2, '0')
   return `/testimoni/testimoni-${num}.jpeg`
 })
