@@ -783,10 +783,13 @@
       overflow: hidden;
     }
     .mentor-portrait {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: 25% center;
+      object-position: 25% 20%;
       display: block;
     }
     .mentor-image-badge {
@@ -954,7 +957,7 @@
   <div class="container">
     <div class="mentor-card">
       <div class="mentor-image-side">
-        <img src="/images/bang-nevgo-portrait.png" alt="Bang Nevgo - Lead Mentor Pendampingan 101" class="mentor-portrait" />
+        <img src="/images/bang-nevgo-portrait.jpg" alt="Bang Nevgo - Lead Mentor Pendampingan 101" class="mentor-portrait" loading="eager" fetchpriority="high" />
         <div class="mentor-image-badge">✦ Fasilitator LOAS &amp; Self-Concept</div>
       </div>
       <div class="mentor-content-side">
