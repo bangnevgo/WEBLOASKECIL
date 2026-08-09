@@ -47,7 +47,7 @@ export default function PartPageClient({ part, prevPart, nextPart }: Props) {
     <div className="nv-part-page">
       {/* Header breadcrumb */}
       <nav className="nv-part-breadcrumb" aria-label="Breadcrumb">
-        <Link href="/">{language === 'en' ? 'Law of Assumption' : 'Hukum Asumsi'}</Link>
+        <Link href="/">{language === 'en' ? 'Free Law of Assumption' : 'FREE Belajar Hukum Asumsi'}</Link>
         <span aria-hidden="true">›</span>
         <span>{language === 'en' ? `Part ${activePart.num}` : `Bagian ${activePart.num}`}</span>
       </nav>

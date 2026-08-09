@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Mail, Phone, User, Sparkles } from 'lucide-react'
 import { useAppStore } from '@/lib/store'
 import { toast } from 'sonner'
+import TestimoniModal from '@/components/testimoni-modal'
 
 interface Props {
   isOpen: boolean
@@ -20,6 +21,8 @@ export default function LeadCaptureModal({ isOpen, onClose, onRegistered, onStar
   const [phone, setPhone] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [justRegistered, setJustRegistered] = useState(false)
+  const [showTestimoniGallery, setShowTestimoniGallery] = useState(false)
+  const submitLock = useRef(false)
 
   const isIndo = language === 'id'
 
@@ -29,11 +32,14 @@ export default function LeadCaptureModal({ isOpen, onClose, onRegistered, onStar
       setName('')
       setEmail('')
       setPhone('')
+      submitLock.current = false
     }
   }, [isOpen])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (submitLock.current) return
 
     if (!name.trim() || !email.trim() || !phone.trim()) {
       toast.error(isIndo ? 'Semua field wajib diisi' : 'All fields are required')
@@ -45,6 +51,7 @@ export default function LeadCaptureModal({ isOpen, onClose, onRegistered, onStar
       return
     }
 
+    submitLock.current = true
     setIsSubmitting(true)
 
     try {
@@ -88,10 +95,12 @@ export default function LeadCaptureModal({ isOpen, onClose, onRegistered, onStar
         setJustRegistered(true)
       } else {
         toast.error(data.error || (isIndo ? 'Gagal mendaftar. Coba lagi.' : 'Registration failed. Try again.'))
+        submitLock.current = false
       }
     } catch (err) {
       console.error('Lead registration error:', err)
       toast.error(isIndo ? 'Terjadi kesalahan. Coba lagi.' : 'An error occurred. Try again.')
+      submitLock.current = false
     } finally {
       setIsSubmitting(false)
     }
@@ -230,7 +239,45 @@ export default function LeadCaptureModal({ isOpen, onClose, onRegistered, onStar
                   : (isIndo ? '✦ Daftar Free — Buka Semua Modul' : '✦ Register Free — Unlock All Modules')
                 }
               </motion.button>
+
+              <div className="flex items-center justify-center gap-1.5 mt-2.5 px-2 py-1.5 rounded-lg bg-[#d4a053]/10 border border-[#d4a053]/20">
+                <Sparkles size={13} className="text-[#d4a053] flex-shrink-0" />
+                <p className="text-[11px] font-semibold text-[#e5b869] text-center leading-tight">
+                  {isIndo
+                    ? 'Akses langsung terbuka tanpa batas waktu & 100% gratis'
+                    : 'Instant access unlocked with no time limit & 100% free'
+                  }
+                </p>
+              </div>
+
+              {/* WA Testimoni Teaser Card */}
+              <div className="mt-3 pt-3 border-t border-[#d4a053]/20 flex flex-col items-center gap-2">
+                <div className="flex items-center gap-2 text-center">
+                  <span className="text-xs font-bold text-[#e5b869]">💬 {isIndo ? 'Bukti Hasil Nyata Murid' : 'Real Student Results'}</span>
+                  <span className="text-[10px] text-neutral-400">(35+ Screenshot WA)</span>
+                </div>
+                <div className="flex items-center justify-center gap-2 w-full">
+                  <div className="relative w-14 h-16 rounded-md overflow-hidden border border-[#d4a053]/30 flex-shrink-0 bg-black/40 cursor-pointer" onClick={() => setShowTestimoniGallery(true)}>
+                    <img src="/testimoni/testimoni-01.jpeg" alt="Teaser 1" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="relative w-14 h-16 rounded-md overflow-hidden border border-[#d4a053]/30 flex-shrink-0 bg-black/40 cursor-pointer" onClick={() => setShowTestimoniGallery(true)}>
+                    <img src="/testimoni/testimoni-05.jpeg" alt="Teaser 2" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="relative w-14 h-16 rounded-md overflow-hidden border border-[#d4a053]/30 flex-shrink-0 bg-black/40 cursor-pointer" onClick={() => setShowTestimoniGallery(true)}>
+                    <img src="/testimoni/testimoni-10.jpeg" alt="Teaser 3" className="w-full h-full object-cover" />
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowTestimoniGallery(true)}
+                  className="text-[11px] font-bold text-[#d4a053] hover:underline flex items-center gap-1 mt-1"
+                >
+                  <span>💬 {isIndo ? 'Baca Testimoni WA Lengkap →' : 'Read Full WA Testimonials →'}</span>
+                </button>
+              </div>
             </form>
+
+            <TestimoniModal isOpen={showTestimoniGallery} onClose={() => setShowTestimoniGallery(false)} />
 
             <p className="text-[10px] text-neutral-500 text-center mt-4 leading-relaxed">
               {isIndo

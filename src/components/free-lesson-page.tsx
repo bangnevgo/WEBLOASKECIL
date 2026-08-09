@@ -504,17 +504,17 @@ export default function FreeLessonPage() {
           <div className="nv-footer-col">
             <h4 className="nv-footer-col-title">{t('footerColResources')}</h4>
             <ul className="nv-footer-col-links">
-              <li><a href="#bonus">{t('essentialBooks')}</a></li>
-              <li><a href="#">FAQ</a></li>
-              <li><a href="#">{language === 'en' ? 'Guided Meditations' : 'Meditasi Panduan'}</a></li>
+              <li><a href="/#bonus">{t('essentialBooks')}</a></li>
+              <li><a href="/#faq">FAQ</a></li>
+              <li><a href="/#part-1">{language === 'en' ? 'Guided Meditations' : 'Meditasi Panduan'}</a></li>
             </ul>
           </div>
           <div className="nv-footer-col">
             <h4 className="nv-footer-col-title">{t('footerColLegal')}</h4>
             <ul className="nv-footer-col-links">
-              <li><a href="#">{language === 'en' ? 'Terms & Conditions' : 'Syarat & Ketentuan'}</a></li>
-              <li><a href="#">{language === 'en' ? 'Privacy Policy' : 'Kebijakan Privasi'}</a></li>
-              <li><a href="#">{language === 'en' ? 'Contact' : 'Kontak'}</a></li>
+              <li><a href="https://wa.me/628989221700" target="_blank" rel="noopener noreferrer">{language === 'en' ? 'Terms & Conditions' : 'Syarat & Ketentuan'}</a></li>
+              <li><a href="https://wa.me/628989221700" target="_blank" rel="noopener noreferrer">{language === 'en' ? 'Privacy Policy' : 'Kebijakan Privasi'}</a></li>
+              <li><a href="https://wa.me/628989221700" target="_blank" rel="noopener noreferrer">{language === 'en' ? 'Contact' : 'Kontak'}</a></li>
             </ul>
           </div>
         </div>

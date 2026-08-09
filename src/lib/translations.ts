@@ -4,7 +4,7 @@ import { useAppStore } from './store'
 export const translations = {
   id: {
     // Header
-    navLogo: 'HUKUM ASUMSI',
+    navLogo: 'FREE BELAJAR HUKUM ASUMSI',
     myDashboard: 'Dasbor Saya ✦',
     login: 'Masuk',
     register: 'Daftar',
@@ -113,7 +113,7 @@ export const translations = {
   },
   en: {
     // Header
-    navLogo: 'LAW OF ASSUMPTION',
+    navLogo: 'FREE LAW OF ASSUMPTION',
     myDashboard: 'My Dashboard ✦',
     login: 'Login',
     register: 'Register',

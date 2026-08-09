@@ -7,6 +7,7 @@ import { useAppStore } from '@/lib/store'
 import { ALL_PARTS, BONUS_ITEMS, MARQUEE_ITEMS } from '@/lib/curriculum-data'
 import { ALL_PARTS_EN } from '@/lib/curriculum-data-en'
 import { useTranslation } from '@/lib/translations'
+import { Menu, X } from 'lucide-react'
 
 const EBOOK_ITEMS = [
   { cover: '/images/ebooks/sukses-praktek-hukum-asumsi.jpg', title: 'Sukses Praktek Hukum Asumsi', tag: 'Hukum Asumsi Series' },
@@ -21,6 +22,7 @@ import FreeDownloadsSection from '@/components/free-downloads-section'
 import KnowledgeBank from '@/components/knowledge-bank'
 import CurriculumGraphView from '@/components/curriculum-graph-view'
 import LeadCaptureModal from '@/components/lead-capture-modal'
+import TestimoniModal from '@/components/testimoni-modal'
 
 const staggerContainer = {
   animate: { transition: { staggerChildren: 0.06 } }
@@ -87,15 +89,15 @@ function FaqItem({ question, answer, index }: { question: string; answer: string
 
 const partImages = [
   '/images/illustrations/manifestation-journal.webp',
-  '/images/neville-profile.jpg',
+  '/images/neville-profile.webp',
   '/images/illustrations/meditation-imagination.webp',
-  '/images/parts/part-4.png',
-  '/images/parts/part-5.png',
-  '/images/parts/part-6.png',
-  '/images/parts/part-7.png',
-  '/images/parts/part-8.png',
-  '/images/parts/part-9.png',
-  '/images/parts/part-10.png',
+  '/images/parts/part-4.webp',
+  '/images/parts/part-5.webp',
+  '/images/parts/part-6.webp',
+  '/images/parts/part-7.webp',
+  '/images/parts/part-8.webp',
+  '/images/parts/part-9.webp',
+  '/images/parts/part-10.webp',
 ]
 
 // Aspect ratios matching each part image's natural dimensions
@@ -118,7 +120,10 @@ export default function Landing() {
   const curriculumParts = language === 'en' ? ALL_PARTS_EN : ALL_PARTS
   const [activeSection, setActiveSection] = useState<string | null>(null)
   const [showBackTop, setShowBackTop] = useState(false)
+  const [showStickyBar, setShowStickyBar] = useState(false)
   const [showLeadModal, setShowLeadModal] = useState(false)
+  const [showTestimoniModal, setShowTestimoniModal] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [pendingLesson, setPendingLesson] = useState<{ partId: string; lessonNum: string } | null>(null)
 
   useEffect(() => {
@@ -144,8 +149,9 @@ export default function Landing() {
     offset: ['start start', 'end start']
   })
 
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
-  const heroScale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95])
+  // Smooth gentle scale without fading hero to 0 opacity (prevents pitch black blank screen on mobile scroll)
+  const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0.85])
+  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.98])
 
   
   // Scroll spy for active nav
@@ -167,8 +173,9 @@ export default function Landing() {
       }
       setActiveSection(current)
 
-      // Back-to-top visibility
+      // Back-to-top visibility & Sticky Mobile Bar
       setShowBackTop(window.scrollY > 600)
+      setShowStickyBar(window.scrollY > 350)
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
@@ -193,19 +200,21 @@ export default function Landing() {
   return (
     <div className="nv-page" ref={mainRef}>
       {/* Floating Header */}
-      <header className="w-full bg-[#0a0a0c]/80 backdrop-blur-md border-b border-neutral-900 fixed top-0 left-0 right-0 z-[100] px-6 py-4">
-        <div className="max-w-[1200px] mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-2 cursor-pointer" onClick={scrollToTop}>
-            <div className="w-8 h-8 rounded-full bg-[#d4a053] flex items-center justify-center text-black font-extrabold shadow-md">✦</div>
-            <span className="font-outfit font-extrabold text-sm sm:text-base text-[#e8e4dc]">{t('navLogo')}</span>
+      <header className="w-full bg-[#0a0a0c]/90 backdrop-blur-md border-b border-neutral-900 fixed top-0 left-0 right-0 z-[100] px-3.5 sm:px-6 py-3 sm:py-3.5">
+        <div className="max-w-[1200px] mx-auto flex justify-between items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 cursor-pointer min-w-0 shrink" onClick={scrollToTop}>
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#d4a053] flex items-center justify-center text-black font-extrabold shadow-md shrink-0 text-xs sm:text-sm">✦</div>
+            <span className="font-outfit font-extrabold text-[11px] min-[380px]:text-xs sm:text-base text-[#e8e4dc] tracking-tight truncate leading-tight">{t('navLogo')}</span>
           </div>
-          <div className="flex items-center gap-3">
+
+          {/* Desktop Navigation & Actions */}
+          <div className="hidden md:flex items-center gap-3">
             {/* Toko & Event Lynk.id Link */}
             <a
               href="https://lynk.id/bangnevgo"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-[#e8e4dc] text-xs font-bold rounded-lg transition"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-[#e8e4dc] text-xs font-bold rounded-lg transition"
               title="Toko Ebook, Event & Produk Digital Bang Nevgo"
             >
               <span>🛒 Toko & Event</span>
@@ -251,7 +260,7 @@ export default function Landing() {
             ) : (
               <>
                 <button 
-                  className="text-xs text-neutral-400 hover:text-white transition bg-transparent border-none cursor-pointer"
+                  className="text-xs text-neutral-400 hover:text-white transition bg-transparent border-none cursor-pointer px-2 py-1"
                   onClick={() => setView('login')}
                 >
                   {t('login')}
@@ -265,7 +274,174 @@ export default function Landing() {
               </>
             )}
           </div>
+
+          {/* Mobile Actions & Hamburger Toggle */}
+          <div className="flex md:hidden items-center gap-1.5 sm:gap-2 shrink-0">
+            {/* Language Toggle (compact) */}
+            <div className="relative flex items-center bg-neutral-950 border border-neutral-800 rounded-full p-0.5 w-[64px] h-7 shrink-0">
+              <div 
+                className="absolute top-0.5 bottom-0.5 rounded-full bg-[#d4a053] shadow transition-all duration-300 ease-out"
+                style={{
+                  left: language === 'id' ? '2px' : '32px',
+                  width: '30px',
+                }}
+              />
+              <button 
+                className={`flex-1 text-[10px] font-extrabold text-center z-10 transition-colors duration-200 cursor-pointer ${
+                  language === 'id' ? 'text-black' : 'text-neutral-400'
+                }`}
+                onClick={() => setLanguage('id')}
+              >
+                ID
+              </button>
+              <button 
+                className={`flex-1 text-[10px] font-extrabold text-center z-10 transition-colors duration-200 cursor-pointer ${
+                  language === 'en' ? 'text-black' : 'text-neutral-400'
+                }`}
+                onClick={() => setLanguage('en')}
+              >
+                EN
+              </button>
+            </div>
+
+            {/* Hamburger Button */}
+            <button
+              className="p-2 text-[#e8e4dc] hover:text-white bg-neutral-900/90 border border-neutral-800 rounded-lg flex items-center justify-center transition cursor-pointer min-w-[38px] min-h-[38px]"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle Menu Navigasi"
+            >
+              {mobileMenuOpen ? <X size={20} className="text-[#d4a053]" /> : <Menu size={20} />}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Navigation Drawer */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              className="md:hidden fixed top-[60px] left-0 right-0 bg-[#0a0a0c]/98 border-b border-neutral-800 backdrop-blur-xl z-[99] px-5 py-4 shadow-2xl overflow-y-auto max-h-[85vh]"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="flex flex-col gap-3.5">
+                {/* Primary Actions */}
+                {isAuthenticated ? (
+                  <button
+                    className="w-full py-3 bg-[#d4a053]/15 hover:bg-[#d4a053]/25 border border-[#d4a053]/40 text-[#d4a053] font-bold rounded-xl transition text-sm flex items-center justify-center gap-2"
+                    onClick={() => { setMobileMenuOpen(false); setView('dashboard'); }}
+                  >
+                    <span>✦</span> {t('myDashboard')}
+                  </button>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <button
+                      className="py-2.5 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-neutral-200 text-xs font-bold rounded-xl transition"
+                      onClick={() => { setMobileMenuOpen(false); setView('login'); }}
+                    >
+                      {t('login')}
+                    </button>
+                    <button
+                      className="py-2.5 bg-[#d4a053] hover:bg-[#c4883a] text-black text-xs font-bold rounded-xl transition shadow-md"
+                      onClick={() => { setMobileMenuOpen(false); setShowLeadModal(true); }}
+                    >
+                      {t('register')}
+                    </button>
+                  </div>
+                )}
+
+                <hr className="border-neutral-800/80 my-0.5" />
+
+                {/* Toko Digital & Event */}
+                <a
+                  href="https://lynk.id/bangnevgo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-3 bg-neutral-900/70 hover:bg-neutral-800/80 border border-neutral-800 text-[#e8e4dc] text-xs font-bold rounded-xl transition"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span className="flex items-center gap-2">
+                    <span>🛒</span> Toko Ebook & Event Lynk.id
+                  </span>
+                  <span className="text-[#d4a053] font-bold">↗</span>
+                </a>
+
+                {/* AI Tools Quick Access */}
+                <div className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider mt-0.5">
+                  Tools Manifestasi AI
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    className="p-2.5 bg-neutral-950 hover:bg-neutral-900 border border-neutral-800 text-left text-xs rounded-lg transition"
+                    onClick={() => { setMobileMenuOpen(false); setView('ai-manifestation'); }}
+                  >
+                    <div className="font-bold text-[#d4a053]">✦ Manifestasi</div>
+                    <div className="text-[10px] text-neutral-400">Diagnosis Asumsi</div>
+                  </button>
+                  <button
+                    className="p-2.5 bg-neutral-950 hover:bg-neutral-900 border border-neutral-800 text-left text-xs rounded-lg transition"
+                    onClick={() => { setMobileMenuOpen(false); setView('ai-shadow'); }}
+                  >
+                    <div className="font-bold text-purple-400">🔮 Shadow Work</div>
+                    <div className="text-[10px] text-neutral-400">Bedah Blok Mental</div>
+                  </button>
+                  <button
+                    className="p-2.5 bg-neutral-950 hover:bg-neutral-900 border border-neutral-800 text-left text-xs rounded-lg transition"
+                    onClick={() => { setMobileMenuOpen(false); setView('ai-limiting-belief'); }}
+                  >
+                    <div className="font-bold text-amber-400">🧠 Limiting Belief</div>
+                    <div className="text-[10px] text-neutral-400">Reprogramming</div>
+                  </button>
+                  <button
+                    className="p-2.5 bg-neutral-950 hover:bg-neutral-900 border border-neutral-800 text-left text-xs rounded-lg transition"
+                    onClick={() => { setMobileMenuOpen(false); setView('ai-private-session'); }}
+                  >
+                    <div className="font-bold text-blue-400">💬 Sesi Privat AI</div>
+                    <div className="text-[10px] text-neutral-400">Tanya Jawab 24/7</div>
+                  </button>
+                </div>
+
+                <hr className="border-neutral-800/80 my-0.5" />
+
+                {/* Navigation Links */}
+                <div className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider">
+                  Navigasi Utama
+                </div>
+                <div className="flex flex-col gap-1 text-xs">
+                  <button
+                    className="text-left py-2 px-3 hover:bg-neutral-900 text-neutral-300 rounded-lg transition flex items-center justify-between"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      setView('community');
+                    }}
+                  >
+                    <span>💬 Forum Komunitas</span>
+                    <span className="text-neutral-500 text-[10px]">Diskusi & Sesi</span>
+                  </button>
+                  <a
+                    href="https://cohort.nevgoinstitute.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-left py-2 px-3 hover:bg-neutral-900 text-neutral-300 rounded-lg transition flex items-center justify-between"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span>✦ Program Cohort</span>
+                    <span className="text-[#d4a053] text-[10px]">↗</span>
+                  </a>
+                  <a
+                    href="/pendampingan-101.html"
+                    className="text-left py-2 px-3 hover:bg-neutral-900 text-neutral-300 rounded-lg transition flex items-center justify-between"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span>✦ Pendampingan 101</span>
+                    <span className="text-[#d4a053] text-[10px]">↗</span>
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* Spacer for header */}
@@ -409,12 +585,12 @@ export default function Landing() {
                     </a>
                   </motion.div>
                 </div>
-                {/* Subtle Cohort mention in hero */}
+                {/* Subtle Cohort + Pendampingan 101 mention in hero */}
                 <motion.div
                   variants={fadeInUp}
                   initial="initial"
                   animate="animate"
-                  style={{ marginTop: '10px' }}
+                  style={{ marginTop: '10px', display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}
                 >
                   <a
                     href="https://cohort.nevgoinstitute.com"
@@ -423,6 +599,13 @@ export default function Landing() {
                     className="nv-hero-cohort-link"
                   >
                     ✦ {language === 'en' ? 'Cohort Program Available' : 'Ada Program Cohort'} <span className="nv-hero-cohort-arrow">→</span>
+                  </a>
+                  <a
+                    href="/pendampingan-101.html"
+                    className="nv-hero-cohort-link"
+                    style={{ borderColor: 'rgba(192,114,92,0.35)', background: 'rgba(192,114,92,0.10)' }}
+                  >
+                    ✦ {language === 'en' ? '101 Guidance Available — Info' : 'Tersedia Pendampingan 101 — Klik untuk Info'} <span className="nv-hero-cohort-arrow">→</span>
                   </a>
                 </motion.div>
               </div>
@@ -443,7 +626,10 @@ export default function Landing() {
               className={`nv-nav-link ${activeSection === p.id ? 'nv-nav-link-active' : ''}`}
               onClick={(e) => {
                 e.preventDefault()
-                document.getElementById(p.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                const partEl = document.getElementById(p.id)
+                const cards = partEl?.querySelector<HTMLDetailsElement>('details.nv-part-cards')
+                if (cards && !cards.open) cards.setAttribute('open', '')
+                partEl?.scrollIntoView({ behavior: 'smooth', block: 'start' })
               }}
             >
               <span className="nv-nav-num" style={{ color: p.color }}>{p.num}</span>
@@ -490,16 +676,20 @@ export default function Landing() {
       {/* ─── CURRICULUM PARTS ─── */}
       <div className="nv-container">
         <CurriculumGraphView />
+        <p className="nv-parts-hint">
+          ✦ {language === 'en'
+            ? `${curriculumParts.length} modules · ${curriculumParts.reduce((n, p) => n + p.lessons.length, 0)} lessons — click a module to explore its contents`
+            : `${curriculumParts.length} modul · ${curriculumParts.reduce((n, p) => n + p.lessons.length, 0)} pelajaran — klik tiap modul untuk melihat isinya`}
+        </p>
         {curriculumParts.map((part, partIdx) => {
-          const isEven = partIdx % 2 === 0
           const partImage = partImages[partIdx] || partImages[0]
 
           return (
             <div key={part.id} id={part.id} className="nv-part">
-              {/* Part Header with Image */}
+              {/* Part Header with Image — seragam Teks Pengantar dulu, lalu Gambar */}
               <div className="nv-part-hero-row">
                 <motion.div
-                  className={`nv-part-hero-text ${isEven ? '' : 'nv-part-hero-text-reverse'}`}
+                  className="nv-part-hero-text"
                   {...fadeInLeft}
                   transition={{ ...fadeInLeft.transition, delay: 0.05 }}
                 >
@@ -518,7 +708,7 @@ export default function Landing() {
                   )}
                 </motion.div>
                 <motion.div
-                  className={`nv-part-hero-image ${isEven ? '' : 'nv-part-hero-image-reverse'}`}
+                  className="nv-part-hero-image"
                   {...fadeInRight}
                   transition={{ ...fadeInRight.transition, delay: 0.15 }}
                 >
@@ -528,6 +718,7 @@ export default function Landing() {
                       src={partImage}
                       alt={`Ilustrasi ${part.title}`}
                       fill
+                      priority={partIdx === 0}
                       className="nv-part-image"
                       sizes="(max-width: 768px) 100vw, 500px"
                     />
@@ -537,6 +728,18 @@ export default function Landing() {
 
               {/* Connector */}
               <div className="nv-connector" style={{ background: `linear-gradient(90deg, ${part.color}44, ${part.color}11)` }} />
+
+              {/* Lesson Cards — collapsible dropdown (muncul setelah pengantar) */}
+              <details className="nv-part-cards" open={partIdx === 0}>
+                <summary className="nv-cards-toggle" style={{ borderColor: `${part.color}44` }}>
+                  <span className="nv-cards-toggle-label">{part.lessons.length} {language === 'en' ? 'Lessons' : 'Pelajaran'}</span>
+                  <span className="nv-cards-toggle-hint">{language === 'en' ? 'Show lessons' : 'Lihat pelajaran'}</span>
+                  <span
+                    className="nv-cards-toggle-chevron"
+                    style={{ color: part.color, borderColor: `${part.color}55`, background: `${part.color}14` }}
+                    aria-hidden="true"
+                  >▾</span>
+                </summary>
 
               {/* Lesson Cards Grid */}
               <div className="nv-grid">
@@ -668,8 +871,23 @@ export default function Landing() {
                       ? '✦ Explore Cohort →'
                       : '✦ Lihat Cohort →'}
                   </a>
+                  <br />
+                  <a
+                    href="/pendampingan-101.html"
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '6px', marginTop: '10px',
+                      padding: '7px 13px', border: '1px solid rgba(192, 114, 92, 0.5)', borderRadius: '999px',
+                      background: 'rgba(192, 114, 92, 0.08)', color: '#d18a76',
+                      fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.01em', textDecoration: 'none',
+                    }}
+                  >
+                    {language === 'en'
+                      ? '✦ 101 Personal Guidance →'
+                      : '✦ Pendampingan 101 →'}
+                  </a>
                 </motion.aside>
               )}
+              </details>
             </div>
           )
         })}
@@ -856,16 +1074,50 @@ export default function Landing() {
               </div>
             </div>
 
-            {/* Testimonial — ganti dengan testimoni peserta asli */}
-            <div className="nv-cohort-testimonial nv-glass" style={{ marginTop: '32px', padding: '24px 28px', borderRadius: '16px' }}>
+            {/* Testimonial & Real WA Screenshot Evidence Teaser Card */}
+            <div className="nv-cohort-testimonial nv-glass flex flex-col items-center text-center" style={{ marginTop: '32px', padding: '24px 28px', borderRadius: '16px' }}>
               <p style={{ fontSize: '0.95rem', lineHeight: 1.6, color: 'var(--nv-text)', fontStyle: 'italic' }}>
                 {language === 'en'
                   ? '"After 1 month I stopped hoping and started living from the end. My first manifestation landed before the batch even ended."'
                   : '"Setelah 1 bulan, saya berhenti berharap dan mulai hidup dari akhir. Manifestasi pertama saya nyata sebelum batch selesai."'}
               </p>
-              <p style={{ marginTop: '12px', fontSize: '0.8rem', color: 'var(--nv-gold)', fontWeight: 700 }}>
+              <p style={{ marginTop: '8px', fontSize: '0.8rem', color: 'var(--nv-gold)', fontWeight: 700 }}>
                 {language === 'en' ? '— Peserta Cohort Batch 3' : '— Peserta Cohort Batch 3'}
               </p>
+
+              {/* WA Screenshots Teaser Grid */}
+              <div className="mt-4 pt-4 border-t border-[#d4a053]/20 flex flex-col items-center gap-3 w-full">
+                <span className="text-xs font-bold text-[#e5b869]">
+                  📸 {language === 'en' ? 'Proof of Real Student Results (35+ WA Screenshots)' : 'Bukti Hasil Nyata Mentoring & Praktek Murid (35+ WA Screenshot)'}
+                </span>
+                <div className="flex items-center justify-center gap-3 w-full max-w-md">
+                  <div
+                    onClick={() => setShowTestimoniModal(true)}
+                    className="relative w-20 h-24 rounded-lg overflow-hidden border border-[#d4a053]/40 shadow-lg cursor-pointer transform hover:scale-105 transition-transform bg-black/60"
+                  >
+                    <img src="/testimoni/testimoni-01.jpeg" alt="Testimoni 1" className="w-full h-full object-cover" />
+                  </div>
+                  <div
+                    onClick={() => setShowTestimoniModal(true)}
+                    className="relative w-20 h-24 rounded-lg overflow-hidden border border-[#d4a053]/40 shadow-lg cursor-pointer transform hover:scale-105 transition-transform bg-black/60"
+                  >
+                    <img src="/testimoni/testimoni-05.jpeg" alt="Testimoni 2" className="w-full h-full object-cover" />
+                  </div>
+                  <div
+                    onClick={() => setShowTestimoniModal(true)}
+                    className="relative w-20 h-24 rounded-lg overflow-hidden border border-[#d4a053]/40 shadow-lg cursor-pointer transform hover:scale-105 transition-transform bg-black/60"
+                  >
+                    <img src="/testimoni/testimoni-10.jpeg" alt="Testimoni 3" className="w-full h-full object-cover" />
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowTestimoniModal(true)}
+                  className="mt-1 px-4 py-2 text-xs font-bold text-black rounded-lg bg-gradient-to-r from-[#d4a053] to-[#b8862d] hover:opacity-90 transition-opacity shadow-md flex items-center gap-1.5"
+                >
+                  <span>💬 {language === 'en' ? 'Read 35+ Full WA Testimonials →' : 'Baca 35+ Testimoni WA Hasil Nyata Murid →'}</span>
+                </button>
+              </div>
             </div>
 
             {/* CTA */}
@@ -999,8 +1251,155 @@ export default function Landing() {
           </motion.div>
         </div>
 
+        {/* ─── PREMIUM SERVICES SECTION ─── */}
+        <div id="services" className="nv-part" style={{ marginTop: 80 }}>
+          <motion.div
+            className="text-center mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <span className="nv-pricing-cta-badge" style={{ background: 'rgba(212,160,83,0.1)', color: 'var(--nv-gold)', padding: '6px 14px', borderRadius: '99px', fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.05em' }}>
+              {language === 'en' ? '✦ PREMIUM PROGRAMS & SERVICES' : '✦ PROGRAM & LAYANAN PREMIUM'}
+            </span>
+            <h2 className="font-outfit font-extrabold text-2xl sm:text-4xl text-[#e8e4dc] mt-4 mb-4">
+              {language === 'en' ? 'Deepen Your Consciousness Journey' : 'Perdalam Perjalanan Kesadaranmu'}
+            </h2>
+            <p className="max-w-[700px] mx-auto text-sm sm:text-base text-neutral-400 leading-relaxed">
+              {language === 'en'
+                ? 'Choose the level of guidance and resources that fits your current Law of Assumption practice.'
+                : 'Pilih tingkat pendampingan batin dan materi yang sesuai dengan latihan Hukum Asumsimu saat ini.'}
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6" style={{ marginTop: 40 }}>
+            {/* Card 1: BN Mentoring (flyer) */}
+            <motion.div
+              className="nv-cohort-card nv-glass p-6 rounded-2xl flex flex-col"
+              whileHover={{ y: -6, borderColor: 'rgba(212,160,83,0.4)' }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: '340px' }}
+            >
+              <a
+                href={'https://wa.me/628989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin konsultasi gratis 30 menit. Tolong bantu pilih program yang cocok.')}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block mb-4 rounded-xl overflow-hidden"
+              >
+                <img src="/flyers/bn-mentoring.png" alt="BN Mentoring — Konsultasi 2 Jam Bersama Bang Nevgo (Rp 500.000/sesi)" loading="lazy" width={502} height={900} className="w-full h-auto rounded-xl" />
+              </a>
+              <h3 className="nv-cohort-card-title font-outfit font-bold text-lg sm:text-xl text-[#e8e4dc] mb-2">
+                {language === 'en' ? 'BN Mentoring — 2-Hour Private Session' : 'BN Mentoring — Sesi Privat 2 Jam'}
+              </h3>
+              <div className="flex justify-between items-center border-t border-neutral-900 pt-3 mb-3">
+                <span className="text-xs text-neutral-500">{language === 'en' ? 'Investment' : 'Investasi'}</span>
+                <span className="text-sm font-bold text-[#d4a053]">Rp 500.000 / Sesi</span>
+              </div>
+              <div className="mt-auto flex flex-col gap-2">
+                <a
+                  href={'https://wa.me/628989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin konsultasi gratis 30 menit. Tolong bantu pilih program yang cocok.')}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full text-center py-3 bg-[#d4a053] hover:bg-[#c39043] text-black font-extrabold text-xs sm:text-sm rounded-xl transition block"
+                  style={{ textDecoration: 'none' }}
+                >
+                  🎯 {language === 'en' ? 'Free 30-Min Consultation' : 'Konsultasi Gratis 30 Menit'}
+                </a>
+                <a
+                  href={'https://wa.me/628989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin mendaftar ikut konsultasi 2 jam (BN Mentoring).')}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full text-center py-3 bg-[#25d366] hover:bg-[#20ba5a] text-white font-extrabold text-xs sm:text-sm rounded-xl transition block"
+                  style={{ textDecoration: 'none' }}
+                >
+                  ⚡ {language === 'en' ? 'Direct via WhatsApp' : 'Langsung via WhatsApp'}
+                </a>
+              </div>
+            </motion.div>
+
+            {/* Card 2: Private ZOOM 101 (flyer) */}
+            <motion.div
+              className="nv-cohort-card nv-glass p-6 rounded-2xl flex flex-col"
+              whileHover={{ y: -6, borderColor: 'rgba(212,160,83,0.4)' }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: '340px' }}
+            >
+              <a
+                href={'https://wa.me/628989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin konsultasi gratis 30 menit. Tolong bantu pilih program yang cocok.')}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block mb-4 rounded-xl overflow-hidden"
+              >
+                <img src="/flyers/private-zoom-101.jpg" alt="Private ZOOM 101 — 4 Sesi Live Zoom Bersama Bang Nevgo (Rp 1.500.000)" loading="lazy" width={900} height={754} className="w-full h-auto rounded-xl" />
+              </a>
+              <h3 className="nv-cohort-card-title font-outfit font-bold text-lg sm:text-xl text-[#e8e4dc] mb-2">
+                {language === 'en' ? 'Private ZOOM 101 — 4 Live Sessions' : 'Private ZOOM 101 — 4 Sesi Live Zoom'}
+              </h3>
+              <div className="flex justify-between items-center border-t border-neutral-900 pt-3 mb-3">
+                <span className="text-xs text-neutral-500">{language === 'en' ? 'Investment' : 'Investasi'}</span>
+                <span className="text-sm font-bold text-[#d4a053]">Rp 1.500.000</span>
+              </div>
+              <div className="mt-auto flex flex-col gap-2">
+                <a
+                  href={'https://wa.me/628989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin konsultasi gratis 30 menit. Tolong bantu pilih program yang cocok.')}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full text-center py-3 bg-[#d4a053] hover:bg-[#c39043] text-black font-extrabold text-xs sm:text-sm rounded-xl transition block"
+                  style={{ textDecoration: 'none' }}
+                >
+                  🎯 {language === 'en' ? 'Free 30-Min Consultation' : 'Konsultasi Gratis 30 Menit'}
+                </a>
+                <a
+                  href={'https://wa.me/628989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin ambil kelas Zoom 101.')}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full text-center py-3 bg-[#25d366] hover:bg-[#20ba5a] text-white font-extrabold text-xs sm:text-sm rounded-xl transition block"
+                  style={{ textDecoration: 'none' }}
+                >
+                  ⚡ {language === 'en' ? 'Direct via WhatsApp' : 'Langsung via WhatsApp'}
+                </a>
+              </div>
+            </motion.div>
+
+          </div>
+
+          {/* Opsi lain: Private 101 Pendampingan + banner konsultasi WA */}
+          <div className="mt-8 text-center">
+            <p className="text-sm text-neutral-400">
+              {language === 'en' ? 'Other option — ' : 'Opsi lain — '}
+              <a
+                href={'https://wa.me/628989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin ambil paket pendampingan Private 101.')}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#d4a053] font-bold hover:underline"
+                style={{ textDecoration: 'none' }}
+              >
+                {language === 'en' ? 'Private 101 Mentoring (Rp 1jt–5jt)' : 'Private 101 Pendampingan (Rp 1jt–5jt)'}
+              </a>
+              {language === 'en' ? ' · or ask directly via WhatsApp below.' : ' · atau tanya langsung via WhatsApp di bawah.'}
+            </p>
+            <a
+              href={'https://wa.me/628989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin konsultasi gratis 30 menit. Tolong bantu pilih program yang cocok.')}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 mt-3 px-6 py-3 bg-[#25d366] hover:bg-[#20ba5a] text-white font-extrabold text-sm rounded-xl transition"
+              style={{ textDecoration: 'none' }}
+            >
+              💬 {language === 'en' ? 'Free 30-Min Consultation / Guidance via WhatsApp' : 'Konsultasi Gratis 30 Menit / Bimbingan via WhatsApp'}
+            </a>
+          </div>
+        </div>
+
         {/* ─── FAQ SECTION ─── */}
         <motion.section
+          id="faq"
           className="nv-faq"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -1142,16 +1541,16 @@ export default function Landing() {
             <h4 className="nv-footer-col-title">{t('footerColResources')}</h4>
             <ul className="nv-footer-col-links">
               <li><a href="#bonus">{t('essentialBooks')}</a></li>
-              <li><a href="#">FAQ</a></li>
-              <li><a href="#">{language === 'en' ? 'Guided Meditations' : 'Meditasi Panduan'}</a></li>
+              <li><a href="#faq">FAQ</a></li>
+              <li><a href="#part-1">{language === 'en' ? 'Guided Meditations' : 'Meditasi Panduan'}</a></li>
             </ul>
           </div>
           <div className="nv-footer-col">
             <h4 className="nv-footer-col-title">{t('footerColLegal')}</h4>
             <ul className="nv-footer-col-links">
-              <li><a href="#">{language === 'en' ? 'Terms & Conditions' : 'Syarat & Ketentuan'}</a></li>
-              <li><a href="#">{language === 'en' ? 'Privacy Policy' : 'Kebijakan Privasi'}</a></li>
-              <li><a href="#">{language === 'en' ? 'Contact' : 'Kontak'}</a></li>
+              <li><a href="https://wa.me/628989221700" target="_blank" rel="noopener noreferrer">{language === 'en' ? 'Terms & Conditions' : 'Syarat & Ketentuan'}</a></li>
+              <li><a href="https://wa.me/628989221700" target="_blank" rel="noopener noreferrer">{language === 'en' ? 'Privacy Policy' : 'Kebijakan Privasi'}</a></li>
+              <li><a href="https://wa.me/628989221700" target="_blank" rel="noopener noreferrer">{language === 'en' ? 'Contact' : 'Kontak'}</a></li>
             </ul>
           </div>
         </div>
@@ -1197,6 +1596,32 @@ export default function Landing() {
         )}
       </AnimatePresence>
 
+      {/* ─── STICKY MOBILE CONVERSION BAR ─── */}
+      <AnimatePresence>
+        {showStickyBar && (
+          <motion.div
+            className="nv-mobile-sticky-bar md:hidden"
+            initial={{ y: 80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 80, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="flex items-center justify-between gap-3 px-4 py-3 bg-[#0b1410]/95 backdrop-blur-md border-t border-[#d4a053]/35 shadow-2xl">
+              <div className="min-w-0">
+                <p className="text-xs font-bold text-white truncate">10 Modul LOAS Neville Goddard</p>
+                <p className="text-[10px] text-[#d4a053] font-medium">49 Pelajaran Bebas Biaya</p>
+              </div>
+              <button
+                onClick={() => setShowLeadModal(true)}
+                className="flex-shrink-0 px-3.5 py-2 text-xs font-bold text-black rounded-lg bg-gradient-to-r from-[#d4a053] to-[#b8862d] shadow-lg active:scale-95 transition-transform"
+              >
+                {language === 'en' ? 'Register Free' : 'Daftar Gratis (Akses 10 Modul)'}
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* ─── LEAD CAPTURE MODAL ─── */}
       <LeadCaptureModal
         isOpen={showLeadModal}
@@ -1215,6 +1640,12 @@ export default function Landing() {
             document.getElementById('part-1')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
           }, 0)
         }}
+      />
+
+      {/* ─── TESTIMONI LIGHTBOX MODAL ─── */}
+      <TestimoniModal
+        isOpen={showTestimoniModal}
+        onClose={() => setShowTestimoniModal(false)}
       />
 
       {/* ─── COMMUNITY PREVIEW MODAL ─── */}

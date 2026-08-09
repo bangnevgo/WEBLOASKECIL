@@ -570,9 +570,9 @@ export default function CommunityPage() {
       </section>
 
       {/* ── Skool Tabs bar ── */}
-      <nav className="nv-community-tabs bg-[#111114]/90 backdrop-blur-md sticky top-0 z-40 border-b border-neutral-900">
-        <div className="max-w-[1200px] mx-auto px-6 flex justify-between items-center h-14">
-          <div className="flex flex-nowrap gap-1 h-full overflow-x-auto whitespace-nowrap scrollbar-none max-w-full">
+      <nav className="nv-community-tabs bg-[#111114]/90 backdrop-blur-md sticky top-0 z-40 border-b border-neutral-900 overflow-hidden w-full">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 flex justify-between items-center h-14 w-full min-w-0">
+          <div className="flex flex-nowrap gap-1 h-full overflow-x-auto whitespace-nowrap scrollbar-none max-w-full min-w-0 flex-1">
             <button 
               className={`nv-tab-btn h-full border-b-2 rounded-none px-4 flex items-center gap-2 text-sm font-bold shrink-0 ${activeTab === 'feed' ? 'border-[#d4a053] text-[#d4a053]' : 'border-transparent text-neutral-400'}`}
               onClick={() => setActiveTab('feed')}

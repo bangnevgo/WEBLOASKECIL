@@ -148,12 +148,21 @@
   --p10: #fb923c;
 }
 
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
+}
+
 /* ===== Base Page ===== */
 .nv-page {
   background: var(--nv-bg);
   color: var(--nv-text);
   min-height: 100vh;
   font-family: var(--font-geist-sans), system-ui, sans-serif;
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
 }
 
 .nv-container {
@@ -565,6 +574,84 @@
   margin-top: 64px;
 }
 
+/* Parts: intro selalu tampil, grid card collapsible (dropdown) */
+.nv-parts-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 24px 0 -28px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px dashed var(--nv-border);
+  color: var(--nv-dim);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+.nv-part-cards {
+  margin-top: 24px;
+}
+.nv-part-cards > .nv-cards-toggle::-webkit-details-marker { display: none; }
+.nv-cards-toggle {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border: 1px solid;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.25s, box-shadow 0.25s;
+}
+.nv-cards-toggle:hover { background: rgba(255, 255, 255, 0.05); }
+.nv-cards-toggle:focus-visible { outline: 2px solid var(--nv-gold); outline-offset: 2px; }
+.nv-cards-toggle-label {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--nv-text);
+}
+.nv-cards-toggle-hint {
+  font-size: 12px;
+  color: var(--nv-dim);
+}
+.nv-cards-toggle-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1.5px solid;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.25s;
+}
+.nv-cards-toggle:hover .nv-cards-toggle-chevron {
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.06);
+}
+.nv-part-cards[open] > .nv-cards-toggle .nv-cards-toggle-chevron {
+  transform: rotate(180deg);
+}
+.nv-part-cards[open] > .nv-cards-toggle .nv-cards-toggle-hint {
+  display: none;
+}
+.nv-part-cards .nv-grid {
+  margin-top: 28px;
+}
+
+@media (max-width: 768px) {
+  .nv-cards-toggle { flex-wrap: wrap; padding: 12px 16px; }
+  .nv-cards-toggle-hint { display: none; }
+}
+
 .nv-part-hero-row {
   display: flex;
   align-items: stretch;
@@ -576,19 +663,25 @@
   .nv-part-hero-row {
     flex-direction: column;
     gap: 20px;
+    width: 100%;
   }
   .nv-part-hero-image {
     width: 100%;
-  }
-  .nv-part-hero-image-reverse {
-    order: 0;
+    max-width: 100%;
   }
   .nv-part-image-frame {
-    height: 200px;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
   }
-  .nv-part-hero-text-reverse {
-    order: 0;
-  }
+}
+
+.nv-mobile-sticky-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 990;
 }
 
 .nv-part-hero-text {
@@ -662,8 +755,11 @@
 
 .nv-part-image {
   object-fit: cover;
+  object-position: center;
+  width: 100%;
+  height: 100%;
   border-radius: 16px;
-  opacity: 0.85;
+  opacity: 0.9;
   transition: opacity 0.3s;
 }
 
@@ -3061,7 +3157,9 @@
 
 @media (max-width: 768px) {
   .nv-fl-hero-illust {
-    width: 280px;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
   }
 }
 
@@ -3615,10 +3713,19 @@
     width: 100px;
     height: 100px;
   }
+  /* Mobile: pesan utama (judul + quote + CTA daftar) tampil duluan,
+     foto Neville + CTA AI menyusul di bawah — first view tidak lagi
+     cuma foto besar + logo bulat yang melayang. */
+  .nv-hero-text-col {
+    order: 1;
+  }
+  .nv-hero-photo-col {
+    order: 2;
+  }
+  /* Logo bulat (foto punggung dari belakang) disembunyikan di mobile
+     agar first view bersih — branding tetap ada di header (✦ HUKUM ASUMSI). */
   .nv-hero-logo {
-    width: 56px;
-    height: 56px;
-    font-size: 22px;
+    display: none;
   }
   .nv-hero {
     padding: 32px 16px 16px;
@@ -3645,18 +3752,35 @@
 @media (max-width: 768px) {
   .nv-nav {
     padding: 8px 12px;
-    -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
-    mask-image: linear-gradient(to right, black 90%, transparent 100%);
-  }
-  .nv-nav-link {
-    padding: 8px 12px;
-    min-height: 44px;
-    min-width: 44px;
-    font-size: 12px;
+    -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+    mask-image: linear-gradient(to right, black 85%, transparent 100%);
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
   }
   .nv-nav-inner {
-    gap: 2px;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
     justify-content: flex-start;
+    align-items: center;
+    width: max-content;
+    min-width: 100%;
+  }
+  .nv-nav-link {
+    padding: 8px 14px;
+    min-height: 40px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .nv-nav-text {
+    white-space: nowrap;
+    font-size: 12px;
   }
 }
 
@@ -5020,30 +5144,37 @@
 
 @media (max-width: 768px) {
   .nv-ai-hero-cta {
-    padding: 12px 14px;
-    gap: 6px;
+    padding: 14px 16px;
+    gap: 6px 8px;
+    flex-wrap: wrap;
+    justify-content: center;
     border-radius: 12px;
   }
   .nv-ai-hero-cta-text {
-    font-size: 12px;
+    font-size: 13px;
+    line-height: 1.25;
+    text-align: center;
   }
   .nv-ai-hero-cta-badge {
     font-size: 9px;
-    padding: 2px 8px;
+    padding: 3px 10px;
+    flex-basis: 100%;
+    text-align: center;
+    border-radius: 99px;
   }
 }
 
 @media (max-width: 480px) {
   .nv-ai-hero-cta {
-    padding: 10px 12px;
-    gap: 4px;
+    padding: 12px 14px;
+    gap: 6px 8px;
   }
   .nv-ai-hero-cta-text {
-    font-size: 11px;
+    font-size: 12px;
   }
   .nv-ai-hero-cta-badge {
     font-size: 8px;
-    padding: 2px 6px;
+    padding: 2px 8px;
   }
 }
 

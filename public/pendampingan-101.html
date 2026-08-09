@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pendampingan 101 — Nevgo Institute</title>
+  <meta name="description" content="Pendampingan 1-on-1 oleh Bang Nevgo. Sesi satuan, program 4x Zoom, atau pendampingan bulanan. Pilih format yang sesuai dengan ritme belajarmu.">
+  <meta name="theme-color" content="#3a594b">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Nevgo Institute">
+  <meta property="og:title" content="Pendampingan 101 — Nevgo Institute">
+  <meta property="og:description" content="Pendampingan 1-on-1 oleh Bang Nevgo. Sesi satuan, program 4× Zoom, atau pendampingan bulanan — pilih format yang sesuai dengan ritme belajarmu.">
+  <meta property="og:image" content="https://loas.nevgoinstitute.com/og-pendampingan-101.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://loas.nevgoinstitute.com/pendampingan-101.html">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Pendampingan 101 — Nevgo Institute">
+  <meta name="twitter:description" content="Pendampingan 1-on-1 oleh Bang Nevgo. Sesi satuan, program 4× Zoom, atau pendampingan bulanan.">
+  <meta name="twitter:image" content="https://loas.nevgoinstitute.com/og-pendampingan-101.png">
+  <!-- Manifest & icons -->
+  <link rel="manifest" href="/manifest-101.json">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sage: #3a594b;
+      --sage-soft: #4d6f5e;
+      --sage-50: #eef2ef;
+      --sage-100: #d8e2dc;
+      --terracotta: #c0725c;
+      --terracotta-soft: #d18a76;
+      --terracotta-50: #f6eae5;
+      --cream: #fbf9f5;
+      --cream-dark: #f0ebe0;
+      --ink: #1a2018;
+      --ink-soft: #4a5048;
+      --muted: #7a8275;
+      --line: #e0d9c8;
+      --line-soft: #ebe6d8;
+      --gold: #c4902c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.55;
+      font-size: 15px;
+      min-height: 100dvh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* HEADER */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(251, 249, 245, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+    .header-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .logo-mark {
+      width: 32px;
+      height: 32px;
+      background: var(--sage);
+      color: var(--cream);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Serif Display', serif;
+      font-size: 18px;
+    }
+    .logo-text {
+      font-weight: 600;
+      color: var(--ink);
+      font-size: 14px;
+      letter-spacing: 0.04em;
+    }
+    .header-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--sage);
+      color: var(--cream);
+      padding: 8px 16px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .header-cta:hover { background: #2f4a3d; }
+
+    /* CONTAINER */
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* HERO */
+    .hero {
+      padding: 88px 0 64px;
+      text-align: center;
+      position: relative;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 10%;
+      right: -10%;
+      width: 360px;
+      height: 360px;
+      background: radial-gradient(circle, rgba(192,114,92,0.10) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      bottom: 5%;
+      left: -8%;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(58,89,75,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--terracotta);
+      margin-bottom: 20px;
+    }
+    .eyebrow-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--terracotta);
+      border-radius: 50%;
+    }
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(36px, 5.5vw, 64px);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.015em;
+      color: var(--ink);
+      max-width: 920px;
+      margin: 0 auto 24px;
+    }
+    h1 em {
+      font-style: italic;
+      color: var(--sage);
+    }
+    .hero-sub {
+      font-size: clamp(15px, 1.4vw, 18px);
+      color: var(--ink-soft);
+      max-width: 640px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+    }
+    .hero-ctas {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 26px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--sage);
+      color: var(--cream);
+    }
+    .btn-primary:hover {
+      background: #2f4a3d;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px -4px rgba(58, 89, 75, 0.3);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--ink);
+      border: 1.5px solid var(--line);
+    }
+    .btn-outline:hover {
+      border-color: var(--sage);
+      color: var(--sage);
+    }
+
+    /* STATS STRIP */
+    .stats-strip {
+      background: white;
+      border: 1px solid var(--line-soft);
+      border-radius: 16px;
+      padding: 24px 32px;
+      margin: 32px 0 80px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    .stat {
+      text-align: center;
+    }
+    .stat-value {
+      font-family: 'DM Serif Display', serif;
+      font-size: 28px;
+      color: var(--ink);
+      line-height: 1.1;
+    }
+    .stat-value .unit {
+      font-size: 14px;
+      color: var(--muted);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 500;
+      margin-left: 4px;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-top: 4px;
+    }
+
+    /* SECTION */
+    section { padding: 64px 0; }
+    .sec-head {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .sec-head h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(28px, 3.5vw, 40px);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin-bottom: 12px;
+      line-height: 1.1;
+    }
+    .sec-head p {
+      font-size: 15px;
+      color: var(--ink-soft);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* SERVICES */
+    .services {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .service {
+      background: white;
+      border: 1.5px solid var(--line-soft);
+      border-radius: 18px;
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.25s;
+      position: relative;
+    }
+    .service:hover {
+      border-color: var(--sage);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px -8px rgba(58, 89, 75, 0.12);
+    }
+    .service.featured {
+      border-color: var(--terracotta);
+      background: linear-gradient(180deg, var(--terracotta-50) 0%, white 30%);
+    }
+    .badge-ribbon {
+      position: absolute;
+      top: -12px;
+      right: 24px;
+      background: var(--terracotta);
+      color: white;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      padding: 5px 12px;
+      border-radius: 100px;
+      text-transform: uppercase;
+    }
+    .service-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--sage-50);
+      color: var(--sage);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .service.featured .service-icon {
+      background: var(--terracotta-50);
+      color: var(--terracotta);
+    }
+    .service-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 24px;
+      color: var(--ink);
+      margin-bottom: 6px;
+      line-height: 1.2;
+    }
+    .service-tag {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 18px;
+    }
+    .service-desc {
+      font-size: 14px;
+      color: var(--ink-soft);
+      line-height: 1.55;
+      margin-bottom: 24px;
+      flex: 1;
+    }
+    .service-price {
+      border-top: 1px dashed var(--line);
+      padding-top: 20px;
+      margin-bottom: 20px;
+    }
+    .price-amount {
+      font-family: 'DM Serif Display', serif;
+      font-size: 32px;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .price-amount .currency {
+      font-size: 16px;
+      color: var(--muted);
+      font-family: 'Outfit', sans-serif;
+      margin-right: 4px;
+    }
+    .price-unit {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .price-tiers {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .tier {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: var(--ink-soft);
+      padding: 4px 0;
+    }
+    .tier strong { color: var(--ink); font-weight: 500; }
+    .service-cta {
+      display: block;
+      text-align: center;
+      padding: 12px 20px;
+      background: var(--cream);
+      border: 1.5px solid var(--line);
+      border-radius: 100px;
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .service-cta:hover {
+      background: var(--sage);
+      border-color: var(--sage);
+      color: var(--cream);
+    }
+    .service.featured .service-cta {
+      background: var(--terracotta);
+      border-color: var(--terracotta);
+      color: white;
+    }
+    .service.featured .service-cta:hover {
+      background: #a85e4a;
+      border-color: #a85e4a;
+    }
+    .service-features {
+      list-style: none;
+      margin-bottom: 24px;
+    }
+    .service-features li {
+      font-size: 13px;
+      color: var(--ink-soft);
+      padding: 6px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .service-features li svg {
+      color: var(--sage);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* DECISION GUIDE */
+    .decision {
+      background: white;
+      border: 1px solid var(--line-soft);
+      border-radius: 20px;
+      padding: 40px;
+    }
+    .decision-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 32px;
+    }
+    .decision-item {
+      padding: 24px;
+      border-radius: 14px;
+      background: var(--cream);
+      border: 1px solid var(--line-soft);
+    }
+    .decision-q {
+      font-size: 12px;
+      color: var(--terracotta);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .decision-a {
+      font-family: 'DM Serif Display', serif;
+      font-size: 20px;
+      color: var(--ink);
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+    .decision-note {
+      font-size: 13px;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
+    /* PROCESS */
+    .process {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-top: 32px;
+    }
+    .step {
+      position: relative;
+    }
+    .step-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--terracotta);
+      margin-bottom: 12px;
+    }
+    .step h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      color: var(--ink);
+      font-weight: 400;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+    .step p {
+      font-size: 14px;
+      color: var(--ink-soft);
+      line-height: 1.55;
+    }
+
+    /* PAYMENT INFO */
+    .pay-card {
+      background: var(--sage-50);
+      border: 1px solid var(--sage-100);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: center;
+    }
+    .pay-info h4 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 20px;
+      color: var(--ink);
+      font-weight: 400;
+      margin-bottom: 8px;
+    }
+    .pay-info p { font-size: 13px; color: var(--ink-soft); }
+    .pay-detail {
+      background: white;
+      border: 1px solid var(--sage-100);
+      border-radius: 12px;
+      padding: 16px 20px;
+    }
+    .pay-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 13px;
+    }
+    .pay-row span:first-child { color: var(--muted); }
+    .pay-row span:last-child { color: var(--ink); font-weight: 500; }
+    .pay-row.mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+    /* FAQ */
+    .faq-list {
+      max-width: 760px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .faq-item {
+      background: white;
+      border: 1px solid var(--line-soft);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .faq-q {
+      width: 100%;
+      padding: 20px 24px;
+      background: none;
+      border: none;
+      text-align: left;
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--ink);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .faq-q:hover { color: var(--sage); }
+    .faq-icon {
+      flex-shrink: 0;
+      color: var(--terracotta);
+      transition: transform 0.2s;
+    }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .faq-a-inner {
+      padding: 0 24px 20px;
+      font-size: 14px;
+      color: var(--ink-soft);
+      line-height: 1.6;
+    }
+    .faq-item.open .faq-a { max-height: 400px; }
+
+    /* FINAL CTA */
+    .final-cta {
+      background: var(--sage);
+      color: var(--cream);
+      border-radius: 24px;
+      padding: 64px 48px;
+      text-align: center;
+      margin: 32px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .final-cta::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(192,114,92,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .final-cta h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(28px, 3.5vw, 40px);
+      font-weight: 400;
+      margin-bottom: 16px;
+      line-height: 1.1;
+      position: relative;
+    }
+    .final-cta p {
+      font-size: 16px;
+      opacity: 0.9;
+      max-width: 560px;
+      margin: 0 auto 32px;
+      line-height: 1.6;
+      position: relative;
+    }
+    .final-cta .btn-primary {
+      background: var(--cream);
+      color: var(--sage);
+    }
+    .final-cta .btn-primary:hover {
+      background: white;
+      transform: translateY(-1px);
+    }
+    .final-cta .btn-outline {
+      background: transparent;
+      color: var(--cream);
+      border-color: rgba(251, 249, 245, 0.3);
+    }
+    .final-cta .btn-outline:hover {
+      border-color: var(--cream);
+      background: rgba(251, 249, 245, 0.1);
+    }
+    .cta-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 40px 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .foot-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .foot-left { display: flex; align-items: center; gap: 10px; }
+    .foot-back {
+      color: var(--sage);
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .foot-back:hover { text-decoration: underline; }
+
+    /* TESTIMONI */
+    .testi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 32px;
+    }
+    .testi-item {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line-soft);
+      background: white;
+      cursor: zoom-in;
+      transition: all 0.2s;
+    }
+    .testi-item:hover {
+      transform: translateY(-3px);
+      border-color: var(--sage);
+      box-shadow: 0 10px 24px -8px rgba(58, 89, 75, 0.15);
+    }
+    .testi-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* LIGHTBOX */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 14, 12, 0.92);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      cursor: zoom-out;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 100%;
+      max-height: 92vh;
+      border-radius: 8px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      color: var(--cream);
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 8px;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    .lightbox-close:hover { opacity: 1; }
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--cream);
+      font-size: 32px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 16px;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+    .lightbox-nav:hover { opacity: 1; }
+    .lightbox-prev { left: 14px; }
+    .lightbox-next { right: 14px; }
+    .lightbox-count {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(251, 249, 245, 0.75);
+      font-size: 13px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .services, .decision-grid, .process { grid-template-columns: 1fr; }
+      .stats-strip { grid-template-columns: repeat(2, 1fr); padding: 20px; }
+      .pay-card { grid-template-columns: 1fr; padding: 24px; }
+      .final-cta { padding: 48px 28px; }
+      .testi-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+    }
+    @media (max-width: 480px) {
+      .container { padding: 0 18px; }
+      .hero { padding: 56px 0 40px; }
+      .stats-strip { margin: 24px 0 56px; }
+      .stat-value { font-size: 22px; }
+      .decision { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="https://loas.nevgoinstitute.com" class="logo">
+      <div class="logo-mark">✦</div>
+      <div class="logo-text">NEVGO INSTITUTE</div>
+    </a>
+    <a href="https://wa.me/628989221700?text=Halo%20Bang%20Nevgo%2C%20saya%20tertarik%20dengan%20Pendampingan%20101" class="header-cta">
+      Tanya via WhatsApp
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="eyebrow">
+      <span class="eyebrow-dot"></span>
+      Pendampingan 101 · Oleh Bang Nevgo
+    </div>
+    <h1>Pendampingan privat untuk <em>perjalanan manifestasimu.</em></h1>
+    <p class="hero-sub">
+      Tiga format yang bisa dipilih sesuai ritme belajarmu — dari sesi satuan, program 4 sesi, sampai pendampingan bulanan. Privat, satu-satu, langsung bersama Bang Nevgo.
+    </p>
+    <div class="hero-ctas">
+      <a href="#layanan" class="btn btn-primary">
+        Lihat 3 Format
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+      <a href="https://wa.me/628989221700?text=Halo%20Bang%20Nevgo%2C%20saya%20belum%20yakin%20format%20mana%20yang%20cocok" class="btn btn-outline">
+        Belum Yakin? Tanya Dulu
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS STRIP (faktual dari database 6 Agt 2026) -->
+<div class="container">
+  <div class="stats-strip">
+    <div class="stat">
+      <div class="stat-value">7 <span class="unit">aktif</span></div>
+      <div class="stat-label">Klien Private Aktif</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">85 <span class="unit">total</span></div>
+      <div class="stat-label">Murid 101 (since launch)</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">Senin–Sabtu</div>
+      <div class="stat-label">Jadwal Konsultasi</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">1-on-1</div>
+      <div class="stat-label">Sesi Privat Penuh</div>
+    </div>
+  </div>
+</div>
+
+<!-- LAYANAN -->
+<section id="layanan">
+  <div class="container">
+    <div class="sec-head">
+      <h2>Tiga format. Satu pendekatan.</h2>
+      <p>Pilih yang paling cocok dengan ritme dan intensitas yang kamu butuhkan saat ini.</p>
+    </div>
+
+    <div class="services">
+
+      <!-- BN Mentoring -->
+      <div class="service">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <div class="service-name">BN Mentoring</div>
+        <div class="service-tag">Sesi satuan · 2 jam Zoom</div>
+        <p class="service-desc">Sesi privat satu kali untuk topik yang ingin kamu dalami. Cocok untuk yang ingin bimbingan intens di satu titik.</p>
+        <ul class="service-features">
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 2 jam Zoom penuh, 1-on-1</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Mindset, Self-Concept, Manifestasi</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Slot terbatas tiap minggu</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Rekaman sesi tersedia</li>
+        </ul>
+        <div class="service-price">
+          <div class="price-amount"><span class="currency">Rp</span>500.000</div>
+          <div class="price-unit">per sesi · 2 jam</div>
+        </div>
+        <a href="https://wa.me/628989221700?text=Halo%20Bang%20Nevgo%2C%20saya%20ingin%20daftar%20BN%20Mentoring%20(sesi%20satuan%20Rp500rb)" class="service-cta">Booking Sesi</a>
+      </div>
+
+      <!-- Private Zoom 101 -->
+      <div class="service featured">
+        <div class="badge-ribbon">Paling Populer</div>
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+          </svg>
+        </div>
+        <div class="service-name">Private Zoom 101</div>
+        <div class="service-tag">Program 4 sesi · Live coaching</div>
+        <p class="service-desc">Program 4 sesi Zoom mingguan — materi terstruktur + tanya jawab personal. Untuk yang merasa stuck dan butuh panduan rutin.</p>
+        <ul class="service-features">
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 4 sesi @ 1,5 jam · 1x/minggu</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Materi + Tanya Jawab tiap sesi</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Untuk yang stuck / mau wujudkan impian</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Re-enroll discount untuk alumni</li>
+        </ul>
+        <div class="service-price">
+          <div class="price-amount"><span class="currency">Rp</span>1.500.000</div>
+          <div class="price-unit">untuk 4 sesi · 1,5 jam/sesi</div>
+        </div>
+        <a href="https://wa.me/628989221700?text=Halo%20Bang%20Nevgo%2C%20saya%20ingin%20daftar%20Private%20Zoom%20101%20(Rp1.5jt)" class="service-cta">Daftar Program</a>
+      </div>
+
+      <!-- Private 101 Pendampingan -->
+      <div class="service">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+          </svg>
+        </div>
+        <div class="service-name">Private 101 Pendampingan</div>
+        <div class="service-tag">Konsultasi rutin · Bulanan</div>
+        <p class="service-desc">Pendampingan berkelanjutan dengan konsultasi rutin Senin–Sabtu. Untuk yang ingin dibimbing konsisten dalam jangka panjang.</p>
+        <ul class="service-features">
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Konsultasi @1 jam · Senin–Sabtu</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Pilihan jam 10.00–20.00 WIB</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Akses WA personal untuk follow-up</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 4 tier durasi tersedia</li>
+        </ul>
+        <div class="service-price">
+          <div class="price-tiers">
+            <div class="tier"><span>1 bulan</span><strong>Rp 1.000.000</strong></div>
+            <div class="tier"><span>3 bulan</span><strong>Rp 2.000.000</strong></div>
+            <div class="tier"><span>6 bulan</span><strong>Rp 3.000.000</strong></div>
+            <div class="tier"><span>12 bulan</span><strong>Rp 5.000.000</strong></div>
+          </div>
+        </div>
+        <a href="https://wa.me/628989221700?text=Halo%20Bang%20Nevgo%2C%20saya%20ingin%20konsultasi%20Private%20101%20Pendampingan" class="service-cta">Konsultasi Dulu</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONI -->
+<section id="testimoni" style="padding-top: 32px;">
+  <div class="container">
+    <div class="sec-head">
+      <h2>Kata Mereka yang Sudah Berjalan</h2>
+      <p>Kutipan dan cerita langsung dari klien pendampingan — apa adanya, tanpa diedit.</p>
+    </div>
+
+    <div class="testi-grid" id="testi-grid"></div>
+  </div>
+</section>
+
+<!-- DECISION GUIDE -->
+<section style="padding-top: 32px;">
+  <div class="container">
+    <div class="sec-head">
+      <h2>Belum yakin pilih yang mana?</h2>
+      <p>Tiga pertanyaan ini bisa bantu lo tentukan.</p>
+    </div>
+
+    <div class="decision">
+      <div class="decision-grid">
+        <div class="decision-item">
+          <div class="decision-q">Pertanyaan 1</div>
+          <div class="decision-a">"Aku cuma butuh bimbing di satu topik spesifik."</div>
+          <div class="decision-note">→ Mulai dari <strong>BN Mentoring</strong> (Rp 500rb / sesi 2 jam). Single-shot, selesai.</div>
+        </div>
+        <div class="decision-item">
+          <div class="decision-q">Pertanyaan 2</div>
+          <div class="decision-a">"Aku stuck dan butuh panduan rutin selama 1 bulan."</div>
+          <div class="decision-note">→ <strong>Private Zoom 101</strong> (Rp 1,5jt / 4 sesi). Cocok untuk yang mulai serius.</div>
+        </div>
+        <div class="decision-item">
+          <div class="decision-q">Pertanyaan 3</div>
+          <div class="decision-a">"Aku ingin dibimbing konsisten dalam jangka panjang."</div>
+          <div class="decision-note">→ <strong>Private 101 Pendampingan</strong> (mulai Rp 1jt / bulan). Konsultasi rutin Senin–Sabtu.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CARA DAFTAR -->
+<section>
+  <div class="container">
+    <div class="sec-head">
+      <h2>Cara daftar</h2>
+      <p>Tiga langkah. Tidak ribet.</p>
+    </div>
+
+    <div class="process">
+      <div class="step">
+        <div class="step-num">LANGKAH 01</div>
+        <h3>Tanya via WhatsApp</h3>
+        <p>Hubungi Bang Nevgo di <strong>08989-221700</strong>. Sampaikan format yang kamu pilih dan pertanyaan apapun yang masih mengganjal.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">LANGKAH 02</div>
+        <h3>Diskusi singkat</h3>
+        <p>Bang Nevgo akan qualifying sebentar untuk memastikan format yang dipilih match dengan kebutuhanmu. Bukan interview — hanya memastikan kecocokan.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">LANGKAH 03</div>
+        <h3>Transfer & mulai</h3>
+        <p>Setelah deal, transfer ke rekening yang diberikan. Jadwal sesi pertama akan disusun sesuai availability kamu.</p>
+      </div>
+    </div>
+
+    <div class="pay-card">
+      <div class="pay-info">
+        <h4>Rekening pembayaran</h4>
+        <p>Untuk program Private (BN Mentoring, Private Zoom 101, dan Private 101 Pendampingan), pembayaran dilakukan via transfer langsung.</p>
+      </div>
+      <div class="pay-detail">
+        <div class="pay-row"><span>Bank</span><span>Mandiri</span></div>
+        <div class="pay-row mono"><span>No. Rekening</span><span>1290013006842</span></div>
+        <div class="pay-row"><span>Atas nama</span><span>GADING PRAKOSO</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section>
+  <div class="container">
+    <div class="sec-head">
+      <h2>Pertanyaan yang sering ditanya</h2>
+    </div>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q">Apa beda 3 format ini?
+          <svg class="faq-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          <strong>BN Mentoring</strong> = sesi satuan 2 jam (topik tertentu). <strong>Private Zoom 101</strong> = program 4 sesi mingguan (1 bulan). <strong>Private 101 Pendampingan</strong> = konsultasi rutin jangka panjang (1/3/6/12 bulan). Semakin panjang durasinya, semakin dalam biasanya materi yang bisa dibahas.
+        </div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q">Saya pemula, cocok mulai dari yang mana?
+          <svg class="faq-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          Kalau baru mulai, kami sarankan baca dulu <a href="https://loas.nevgoinstitute.com" style="color:var(--sage)">Kurikulum LOAS gratis</a> (10 Bagian, 49 Pelajaran). Setelah itu baru putuskan format privat. Atau langsung WA untuk diskusi — Bang Nevgo akan bantu arahkan.
+        </div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q">Bisa bayar dengan cara lain selain transfer?
+          <svg class="faq-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          Untuk program Private, pembayaran via transfer Mandiri. Untuk produk digital (e-book, audio, webinar) tersedia di <a href="https://lynk.id/bangnevgo" style="color:var(--sage)">lynk.id/bangnevgo</a> dengan payment gateway otomatis.
+        </div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q">Bagaimana jika saya tidak bisa hadir di sesi yang sudah dijadwalkan?
+          <svg class="faq-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          Reschedule bisa dilakukan minimal H-2 via WA. Untuk Private Zoom 101, sesi yang terlewat tanpa kabar bisa diganti di jadwal lain tergantung availability Bang Nevgo.
+        </div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q">Apakah ada Cohort Intensive? Bedanya apa sama 3 format ini?
+          <svg class="faq-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          <strong>Cohort Intensive</strong> adalah program kelompok (max 10 peserta, 4 sesi Zoom, Rp 1jt) — cocok untuk yang ingin belajar bareng komunitas. Berbeda dengan 3 format di atas yang sepenuhnya privat 1-on-1. Detail Cohort di <a href="https://cohort.nevgoinstitute.com" style="color:var(--sage)">cohort.nevgoinstitute.com</a>.
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<div class="container">
+  <div class="final-cta">
+    <h2>Mulai dari satu pesan WhatsApp.</h2>
+    <p>Tidak perlu langsung daftar. Tanya dulu, diskusi, baru putuskan. Itu cara paling jujur untuk memulai.</p>
+    <div class="cta-row">
+      <a href="https://wa.me/628989221700?text=Halo%20Bang%20Nevgo%2C%20saya%20tertarik%20dengan%20Pendampingan%20101" class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Chat WhatsApp Sekarang
+      </a>
+      <a href="https://loas.nevgoinstitute.com" class="btn btn-outline">
+        ← Kembali ke Kurikulum LOAS
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="foot-inner">
+      <div class="foot-left">
+        <div class="logo-mark" style="width:24px;height:24px;font-size:13px;">✦</div>
+        <span>© 2026 Nevgo Institute · Hukum Asumsi</span>
+      </div>
+      <a href="https://loas.nevgoinstitute.com" class="foot-back">loas.nevgoinstitute.com →</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.parentElement;
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    });
+  });
+  // Open first FAQ by default
+  document.querySelector('.faq-item')?.classList.add('open');
+
+  // ── TESTIMONI GRID + LIGHTBOX ──
+  (function () {
+    const grid = document.getElementById('testi-grid');
+    if (!grid) return;
+    // 36 file asli, 4 duplikat persis di-skip (28, 29, 31, 32) → 32 unik
+    const keep = Array.from({ length: 27 }, (_, i) => i + 1).concat([30, 33, 34, 35, 36]);
+    const srcs = keep.map(n => `/testimoni/testimoni-${String(n).padStart(2, '0')}.jpeg`);
+
+    // Build grid
+    srcs.forEach((src, i) => {
+      const item = document.createElement('div');
+      item.className = 'testi-item';
+      item.innerHTML = `<img src="${src}" alt="Testimoni klien ${i + 1}" loading="lazy" data-idx="${i}">`;
+      grid.appendChild(item);
+    });
+
+    // Lightbox DOM
+    const lb = document.createElement('div');
+    lb.className = 'lightbox';
+    lb.innerHTML = `
+      <button class="lightbox-close" aria-label="Tutup">✕</button>
+      <button class="lightbox-nav lightbox-prev" aria-label="Sebelumnya">‹</button>
+      <img src="" alt="Testimoni">
+      <button class="lightbox-nav lightbox-next" aria-label="Berikutnya">›</button>
+      <div class="lightbox-count"></div>`;
+    document.body.appendChild(lb);
+
+    const lbImg = lb.querySelector('img');
+    const lbCount = lb.querySelector('.lightbox-count');
+    let current = -1;
+
+    const open = (idx) => {
+      current = idx;
+      lbImg.src = srcs[idx];
+      lbCount.textContent = `${idx + 1} / ${srcs.length}`;
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    };
+    const close = () => {
+      lb.classList.remove('open');
+      document.body.style.overflow = '';
+    };
+    const nav = (dir) => {
+      const next = (current + dir + srcs.length) % srcs.length;
+      open(next);
+    };
+
+    grid.addEventListener('click', (e) => {
+      const img = e.target.closest('img');
+      if (!img) return;
+      open(parseInt(img.dataset.idx, 10));
+    });
+    lb.addEventListener('click', (e) => {
+      if (e.target.closest('.lightbox-close')) return close();
+      if (e.target.closest('.lightbox-prev')) return nav(-1);
+      if (e.target.closest('.lightbox-next')) return nav(1);
+      close();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') nav(-1);
+      if (e.key === 'ArrowRight') nav(1);
+    });
+  })();
+</script>
+
+</body>
+</html>

@@ -364,33 +364,33 @@ export default function LessonDetail() {
               })}
             </div>
 
-            {/* ✦ Cohort CTA below lesson cards */}
-            <div className="mt-5 pt-4 border-t border-neutral-800">
+            {/* CTA: layanan Nevgo */}
+            <div className="mt-5 pt-4 border-t border-neutral-800 flex flex-col gap-2">
               {(() => {
                 const partNum = part?.num ?? 1
                 const cohortCtasId: Record<number, string> = {
-                  1: 'Latih kesadarannya bareng Bang Nevgo →',
-                  2: 'Lihat cara Cohort membimbingmu →',
-                  3: 'Dapatkan panduan saat kamu "lupa" →',
-                  4: 'Pelajari praktik diam yang aktif →',
-                  5: 'Mulai method terbimbing di Cohort →',
-                  6: 'Praktik Revisi bersama mentor →',
-                  7: 'Arahkan imajinasimu di Cohort →',
-                  8: 'Masuk ke keadaan barumu →',
-                  9: 'Lewati fase ini bareng Cohort →',
-                  10: 'Sudah memutuskan untuk Transformasi diri → Ikut Program Bootcamp/Cohort 30 Hari',
+                  1: 'Latih kesadarannya bareng Bang Nevgo',
+                  2: 'Lihat cara Cohort membimbingmu',
+                  3: 'Dapatkan panduan saat kamu "lupa"',
+                  4: 'Pelajari praktik diam yang aktif',
+                  5: 'Mulai method terbimbing di Cohort',
+                  6: 'Praktik Revisi bersama mentor',
+                  7: 'Arahkan imajinasimu di Cohort',
+                  8: 'Masuk ke keadaan barumu',
+                  9: 'Lewati fase ini bareng Cohort',
+                  10: 'Ikut Program Bootcamp/Cohort 30 Hari',
                 }
                 const cohortCtasEn: Record<number, string> = {
-                  1: 'Train your awareness with Bang Nevgo →',
-                  2: 'See how Cohort guides you →',
-                  3: 'Get guidance when you "forget" →',
-                  4: 'Learn the active practice of stillness →',
-                  5: 'Start the guided method in Cohort →',
-                  6: 'Practice Revision with a mentor →',
-                  7: 'Direct your imagination in Cohort →',
-                  8: 'Step into your new state →',
-                  9: 'Pass this phase with Cohort →',
-                  10: 'Decided to Transform Yourself → Join 30-Day Cohort/Bootcamp',
+                  1: 'Train your awareness with Bang Nevgo',
+                  2: 'See how Cohort guides you',
+                  3: 'Get guidance when you "forget"',
+                  4: 'Learn the active practice of stillness',
+                  5: 'Start the guided method in Cohort',
+                  6: 'Practice Revision with a mentor',
+                  7: 'Direct your imagination in Cohort',
+                  8: 'Step into your new state',
+                  9: 'Pass this phase with Cohort',
+                  10: 'Join 30-Day Cohort/Bootcamp',
                 }
                 const subId: Record<number, string> = {
                   1: 'Rutin harian, bukan cuma teori.',
@@ -419,50 +419,89 @@ export default function LessonDetail() {
                 const ctaText = language === 'en' ? (cohortCtasEn[partNum] ?? cohortCtasEn[10]) : (cohortCtasId[partNum] ?? cohortCtasId[10])
                 const subText = language === 'en' ? (subEn[partNum] ?? subEn[10]) : (subId[partNum] ?? subId[10])
                 return (
-                  <a
-                    href="https://cohort.nevgoinstitute.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full py-3 px-3 rounded-lg text-sm font-bold transition-all duration-200"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(212,160,83,0.12), rgba(184,134,45,0.08))',
-                      border: '1px solid rgba(212,160,83,0.25)',
-                      color: '#d4a053'
-                    }}
-                    onMouseEnter={(e) => {
-                      const el = e.currentTarget as HTMLElement
-                      el.style.background = 'linear-gradient(135deg, rgba(212,160,83,0.2), rgba(184,134,45,0.15))'
-                      el.style.borderColor = 'rgba(212,160,83,0.4)'
-                    }}
-                    onMouseLeave={(e) => {
-                      const el = e.currentTarget as HTMLElement
-                      el.style.background = 'linear-gradient(135deg, rgba(212,160,83,0.12), rgba(184,134,45,0.08))'
-                      el.style.borderColor = 'rgba(212,160,83,0.25)'
-                    }}
-                  >
-                    <span style={{ fontSize: '0.75rem' }}>✦</span>
-                    <span>{ctaText}</span>
-                  </a>
+                  <>
+                    <p className="text-[10px] uppercase tracking-widest text-neutral-500 font-bold mb-1">
+                      {language === 'en' ? 'Guidance & Services' : 'Bimbingan & Layanan'}
+                    </p>
+
+                    {/* Cohort / Bootcamp — utama */}
+                    <a
+                      href="https://cohort.nevgoinstitute.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center gap-3 w-full py-3 px-3 rounded-xl transition-all duration-200"
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(212,160,83,0.13), rgba(184,134,45,0.06))',
+                        border: '1px solid rgba(212,160,83,0.28)',
+                      }}
+                      onMouseEnter={(e) => {
+                        const el = e.currentTarget as HTMLElement
+                        el.style.background = 'linear-gradient(135deg, rgba(212,160,83,0.22), rgba(184,134,45,0.14))'
+                        el.style.borderColor = 'rgba(212,160,83,0.45)'
+                      }}
+                      onMouseLeave={(e) => {
+                        const el = e.currentTarget as HTMLElement
+                        el.style.background = 'linear-gradient(135deg, rgba(212,160,83,0.13), rgba(184,134,45,0.06))'
+                        el.style.borderColor = 'rgba(212,160,83,0.28)'
+                      }}
+                    >
+                      <span className="flex items-center justify-center w-8 h-8 rounded-full text-sm shrink-0" style={{ background: 'rgba(212,160,83,0.15)', color: '#d4a053' }}>✦</span>
+                      <span className="flex-1 min-w-0">
+                        <span className="block text-[13px] font-bold text-[#d4a053] leading-snug">{ctaText}</span>
+                        <span className="block text-[10px] text-neutral-500 leading-snug mt-0.5">{subText}</span>
+                      </span>
+                      <span className="text-xs text-[#d4a053] shrink-0 transition-transform group-hover:translate-x-0.5">→</span>
+                    </a>
+
+                    {/* Pendampingan 101 */}
+                    <a
+                      href="/pendampingan-101.html"
+                      className="group flex items-center gap-3 w-full py-3 px-3 rounded-xl transition-all duration-200"
+                      style={{ background: 'rgba(192,114,92,0.08)', border: '1px solid rgba(192,114,92,0.3)' }}
+                      onMouseEnter={(e) => {
+                        const el = e.currentTarget as HTMLElement
+                        el.style.background = 'rgba(192,114,92,0.16)'
+                        el.style.borderColor = 'rgba(192,114,92,0.5)'
+                      }}
+                      onMouseLeave={(e) => {
+                        const el = e.currentTarget as HTMLElement
+                        el.style.background = 'rgba(192,114,92,0.08)'
+                        el.style.borderColor = 'rgba(192,114,92,0.3)'
+                      }}
+                    >
+                      <span className="flex items-center justify-center w-8 h-8 rounded-full text-[11px] font-extrabold shrink-0" style={{ fontFamily: 'monospace', background: 'rgba(192,114,92,0.15)', color: '#d18a76' }}>101</span>
+                      <span className="flex-1 min-w-0">
+                        <span className="block text-[13px] font-bold text-[#d18a76] leading-snug">
+                          {language === 'en' ? 'Pendampingan 101 — Bimbingan 1-on-1' : 'Pendampingan 101 — Bimbingan 1-on-1'}
+                        </span>
+                        <span className="block text-[10px] text-neutral-500 leading-snug mt-0.5">
+                          {language === 'en' ? 'Private one-on-one with Bang Nevgo' : 'Sesi privat 1-on-1 bersama Bang Nevgo'}
+                        </span>
+                      </span>
+                      <span className="text-xs text-[#d18a76] shrink-0 transition-transform group-hover:translate-x-0.5">→</span>
+                    </a>
+
+                    {/* Toko Ebook & Produk Digital */}
+                    <a
+                      href="https://lynk.id/bangnevgo"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 w-full py-2.5 px-3 rounded-xl transition-all duration-200 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700"
+                    >
+                      <span className="flex items-center justify-center w-8 h-8 rounded-full text-sm shrink-0 bg-neutral-800">🛒</span>
+                      <span className="flex-1 min-w-0">
+                        <span className="block text-[12px] font-bold text-[#e8e4dc] leading-snug">
+                          {language === 'en' ? 'Ebooks, Events & Digital Products' : 'Ebook, Event & Produk Digital'}
+                        </span>
+                        <span className="block text-[10px] text-neutral-500 leading-snug mt-0.5">
+                          {language === 'en' ? 'Live sessions & digital products' : 'Sesi langsung & produk digital'}
+                        </span>
+                      </span>
+                      <span className="text-[10px] text-[#d4a053] shrink-0">↗</span>
+                    </a>
+                  </>
                 )
               })()}
-
-              {/* Lynk.id Store & Event Link */}
-              <a
-                href="https://lynk.id/bangnevgo"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full py-2.5 px-3 mt-2 rounded-lg text-xs font-bold transition-all duration-200 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-[#e8e4dc]"
-              >
-                <span>🛒 Toko Ebook, Event & Produk Digital</span>
-                <span className="text-[10px] text-[#d4a053]">↗</span>
-              </a>
-
-              <p className="text-[10px] text-neutral-600 text-center mt-2 leading-relaxed">
-                {language === 'en'
-                  ? 'Live sessions, direct mentoring, and digital products.'
-                  : 'Sesi langsung, bimbingan langsung, dan produk digital.'
-                }
-              </p>
             </div>
           </div>
         </aside>

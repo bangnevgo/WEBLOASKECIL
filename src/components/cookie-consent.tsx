@@ -53,7 +53,7 @@ export default function CookieConsent() {
               <button className="nv-cookie-consent-accept" onClick={handleAccept}>
                 {language === 'en' ? 'Accept' : 'Terima'}
               </button>
-              <a href="#" className="nv-cookie-consent-learn">
+              <a href="/#faq" className="nv-cookie-consent-learn">
                 {language === 'en' ? 'Learn More' : 'Pelajari Lebih'}
               </a>
             </div>

@@ -33,7 +33,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://loas.nevgoinstitute.com"),
-  title: "Neville Goddard — Hukum Asumsi | Kurikulum Lengkap",
+  title: "Neville Goddard — Hukum Asumsi | Kurikulum Lengkap Free",
   description:
     "Pelajari Hukum Asumsi dari Neville Goddard melalui kurikulum terstruktur: 10 bagian, 50 pelajaran, praktik harian, dan kutipan bersumber dari seluruh karyanya. Mulai perjalanan manifestasi Anda sekarang.",
   keywords: [
@@ -54,16 +54,16 @@ export const metadata: Metadata = {
   },
   manifest: "/manifest.json",
   openGraph: {
-    title: "Neville Goddard — Hukum Asumsi",
+    title: "Free Modul — Kurikulum Lengkap Ajaran Neville Goddard",
     description:
-      "Kurikulum lengkap ajaran Neville Goddard: 10 bagian, 50 pelajaran, praktik harian, dan kutipan bersumber. Mulai jelajahi kekuatan asumsi Anda.",
+      "10 Pelajaran, 50 Modul, praktik harian, dan kutipan bersumber. Mulai jelajahi kekuatan asumsi Anda.",
     type: "website",
     locale: "id_ID",
     siteName: "Hukum Asumsi — Neville Goddard",
     url: "https://loas.nevgoinstitute.com",
     images: [
       {
-        url: "/community-cover.png",
+        url: "/og-main.png",
         width: 1200,
         height: 630,
         alt: "Neville Goddard - Hukum Asumsi",
@@ -73,10 +73,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Neville Goddard — Hukum Asumsi",
+    title: "Free Modul — Kurikulum Lengkap Ajaran Neville Goddard",
     description:
-      "Kurikulum lengkap ajaran Neville Goddard: 10 bagian, 50 pelajaran, praktik harian, dan kutipan bersumber.",
-    images: ["/community-cover.png"],
+      "10 Pelajaran, 50 Modul, praktik harian, dan kutipan bersumber.",
+    images: ["/og-main.png"],
   },
   robots: {
     index: true,
@@ -107,7 +107,7 @@ export default function RootLayout({
       name: "Neville Goddard — Hukum Asumsi: Kurikulum Lengkap",
       description: "Pelajari Hukum Asumsi dari Neville Goddard melalui kurikulum terstruktur: 10 bagian, 50 pelajaran, praktik harian, dan kutipan bersumber dari seluruh karyanya.",
       url: "https://loas.nevgoinstitute.com",
-      image: "https://loas.nevgoinstitute.com/community-cover.png",
+      image: "https://loas.nevgoinstitute.com/og-main.png",
       provider: {
         "@type": "Organization",
         name: "Nevgo Institute",
