@@ -62,6 +62,16 @@ export async function getAvailableTimeSlots(dateStr: string): Promise<TimeSlot[]
   try {
     const { calendar, calendarId } = getCalendarClient();
 
+    // Enforce "booking only starting from next day" rule (relative to WIB / UTC+7 timezone)
+    const wibNow = new Date(Date.now() + 7 * 60 * 60 * 1000);
+    const todayStr = wibNow.toISOString().split('T')[0];
+    if (dateStr <= todayStr) {
+      return DEFAULT_DAILY_SLOTS.map((slot) => ({
+        ...slot,
+        available: false,
+      }));
+    }
+
     // Waktu mulai & selesai hari (Asia/Jakarta = UTC+7)
     const timeMin = new Date(`${dateStr}T00:00:00+07:00`).toISOString();
     const timeMax = new Date(`${dateStr}T23:59:59+07:00`).toISOString();
@@ -75,6 +85,19 @@ export async function getAvailableTimeSlots(dateStr: string): Promise<TimeSlot[]
     });
 
     const events = response.data.items || [];
+
+    // Limit maximum 3 bookings per day (case-insensitive search for 'konsultasi' in event summaries)
+    const consultationCount = events.filter((evt) =>
+      evt.summary?.toLowerCase().includes('konsultasi')
+    ).length;
+
+    const MAX_DAILY_BOOKINGS = 3;
+    if (consultationCount >= MAX_DAILY_BOOKINGS) {
+      return DEFAULT_DAILY_SLOTS.map((slot) => ({
+        ...slot,
+        available: false,
+      }));
+    }
 
     return DEFAULT_DAILY_SLOTS.map((slot) => {
       const slotStart = new Date(`${dateStr}T${slot.startTime}:00+07:00`).getTime();

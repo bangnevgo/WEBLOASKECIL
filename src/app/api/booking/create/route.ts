@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { createCalendarEvent } from '@/lib/google-calendar';
+import { createCalendarEvent, getAvailableTimeSlots } from '@/lib/google-calendar';
 
 const GOOGLE_SHEET_URL = process.env.GOOGLE_SHEET_URL || '';
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
@@ -21,6 +21,16 @@ export async function POST(request: NextRequest) {
     if (!email.includes('@') || !email.includes('.')) {
       return NextResponse.json(
         { success: false, error: 'Format email tidak valid.' },
+        { status: 400 }
+      );
+    }
+
+    // Check slot availability (enforces 3-limit per day and 1 day in advance rule)
+    const availableSlots = await getAvailableTimeSlots(dateStr);
+    const targetSlot = availableSlots.find((s) => s.startTime === startTimeStr);
+    if (!targetSlot || !targetSlot.available) {
+      return NextResponse.json(
+        { success: false, error: 'Slot waktu ini sudah tidak tersedia atau kuota hari ini sudah penuh.' },
         { status: 400 }
       );
     }

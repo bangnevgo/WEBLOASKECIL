@@ -19,8 +19,9 @@ interface TimeSlot {
 
 export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [selectedDate, setSelectedDate] = useState<string>(() => {
-    const today = new Date();
-    return today.toISOString().split('T')[0];
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split('T')[0];
   });
   const [slots, setSlots] = useState<TimeSlot[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
@@ -37,16 +38,16 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [successData, setSuccessData] = useState<{ meetLink: string; timeSlot: string; dateStr: string } | null>(null);
 
-  // Generate 7 hari ke depan untuk dipilih klien
+  // Generate 7 hari ke depan (mulai dari besok) untuk dipilih klien
   const availableDates = Array.from({ length: 7 }, (_, i) => {
     const d = new Date();
-    d.setDate(d.getDate() + i);
+    d.setDate(d.getDate() + i + 1);
     const dateStr = d.toISOString().split('T')[0];
     const dayName = d.toLocaleDateString('id-ID', { weekday: 'short' });
     const dayNum = d.getDate();
     const monthName = d.toLocaleDateString('id-ID', { month: 'short' });
 
-    return { dateStr, dayName, dayNum, monthName, isToday: i === 0 };
+    return { dateStr, dayName, dayNum, monthName, isToday: false };
   });
 
   // Fetch slot ketersediaan dari Google Calendar API setiap kali tanggal berubah
