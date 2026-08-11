@@ -57,17 +57,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PartPage({ params }: Props) {
   const { slug } = await params;
-  const cookieStore = await cookies();
-
-  // These SEO pages contain real lessons. Do not render them until the
-  // visitor has successfully left their details through the free form.
-  if (!hasValidLeadAccess(cookieStore.get('nv-lead-access')?.value)) {
-    redirect(`/?register=1&next=/belajar/${encodeURIComponent(slug)}`);
-  }
-
   const part = getPartBySlug(slug);
 
   if (!part) notFound();
+
+  const cookieStore = await cookies();
+
+  // Part 1 (Lesson 1) is always open. Other parts require lead registration.
+  if (part.id !== 'part-1' && !hasValidLeadAccess(cookieStore.get('nv-lead-access')?.value)) {
+    redirect(`/?register=1&next=/belajar/${encodeURIComponent(slug)}`);
+  }
 
   // Cari index part untuk prev/next navigation
   const allSlugs = getAllPartSlugs();

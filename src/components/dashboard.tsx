@@ -142,8 +142,8 @@ export default function Dashboard() {
   const completedCount = completedLessons.size
   const progressPct = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0
 
-  const isLessonLocked = (_partId: string, lessonNum: string) =>
-    !leadRegistered && !['1.1', '1.2', '1.3'].includes(lessonNum)
+  const isLessonLocked = (partId: string, _lessonNum: string) =>
+    !leadRegistered && partId !== 'part-1'
 
   // SVG progress ring calculations
   const radius = 54

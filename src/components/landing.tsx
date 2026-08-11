@@ -744,7 +744,7 @@ export default function Landing() {
               {/* Lesson Cards Grid */}
               <div className="nv-grid">
                 {part.lessons.map((lesson, lessonIdx) => {
-                  const isFreePreview = ['1.1', '1.2', '1.3'].includes(lesson.num)
+                  const isFreePreview = part.id === 'part-1'
                   const isPartLocked = isMounted ? (!leadRegistered && !isFreePreview) : !isFreePreview
                   return (
                     <motion.div
