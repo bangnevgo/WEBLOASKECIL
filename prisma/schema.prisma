@@ -58,3 +58,24 @@ model Lead {
   @@index([source])
   @@index([createdAt])
 }
+
+model Booking {
+  id              String   @id @default(cuid())
+  name            String
+  email           String
+  phone           String
+  notes           String?
+  bookingDate     DateTime // Tanggal booking (e.g. 2026-08-11)
+  startTime       DateTime // Jam mulai
+  endTime         DateTime // Jam selesai
+  timeSlot        String   // String representasi (mis: "10:00 - 11:00 WIB")
+  status          String   @default("CONFIRMED") // CONFIRMED | RESCHEDULED | COMPLETED | CANCELLED
+  googleMeetLink  String?
+  calendarEventId String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([bookingDate])
+  @@index([status])
+  @@index([createdAt])
+}

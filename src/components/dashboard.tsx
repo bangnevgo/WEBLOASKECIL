@@ -7,11 +7,13 @@ import { useAppStore } from '@/lib/store'
 import { ALL_PARTS } from '@/lib/curriculum-data'
 import { ALL_PARTS_EN } from '@/lib/curriculum-data-en'
 import { useTranslation } from '@/lib/translations'
-import { Users, Crown, BookOpen, Sparkles, Play, LogOut, ExternalLink, Lock } from 'lucide-react'
+import { Users, Crown, BookOpen, Sparkles, Play, LogOut, ExternalLink, Lock, Calendar } from 'lucide-react'
 import AudioPlayer from '@/components/ui/audio-player'
 import WebinarHub from '@/components/webinar-hub'
 import LeadCaptureModal from '@/components/lead-capture-modal'
+import BookingModal from '@/components/booking-modal'
 import { toast } from 'sonner'
+
 
 const partImages = [
   '/images/parts/part-1.png',
@@ -134,6 +136,7 @@ export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [activeAudio, setActiveAudio] = useState<typeof MEDITATIONS[0] | null>(null)
   const [showLeadModal, setShowLeadModal] = useState(false)
+  const [showBookingModal, setShowBookingModal] = useState(false)
 
   const totalLessons = curriculumParts.reduce((acc, p) => acc + p.lessons.length, 0)
   const completedCount = completedLessons.size
@@ -174,6 +177,14 @@ export default function Dashboard() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4 }}
           >
+            <button
+              onClick={() => setShowBookingModal(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#d4a053] to-[#b8862d] text-black font-extrabold text-xs shadow-md hover:opacity-95 transition"
+            >
+              <Calendar size={13} />
+              <span>📅 Booking Konsultasi</span>
+            </button>
+
             <a
               href="https://lynk.id/bangnevgo"
               target="_blank"
@@ -181,9 +192,10 @@ export default function Dashboard() {
               className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#d4a053]/40 text-xs font-bold text-[#d4a053] hover:bg-[#d4a053]/10 transition"
               title="Toko Digital & Event Bang Nevgo"
             >
-              <span>🛒 Toko Digital & Event</span>
+              <span>🛒 Toko Digital</span>
               <ExternalLink size={12} />
             </a>
+
 
             <div className="flex flex-col text-right hidden sm:flex">
               <span style={{ fontSize: 13, fontWeight: 600 }}>{userName}</span>
@@ -652,6 +664,13 @@ export default function Dashboard() {
         isOpen={showLeadModal}
         onClose={() => setShowLeadModal(false)}
       />
+
+      {/* Booking Modal Native */}
+      <BookingModal
+        isOpen={showBookingModal}
+        onClose={() => setShowBookingModal(false)}
+      />
     </div>
   )
 }
+
