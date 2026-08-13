@@ -53,3 +53,6 @@ server.log
 # Skills directory
 /skills/.env
 .env.local
+
+# Agent worktrees
+/.worktrees/
