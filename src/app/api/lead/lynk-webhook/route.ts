@@ -3,8 +3,8 @@ import crypto from 'crypto'
 import { db } from '@/lib/db'
 
 const LYNK_MERCHANT_KEY = process.env.LYNK_MERCHANT_KEY || 'TQTemfantXtdgzr0DZEnRqbVvG7-M5dX'
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || ''
-const TELEGRAM_ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID || ''
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8294932959:AAHhZods2iZIsuMaAGC1kkzLTB5VVA_F0kA'
+const TELEGRAM_ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID || '5729835979'
 
 export async function POST(request: Request) {
   try {
@@ -63,41 +63,30 @@ export async function POST(request: Request) {
     const itemTitle = items[0]?.title || body.product || 'Lynk.id Product'
     const source = `lynk.id (${itemTitle.slice(0, 30)})`
 
-    // Save or update in Neon DB Postgres
-    let dbStatus = 'saved'
+    // Save every transaction as a distinct Lead entry in Neon DB Postgres
+    let dbStatus = 'created'
     try {
-      const existing = await db.lead.findFirst({ where: { email } })
-      if (existing) {
-        await db.lead.update({
-          where: { id: existing.id },
-          data: {
-            source,
-            phone: existing.phone || (phone === '-' ? '' : phone),
-            name: existing.name && existing.name !== '-' ? existing.name : name
-          }
-        })
-        dbStatus = 'updated'
-      } else {
-        await db.lead.create({
-          data: {
-            name,
-            email,
-            phone: phone === '-' ? '' : phone,
-            source
-          }
-        })
-        dbStatus = 'created'
-      }
+      await db.lead.create({
+        data: {
+          name,
+          email,
+          phone: phone === '-' ? '' : phone,
+          source
+        }
+      })
     } catch (dbErr) {
       console.error('Lynk webhook Neon DB error:', dbErr)
       dbStatus = 'error'
     }
 
-    // Send Telegram Notification
+    // Parallel Async Dispatches (Telegram + Google Sheet)
+    const dispatches: Promise<any>[] = []
+
+    // 1. Send Telegram Notification
     if (TELEGRAM_BOT_TOKEN && TELEGRAM_ADMIN_CHAT_ID) {
-      try {
-        const tgMsg = `🛍️ *Lynk.id Transaksi Baru!* 🛍️\n\n👤 *Nama:* ${name}\n📧 *Email:* ${email}\n📱 *No HP/WA:* ${phone || '-'}\n📦 *Produk:* ${itemTitle}\n💰 *Total:* Rp ${Number(amount).toLocaleString('id-ID')}\n🔖 *Ref ID:* \`${refId || '-'}\``
-        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      const tgMsg = `🛍️ *Lynk.id Transaksi Baru!* 🛍️\n\n👤 *Nama:* ${name}\n📧 *Email:* ${email}\n📱 *No HP/WA:* ${phone || '-'}\n📦 *Produk:* ${itemTitle}\n💰 *Total:* Rp ${Number(amount).toLocaleString('id-ID')}\n🔖 *Ref ID:* \`${refId || '-'}\``
+      dispatches.push(
+        fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -105,11 +94,24 @@ export async function POST(request: Request) {
             text: tgMsg,
             parse_mode: 'Markdown'
           })
-        })
-      } catch (tgErr) {
-        console.error('Telegram notification error:', tgErr)
-      }
+        }).catch((tgErr) => console.warn('Telegram notification async error:', tgErr))
+      )
     }
+
+    // 2. Forward payload to Google Sheet NEVGO Sales Apps Script
+    const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxUJOwdHnNgcXLgVcUVL7-2TAZ9UbhA-ENJO9CpL0ObI_PI7iD4Dvxeec9o2sX-tWoC/exec'
+    if (GOOGLE_APPS_SCRIPT_URL) {
+      dispatches.push(
+        fetch(GOOGLE_APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: rawBody
+        }).catch((sheetErr) => console.warn('Google Apps Script parallel forward error:', sheetErr))
+      )
+    }
+
+    // Await all parallel dispatches so Vercel Serverless doesn't freeze execution context prematurely
+    await Promise.allSettled(dispatches)
 
     return NextResponse.json({
       success: true,

@@ -40,15 +40,17 @@ export async function GET(request: NextRequest) {
       scopes: ['https://www.googleapis.com/auth/analytics.readonly'],
     });
 
-    const analyticsData = google.analyticsdata('v1beta');
+    const analyticsData = google.analyticsdata({
+      version: 'v1beta',
+      auth: auth as any,
+    });
     const response = await analyticsData.properties.runReport({
-      auth,
       property: `properties/${PROPERTY_ID}`,
       requestBody: {
         dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
         metrics: [{ name: 'activeUsers' }, { name: 'screenPageViews' }],
         dimensions: [{ name: 'pagePath' }],
-        limit: 10,
+        limit: '10',
       },
     });
 

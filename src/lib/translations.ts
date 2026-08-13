@@ -208,7 +208,6 @@ export const translations = {
 
     // FAQ items
     faq_q1: 'What is the Law of Assumption?',
-    faq_q1: 'What is the Law of Assumption?',
     faq_a1: 'The Law of Assumption is the core principle of Neville Goddard\'s teachings, which states that an assumption, though false, if persisted in, will harden into fact. By assuming the feeling of your wish fulfilled, you alter your future in harmony with your assumption.',
     faq_q2: 'Do I need a religious background?',
     faq_a2: 'No. Neville\'s teachings are universal and can be applied by anyone regardless of religious background or belief. While Neville uses biblical language in his lectures, his principles are practical and psychological.',

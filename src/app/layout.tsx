@@ -93,6 +93,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://loas.nevgoinstitute.com",
   },
+  other: {
+    "tiktok-developers-site-verification": "YJA7AQOJB2lqpFRLpOBmJVQBZY0BXcOl",
+  },
 };
 
 export default function RootLayout({
@@ -234,7 +237,7 @@ export default function RootLayout({
               strategy="afterInteractive"
               src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
             />
-            <Script strategy="afterInteractive">
+            <Script id="google-analytics" strategy="afterInteractive">
               {`window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());

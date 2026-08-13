@@ -23,9 +23,11 @@ const INITIAL_GREETING_EN: Message = {
   content: 'Greetings, fellow seeker of truth ✦\n\nI am your AI mentor based on the teachings of Neville Goddard. I am here to help you identify bottlenecks in your manifestation and provide personalized guidance.\n\nTell me: what are you currently trying to manifest, and what is the biggest challenge you face right now?',
 }
 
+const customEase = [0.25, 0.46, 0.45, 0.94] as const
+
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as const } },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: customEase } },
 }
 
 
@@ -155,7 +157,7 @@ export default function AiPrivateSession() {
                 className={`nv-ai-chat-msg nv-ai-chat-msg-${msg.role}`}
                 initial={{ opacity: 0, y: 12, scale: 0.97 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+                transition={{ duration: 0.3, ease: customEase }}
               >
                 {msg.role === 'assistant' && (
                   <span className="nv-ai-chat-avatar">✦</span>

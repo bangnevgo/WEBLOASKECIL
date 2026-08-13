@@ -36,6 +36,17 @@ export default function LeadCaptureModal({ isOpen, onClose, onRegistered, onStar
     }
   }, [isOpen])
 
+  useEffect(() => {
+    if (!isOpen) return
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, onClose])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -111,6 +122,8 @@ export default function LeadCaptureModal({ isOpen, onClose, onRegistered, onStar
       {isOpen && (
         <div className="nv-modal-overlay" onClick={onClose} style={{ zIndex: 9999 }}>
           <motion.div
+            role="dialog"
+            aria-modal="true"
             className="nv-modal-content nv-glass"
             style={{ maxWidth: '440px' }}
             initial={{ scale: 0.9, opacity: 0 }}

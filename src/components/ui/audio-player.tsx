@@ -4,13 +4,15 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { Play, Pause, RotateCcw, Volume2, FastForward, Repeat } from 'lucide-react'
 
 interface AudioPlayerProps {
-  src: string
+  src?: string
+  audioSrc?: string
   title: string
-  subtitle: string
+  subtitle?: string
   onComplete?: () => void
 }
 
-export default function AudioPlayer({ src, title, subtitle, onComplete }: AudioPlayerProps) {
+export default function AudioPlayer({ src, audioSrc, title, subtitle = '', onComplete }: AudioPlayerProps) {
+  const finalSrc = src || audioSrc || ''
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -24,7 +26,8 @@ export default function AudioPlayer({ src, title, subtitle, onComplete }: AudioP
 
   // Initialize audio
   useEffect(() => {
-    const audio = new Audio(src)
+    if (!finalSrc) return
+    const audio = new Audio(finalSrc)
     audioRef.current = audio
 
     const onTimeUpdate = () => setCurrentTime(audio.currentTime)

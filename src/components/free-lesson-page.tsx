@@ -31,9 +31,11 @@ const lessonIllustrations: Record<string, { src: string; alt: string; caption: s
   },
 }
 
+const customEase = [0.25, 0.46, 0.45, 0.94] as const
+
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] } },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: customEase } },
 }
 
 export default function FreeLessonPage() {
@@ -215,7 +217,12 @@ export default function FreeLessonPage() {
       </div>
 
       {/* Content body with illustration break */}
-      <motion.div className="nv-fl-body" {...fadeIn} transition={{ delay: 0.15 }}>
+      <motion.div 
+        className="nv-fl-body" 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.15, ease: customEase }}
+      >
         {paragraphs.map((para, i) => {
           // Process highlight words from quotes
           let processedPara = para

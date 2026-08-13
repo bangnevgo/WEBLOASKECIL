@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback, useSyncExternalStore } from 'react'
 import Image from 'next/image'
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
+import { motion, AnimatePresence, useScroll, useTransform, type Variants } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
 import { ALL_PARTS, BONUS_ITEMS, MARQUEE_ITEMS } from '@/lib/curriculum-data'
 import { ALL_PARTS_EN } from '@/lib/curriculum-data-en'
@@ -17,39 +17,51 @@ const EBOOK_ITEMS = [
   { cover: '/images/ebooks/memahami-inner-shadow.png', title: 'Kunci Memahami Inner Shadow', tag: 'Bang Nevgo' },
   { cover: '/images/ebooks/koleksi-6-ebook.jpg', title: 'Koleksi 6 eBook Manifestasi', tag: 'Bundle Lengkap' },
 ]
+import dynamic from 'next/dynamic'
 import AiHubSection from '@/components/ai-hub-section'
 import FreeDownloadsSection from '@/components/free-downloads-section'
 import KnowledgeBank from '@/components/knowledge-bank'
-import CurriculumGraphView from '@/components/curriculum-graph-view'
-import LeadCaptureModal from '@/components/lead-capture-modal'
-import TestimoniModal from '@/components/testimoni-modal'
 
-const staggerContainer = {
+const CurriculumGraphView = dynamic(() => import('@/components/curriculum-graph-view'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-80 flex flex-col items-center justify-center text-neutral-500 text-xs font-mono">
+      <span className="animate-spin text-amber-500 text-base mb-2">✦</span>
+      Memuat Peta Kurikulum...
+    </div>
+  ),
+})
+const LeadCaptureModal = dynamic(() => import('@/components/lead-capture-modal'), { ssr: false })
+const TestimoniModal = dynamic(() => import('@/components/testimoni-modal'), { ssr: false })
+
+const customEase = [0.25, 0.46, 0.45, 0.94] as const
+
+const staggerContainer: Variants = {
   animate: { transition: { staggerChildren: 0.06 } }
 }
 
-const fadeInUp = {
+const fadeInUp: Variants = {
   initial: { opacity: 0, y: 24 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] } }
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: customEase } }
 }
 
-const scaleIn = {
+const scaleIn: Variants = {
   initial: { opacity: 0, scale: 0.9 },
-  animate: { opacity: 1, scale: 1, transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] } }
+  animate: { opacity: 1, scale: 1, transition: { duration: 0.4, ease: customEase } }
 }
 
 const fadeInLeft = {
   initial: { opacity: 0, x: -20 },
   whileInView: { opacity: 1, x: 0 },
   viewport: { once: true },
-  transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }
+  transition: { duration: 0.5, ease: customEase }
 }
 
 const fadeInRight = {
   initial: { opacity: 0, x: 20 },
   whileInView: { opacity: 1, x: 0 },
   viewport: { once: true },
-  transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }
+  transition: { duration: 0.5, ease: customEase }
 }
 
 // FAQ accordion item component
@@ -62,7 +74,7 @@ function FaqItem({ question, answer, index }: { question: string; answer: string
       initial={{ opacity: 0, y: 12 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.4, delay: index * 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
+      transition={{ duration: 0.4, delay: index * 0.05, ease: customEase }}
     >
       <button
         className="nv-faq-question"
@@ -79,7 +91,7 @@ function FaqItem({ question, answer, index }: { question: string; answer: string
           height: isOpen ? 'auto' : 0,
           opacity: isOpen ? 1 : 0,
         }}
-        transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+        transition={{ duration: 0.3, ease: customEase }}
       >
         <p className="nv-faq-answer">{answer}</p>
       </motion.div>
@@ -467,7 +479,7 @@ export default function Landing() {
               className="nv-hero-photo-col"
               initial={{ opacity: 0, x: -40, scale: 0.95 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
-              transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+              transition={{ duration: 0.8, ease: customEase }}
             >
               <div className="nv-hero-photo-frame">
                 <div className="nv-hero-photo-glow" />
@@ -754,7 +766,7 @@ export default function Landing() {
                       initial={{ opacity: 0, y: 16 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, margin: '-50px' }}
-                      transition={{ duration: 0.4, delay: lessonIdx * 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
+                      transition={{ duration: 0.4, delay: lessonIdx * 0.05, ease: customEase }}
                       whileHover={isPartLocked ? { scale: 1.02 } : { y: -4, transition: { duration: 0.2 } }}
                       onClick={() => {
                         if (isPartLocked) {
@@ -1586,7 +1598,7 @@ export default function Landing() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 0.25, ease: customEase }}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             aria-label="Kembali ke atas"

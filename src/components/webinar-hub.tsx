@@ -101,15 +101,15 @@ const WEBINAR_ITEMS = [
 ]
 
 export default function WebinarHub() {
-  const { subscriptionTier, setView } = useAppStore()
+  const { hasCurriculumAccess, setView } = useAppStore()
   const [activeWebinar, setActiveWebinar] = useState<typeof WEBINAR_ITEMS[0] | null>(null)
   const [videoPlaying, setVideoPlaying] = useState(false)
   const [playbackProgress, setPlaybackProgress] = useState(0)
 
-  const isMaster = subscriptionTier === 'master'
+  const hasAccess = hasCurriculumAccess()
 
   const handleCardClick = (webinar: typeof WEBINAR_ITEMS[0]) => {
-    if (!isMaster) {
+    if (!hasAccess) {
       setView('landing')
       return
     }
@@ -130,9 +130,9 @@ export default function WebinarHub() {
           <h2 className="text-xl font-bold text-[#e8e4dc] leading-tight m-0">🎥 Webinar Eksklusif VIP</h2>
           <p className="text-xs text-neutral-400 m-0 mt-1">Sesi rekaman workshop lanjutan untuk pendalaman materi SATS, konsep diri, dan revisi realitas.</p>
         </div>
-        {!isMaster && (
+        {!hasAccess && (
           <span className="flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-500 text-xs font-bold rounded-lg uppercase">
-            <Crown size={12} /> Master Tier Only
+            <Crown size={12} /> Member Akses Penuh
           </span>
         )}
       </div>
@@ -161,10 +161,10 @@ export default function WebinarHub() {
               </div>
               <span className="nv-webinar-duration-badge">{webinar.duration}</span>
               
-              {!isMaster && (
+              {!hasAccess && (
                 <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center gap-2">
                   <Crown size={24} className="text-[#d4a053] drop-shadow-md" />
-                  <span className="text-xs font-bold uppercase text-[#d4a053] tracking-wide">Locked — Upgrade Tier</span>
+                  <span className="text-xs font-bold uppercase text-[#d4a053] tracking-wide">Locked — Daftar Akses</span>
                 </div>
               )}
             </div>

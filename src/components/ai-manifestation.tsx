@@ -15,14 +15,16 @@ const CATEGORIES = [
   { id: 'lainnya', label: 'Lainnya', icon: '✨' },
 ]
  
+const customEase = [0.25, 0.46, 0.45, 0.94] as const
+
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] } },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: customEase } },
 }
  
 const staggerItem = {
   initial: { opacity: 0, y: 12 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] } },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.4, ease: customEase } },
 }
  
 interface ManifestationResult {
@@ -225,7 +227,7 @@ export default function AiManifestation() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 0.6, ease: customEase }}
           >
             {/* Handicap Cards */}
             <section className="nv-ai-results-section">

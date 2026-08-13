@@ -537,10 +537,10 @@ export default function CommunityPage() {
               <span>{language === 'en' ? '🔒 You are in Preview Mode. Upgrade to discuss, unlock Classroom, and join Live Zoom.' : '🔒 Anda berada dalam Mode Pratinjau. Upgrade untuk berdiskusi, membuka Classroom, dan join Live Zoom.'}</span>
             </p>
             <button 
-              onClick={() => setView('pricing')} 
+              onClick={() => setView('landing')} 
               className="text-[10px] font-bold text-neutral-950 bg-amber-500 hover:bg-[#e2b36e] px-3 py-1.5 rounded-lg transition uppercase tracking-wider cursor-pointer"
             >
-              {language === 'en' ? 'Unlock Premium Access' : 'Buka Akses Premium'}
+              {language === 'en' ? 'Unlock Full Access' : 'Buka Akses Lengkap'}
             </button>
           </div>
         </div>

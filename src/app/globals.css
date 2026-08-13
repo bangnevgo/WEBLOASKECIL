@@ -801,6 +801,8 @@ html, body {
 
 /* ===== Lesson Card (Landing) ===== */
 .nv-card {
+  container-type: inline-size;
+  container-name: lesson-card;
   padding: 16px 20px; cursor: default;
   transition: all 0.2s;
 }
@@ -1770,11 +1772,18 @@ html, body {
   position: relative; z-index: 1;
 }
 
+/* Auto lock body scrolling when modal or dialog is active */
+body:has(.nv-modal-overlay),
+body:has(dialog[open]) {
+  overflow: hidden;
+}
+
 /* ===== Modal ===== */
 .nv-modal-overlay {
   position: fixed; inset: 0; z-index: 200;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   display: flex; align-items: center; justify-content: center;
   padding: 24px;
 }
@@ -1842,7 +1851,17 @@ html, body {
 
 .nv-modal-input::placeholder { color: var(--nv-dim); }
 
-.nv-modal-input:focus {
+.nv-modal-input:focus-visible {
+  border-color: rgba(212, 160, 83, 0.6);
+  box-shadow: 0 0 0 2px rgba(212, 160, 83, 0.15);
+}
+
+.nv-modal-input:user-invalid {
+  border-color: rgba(239, 68, 68, 0.6);
+  background-color: rgba(239, 68, 68, 0.04);
+}
+
+.nv-modal-input:user-valid {
   border-color: rgba(212, 160, 83, 0.4);
 }
 
