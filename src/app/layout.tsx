@@ -33,7 +33,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://loas.nevgoinstitute.com"),
-  title: "Neville Goddard — Hukum Asumsi | Kurikulum Lengkap Free",
+  title: "Hukum Asumsi Neville Goddard — Kurikulum Lengkap | Nevgo Institute",
   description:
     "Pelajari Hukum Asumsi dari Neville Goddard melalui kurikulum terstruktur: 10 bagian, 50 pelajaran, praktik harian, dan kutipan bersumber dari seluruh karyanya. Mulai perjalanan manifestasi Anda sekarang.",
   keywords: [
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
       "10 Pelajaran, 50 Modul, praktik harian, dan kutipan bersumber. Mulai jelajahi kekuatan asumsi Anda.",
     type: "website",
     locale: "id_ID",
-    siteName: "Hukum Asumsi — Neville Goddard",
+    siteName: "Nevgo Institute — Hukum Asumsi",
     url: "https://loas.nevgoinstitute.com",
     images: [
       {

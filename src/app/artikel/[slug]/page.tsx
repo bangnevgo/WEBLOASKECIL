@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: artikel.description,
       url,
       type: 'article',
-      siteName: 'Hukum Asumsi — Neville Goddard',
+      siteName: 'Nevgo Institute — Hukum Asumsi',
       locale: 'id_ID',
       publishedTime: artikel.publishedAt,
     },
