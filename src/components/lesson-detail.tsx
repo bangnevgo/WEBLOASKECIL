@@ -352,31 +352,57 @@ export default function LessonDetail() {
             )}
 
             {/* Next/Prev Navigation Row */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-between mt-12 border-t border-neutral-900 pt-8">
-              {prevLesson && prevPart ? (
-                <button
-                  className="nv-lesson-nav-btn nv-glass flex flex-col items-start gap-1 p-4 text-left hover:border-amber-500/30 transition w-full sm:w-[48%]"
-                  onClick={() => useAppStore.getState().openLesson(prevPart.id, prevLesson.num)}
-                >
-                  <span className="text-[10px] text-neutral-500 font-mono flex items-center gap-1 uppercase">
-                    <ChevronLeft size={10} /> {language === 'en' ? 'Previous' : 'Sebelumnya'}
-                  </span>
-                  <span className="text-xs sm:text-sm font-bold text-neutral-300 line-clamp-1">{prevLesson.num} {prevLesson.title}</span>
-                </button>
-              ) : <div className="w-[48%] hidden sm:block" />}
-              
-              {nextLesson && nextPart ? (
-                <button
-                  className="nv-lesson-nav-btn nv-glass flex flex-col items-end gap-1 p-4 text-right hover:border-amber-500/30 transition w-full sm:w-[48%]"
-                  onClick={() => useAppStore.getState().openLesson(nextPart.id, nextLesson.num)}
-                >
-                  <span className="text-[10px] text-neutral-500 font-mono flex items-center gap-1 uppercase">
-                    {language === 'en' ? 'Next' : 'Berikutnya'} <ChevronRight size={10} />
-                  </span>
-                  <span className="text-xs sm:text-sm font-bold text-neutral-300 line-clamp-1">{nextLesson.num} {nextLesson.title}</span>
-                </button>
-              ) : <div className="w-[48%] hidden sm:block" />}
-            </div>
+            {(() => {
+              const prevLessonIdx = prevPart && prevLesson ? prevPart.lessons.findIndex((l) => l.num === prevLesson.num) : -1
+              const isPrevFree = prevPart && prevLessonIdx !== -1 && (
+                prevPart.id === 'part-1' || 
+                (prevPart.id === 'part-2' && (prevLessonIdx === 0 || prevLessonIdx === 1)) || 
+                (prevPart.id !== 'part-1' && prevPart.id !== 'part-2' && prevLessonIdx === 0)
+              )
+              const isPrevLocked = !leadRegistered && !isPrevFree
+
+              const nextLessonIdx = nextPart && nextLesson ? nextPart.lessons.findIndex((l) => l.num === nextLesson.num) : -1
+              const isNextFree = nextPart && nextLessonIdx !== -1 && (
+                nextPart.id === 'part-1' || 
+                (nextPart.id === 'part-2' && (nextLessonIdx === 0 || nextLessonIdx === 1)) || 
+                (nextPart.id !== 'part-1' && nextPart.id !== 'part-2' && nextLessonIdx === 0)
+              )
+              const isNextLocked = !leadRegistered && !isNextFree
+
+              return (
+                <div className="flex flex-col sm:flex-row gap-4 justify-between mt-12 border-t border-neutral-900 pt-8">
+                  {prevLesson && prevPart ? (
+                    <button
+                      className="nv-lesson-nav-btn nv-glass flex flex-col items-start gap-1 p-4 text-left hover:border-amber-500/30 transition w-full sm:w-[48%]"
+                      onClick={() => useAppStore.getState().openLesson(prevPart.id, prevLesson.num)}
+                    >
+                      <span className="text-[10px] text-neutral-500 font-mono flex items-center gap-1 uppercase">
+                        <ChevronLeft size={10} /> {language === 'en' ? 'Previous' : 'Sebelumnya'}
+                      </span>
+                      <span className="text-xs sm:text-sm font-bold text-neutral-300 line-clamp-1">
+                        {isPrevLocked && '🔒 '}
+                        {prevLesson.num} {prevLesson.title}
+                      </span>
+                    </button>
+                  ) : <div className="w-[48%] hidden sm:block" />}
+                  
+                  {nextLesson && nextPart ? (
+                    <button
+                      className="nv-lesson-nav-btn nv-glass flex flex-col items-end gap-1 p-4 text-right hover:border-amber-500/30 transition w-full sm:w-[48%]"
+                      onClick={() => useAppStore.getState().openLesson(nextPart.id, nextLesson.num)}
+                    >
+                      <span className="text-[10px] text-neutral-500 font-mono flex items-center gap-1 uppercase">
+                        {language === 'en' ? 'Next' : 'Berikutnya'} <ChevronRight size={10} />
+                      </span>
+                      <span className="text-xs sm:text-sm font-bold text-neutral-300 line-clamp-1">
+                        {isNextLocked && '🔒 '}
+                        {nextLesson.num} {nextLesson.title}
+                      </span>
+                    </button>
+                  ) : <div className="w-[48%] hidden sm:block" />}
+                </div>
+              )
+            })()}
           </div>
         </div>
 
