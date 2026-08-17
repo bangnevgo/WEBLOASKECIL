@@ -40,13 +40,22 @@ export default function LessonDetail() {
     toggleCompleted, 
     completedLessons,
     subscriptionTier,
-    setView
+    setView,
+    leadRegistered
   } = useAppStore()
   
   const [readingProgress, setReadingProgress] = useState(0)
 
   const part = curriculumParts.find((p) => p.id === activePartId)
   const lesson = part?.lessons.find((l) => l.num === activeLessonNum)
+
+  const lessonIdx = part && lesson ? part.lessons.findIndex((l) => l.num === lesson.num) : -1
+  const isLessonFree = part && lessonIdx !== -1 && (
+    part.id === 'part-1' || 
+    (part.id === 'part-2' && (lessonIdx === 0 || lessonIdx === 1)) || 
+    (part.id !== 'part-1' && part.id !== 'part-2' && lessonIdx === 0)
+  )
+  const isLessonLocked = !leadRegistered && !isLessonFree
 
   // Tracking reading scroll progress
   useEffect(() => {
@@ -112,7 +121,7 @@ export default function LessonDetail() {
 
   // Cross-part lesson navigation helpers
   const partIdx = curriculumParts.indexOf(part)
-  const lessonIdx = part.lessons.indexOf(lesson)
+  // lessonIdx is already defined above
   
   const prevLesson = lessonIdx > 0 
     ? part.lessons[lessonIdx - 1] 
@@ -219,91 +228,128 @@ export default function LessonDetail() {
               </span>
             </div>
 
-            {/* Mapped audio meditation player embed */}
-            {displayMeditation && (
-              <motion.div 
-                className="nv-meditation-section-embed mb-8"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                <div className="nv-meditation-section-header">
-                  <Sparkles size={14} />
-                  <span>{language === 'en' ? '🎧 GUIDED MEDITATION FOR THIS LESSON' : '🎧 MEDITASI TERBIMBING UNTUK PELAJARAN INI'}</span>
-                </div>
-                <div className="p-4 bg-[#111114]">
-                  <AudioPlayer
-                    src={`/api/media?type=audio&file=${displayMeditation.file}`}
-                    title={displayMeditation.title}
-                    subtitle={displayMeditation.desc}
-                    onComplete={() => toast.success(language === 'en' ? `✦ Practice session completed.` : `✦ Sesi latihan selesai dipraktikkan.`)}
-                  />
-                </div>
-              </motion.div>
-            )}
-
-            {/* Lesson Body Paragraphs */}
-            <div className="nv-lesson-body text-base text-neutral-300 leading-relaxed flex flex-col gap-6">
-              {lesson.fullContent.split('\n\n').map((paragraph, i) => (
-                <p 
-                  key={i} 
-                  className={i === 0 ? 'nv-fl-drop-cap' : ''}
-                  dangerouslySetInnerHTML={{ __html: processParagraph(paragraph) }}
-                />
-              ))}
-            </div>
-
-            {/* Quotes Panel */}
-            <div className="nv-lesson-quotes mt-10 flex flex-col gap-6">
-              <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest flex items-center gap-2 border-b border-neutral-900 pb-3 m-0">
-                ✦ {language === 'en' ? 'NEVILLE GODDARD SOURCED QUOTES' : 'KUTIPAN BERSUMBER NEVILLE GODDARD'}
-              </h3>
-              {lesson.quotes.map((q, i) => (
-                <motion.div
-                  key={i}
-                  className="nv-lesson-quote-card nv-premium-quote"
-                  style={{ borderLeftColor: part.color }}
-                  whileHover={{ x: 2 }}
-                >
-                  <p className="nv-lesson-quote-text text-sm sm:text-base leading-relaxed font-serif italic text-neutral-200 m-0">
-                    &ldquo;{q.highlight ? q.text.replace(q.highlight, `\u00AB${q.highlight}\u00BB`) : q.text}&rdquo;
+                      {/* Gating content rendering based on lock policy */}
+            {isLessonLocked ? (
+              <>
+                {/* Preview Paragraph */}
+                <div className="nv-lesson-body text-base text-neutral-300 leading-relaxed flex flex-col gap-6 opacity-60">
+                  <p className="nv-fl-drop-cap">
+                    {lesson.fullContent.split('\n\n')[0]}
                   </p>
-                  <p className="nv-lesson-quote-source text-xs text-neutral-500 font-mono m-0 mt-2">&mdash; {q.source}</p>
-                  {q.translation && language !== 'en' && (
-                    <p className="text-xs text-neutral-400 leading-relaxed border-t border-neutral-900 pt-2 m-0 mt-2">{q.translation}</p>
-                  )}
-                  {lesson.sourceUrl && (
-                    <a
-                      className="nv-lesson-source-link text-xs text-[#d4a053] hover:underline block mt-3"
-                      href={lesson.sourceUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                </div>
+
+                {/* Gate Overlay Box */}
+                <div 
+                  className="p-8 border border-[#d4a053]/30 rounded-2xl text-center my-8 flex flex-col items-center justify-center gap-4 bg-[#0a0a0c]"
+                  style={{ background: 'rgba(212,160,83,0.02)' }}
+                >
+                  <span className="text-3xl">🔒</span>
+                  <h3 className="text-lg font-bold text-[#e8e4dc]">
+                    {language === 'en' ? 'This module is locked' : 'Modul ini terkunci'}
+                  </h3>
+                  <p className="text-sm text-neutral-400 max-w-md leading-relaxed">
+                    {language === 'en' 
+                      ? 'Register for free to unlock all 49 lessons, sourced quotes, daily practices, and meditation audios.' 
+                      : 'Daftar gratis untuk membuka akses penuh ke 49 modul pelajaran, kutipan asli bersumber, praktik harian, dan panduan meditasi audio.'}
+                  </p>
+                  <a
+                    href="/?register=1"
+                    className="px-6 py-2.5 bg-[#d4a053] hover:bg-[#c39043] text-black font-extrabold text-sm rounded-xl transition shadow-lg inline-block"
+                    style={{ textDecoration: 'none' }}
+                  >
+                    ✦ {language === 'en' ? 'Unlock Free Access Now' : 'Buka Akses Gratis Sekarang'}
+                  </a>
+                </div>
+              </>
+            ) : (
+              <>
+                {/* Mapped audio meditation player embed */}
+                {displayMeditation && (
+                  <motion.div 
+                    className="nv-meditation-section-embed mb-8"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                  >
+                    <div className="nv-meditation-section-header">
+                      <Sparkles size={14} />
+                      <span>{language === 'en' ? '🎧 GUIDED MEDITATION FOR THIS LESSON' : '🎧 MEDITASI TERBIMBING UNTUK PELAJARAN INI'}</span>
+                    </div>
+                    <div className="p-4 bg-[#111114]">
+                      <AudioPlayer
+                        src={`/api/media?type=audio&file=${displayMeditation.file}`}
+                        title={displayMeditation.title}
+                        subtitle={displayMeditation.desc}
+                        onComplete={() => toast.success(language === 'en' ? `✦ Practice session completed.` : `✦ Sesi latihan selesai dipraktikkan.`)}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Lesson Body Paragraphs */}
+                <div className="nv-lesson-body text-base text-neutral-300 leading-relaxed flex flex-col gap-6">
+                  {lesson.fullContent.split('\n\n').map((paragraph, i) => (
+                    <p 
+                      key={i} 
+                      className={i === 0 ? 'nv-fl-drop-cap' : ''}
+                      dangerouslySetInnerHTML={{ __html: processParagraph(paragraph) }}
+                    />
+                  ))}
+                </div>
+
+                {/* Quotes Panel */}
+                <div className="nv-lesson-quotes mt-10 flex flex-col gap-6">
+                  <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest flex items-center gap-2 border-b border-neutral-900 pb-3 m-0">
+                    ✦ {language === 'en' ? 'NEVILLE GODDARD SOURCED QUOTES' : 'KUTIPAN BERSUMBER NEVILLE GODDARD'}
+                  </h3>
+                  {lesson.quotes.map((q, i) => (
+                    <motion.div
+                      key={i}
+                      className="nv-lesson-quote-card nv-premium-quote"
+                      style={{ borderLeftColor: part.color }}
+                      whileHover={{ x: 2 }}
                     >
-                      {language === 'en' ? 'Read Original Lecture Text (Free Text Archive) →' : 'Baca Teks Asli Kuliah (Archive Teks Bebas) →'}
-                    </a>
-                  )}
-                </motion.div>
-              ))}
-            </div>
+                      <p className="nv-lesson-quote-text text-sm sm:text-base leading-relaxed font-serif italic text-neutral-200 m-0">
+                        &ldquo;{q.highlight ? q.text.replace(q.highlight, `\u00AB${q.highlight}\u00BB`) : q.text}&rdquo;
+                      </p>
+                      <p className="nv-lesson-quote-source text-xs text-neutral-500 font-mono m-0 mt-2">&mdash; {q.source}</p>
+                      {q.translation && language !== 'en' && (
+                        <p className="text-xs text-neutral-400 leading-relaxed border-t border-neutral-900 pt-2 m-0 mt-2">{q.translation}</p>
+                      )}
+                      {lesson.sourceUrl && (
+                        <a
+                          className="nv-lesson-source-link text-xs text-[#d4a053] hover:underline block mt-3"
+                          href={lesson.sourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {language === 'en' ? 'Read Original Lecture Text (Free Text Archive) →' : 'Baca Teks Asli Kuliah (Archive Teks Bebas) →'}
+                        </a>
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
 
-            {/* Daily Practice Panel */}
-            <div className="nv-lesson-practice nv-glass mt-10 p-6 border border-neutral-900">
-              <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest m-0 mb-3">
-                🕯️ {language === 'en' ? 'YOUR DAILY PRACTICE' : 'PRAKTIK HARIAN ANDA'}
-              </h3>
-              <p className="text-sm text-neutral-300 leading-relaxed m-0">{lesson.practice}</p>
-            </div>
+                {/* Daily Practice Panel */}
+                <div className="nv-lesson-practice nv-glass mt-10 p-6 border border-neutral-900">
+                  <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest m-0 mb-3">
+                    🕯️ {language === 'en' ? 'YOUR DAILY PRACTICE' : 'PRAKTIK HARIAN ANDA'}
+                  </h3>
+                  <p className="text-sm text-neutral-300 leading-relaxed m-0">{lesson.practice}</p>
+                </div>
 
-            {/* Key Takeaways Panel */}
-            <div 
-              className="nv-lesson-takeaway mt-6 p-6 border rounded-xl"
-              style={{ background: 'rgba(212,160,83,0.03)', borderColor: 'rgba(212,160,83,0.12)' }}
-            >
-              <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest m-0 mb-3">
-                🔑 {language === 'en' ? 'KEY TAKEAWAYS' : 'POIN UTAMA BACAAN'}
-              </h3>
-              <p className="text-sm sm:text-base font-bold leading-relaxed text-neutral-200 m-0">{lesson.takeaway}</p>
-            </div>
+                {/* Key Takeaways Panel */}
+                <div 
+                  className="nv-lesson-takeaway mt-6 p-6 border rounded-xl"
+                  style={{ background: 'rgba(212,160,83,0.03)', borderColor: 'rgba(212,160,83,0.12)' }}
+                >
+                  <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest m-0 mb-3">
+                    🔑 {language === 'en' ? 'KEY TAKEAWAYS' : 'POIN UTAMA BACAAN'}
+                  </h3>
+                  <p className="text-sm sm:text-base font-bold leading-relaxed text-neutral-200 m-0">{lesson.takeaway}</p>
+                </div>
+              </>
+            )}
 
             {/* Next/Prev Navigation Row */}
             <div className="flex flex-col sm:flex-row gap-4 justify-between mt-12 border-t border-neutral-900 pt-8">
@@ -344,6 +390,10 @@ export default function LessonDetail() {
               {part.lessons.map((l, idx) => {
                 const done = completedLessons.has(l.num)
                 const active = l.num === lesson.num
+                const isLFree = part.id === 'part-1' || 
+                                (part.id === 'part-2' && (idx === 0 || idx === 1)) || 
+                                (part.id !== 'part-1' && part.id !== 'part-2' && idx === 0)
+                const isLLocked = !leadRegistered && !isLFree
                 return (
                   <button
                     key={l.num}
@@ -351,14 +401,15 @@ export default function LessonDetail() {
                       active 
                         ? 'bg-amber-500/10 text-amber-500 font-bold border-l-2 border-amber-500' 
                         : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40'
-                    }`}
+                    } ${isLLocked ? 'opacity-60' : ''}`}
                     onClick={() => useAppStore.getState().openLesson(part.id, l.num)}
                   >
                     <span className="font-mono text-xs font-bold shrink-0 text-amber-500/70 w-8">
                       {l.num}
                     </span>
                     <span className="text-xs truncate flex-1">{l.title}</span>
-                    {done && <span className="text-amber-500 text-xs shrink-0 font-bold">✓</span>}
+                    {isLLocked && <span className="text-neutral-500 text-[10px] shrink-0">🔒</span>}
+                    {done && !isLLocked && <span className="text-amber-500 text-xs shrink-0 font-bold">✓</span>}
                   </button>
                 )
               })}
