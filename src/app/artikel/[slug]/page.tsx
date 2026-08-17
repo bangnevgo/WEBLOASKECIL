@@ -53,19 +53,49 @@ export default async function ArtikelPage({ params }: Props) {
 
   const related = artikel.relatedSlug ? getArtikelBySlug(artikel.relatedSlug) : undefined;
 
+  // GEO: struktur data lengkap (Article + FAQPage + author entity) agar mudah
+  // diekstrak & dikutip oleh mesin jawaban AI (ChatGPT Search, Perplexity, AI Overviews).
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: artikel.title,
-    description: artikel.description,
-    datePublished: artikel.publishedAt,
-    inLanguage: 'id',
-    mainEntityOfPage: `https://nevgoinstitute.com/artikel/${slug}/`,
-    publisher: {
-      '@type': 'Organization',
-      name: 'Nevgo Institute',
-      url: 'https://nevgoinstitute.com',
-    },
+    '@graph': [
+      {
+        '@type': 'Article',
+        headline: artikel.title,
+        description: artikel.description,
+        datePublished: artikel.publishedAt,
+        inLanguage: 'id',
+        mainEntityOfPage: `https://nevgoinstitute.com/artikel/${slug}/`,
+        author: {
+          '@type': 'Person',
+          name: 'Bang Nevgo',
+          url: 'https://nevgoinstitute.com/#bangnevgo',
+          sameAs: [
+            'https://www.tiktok.com/@bangnevgo',
+            'https://www.youtube.com/@bangnevgo',
+            'https://www.instagram.com/nevgoinstitute/',
+          ],
+        },
+        publisher: {
+          '@type': 'Organization',
+          name: 'Nevgo Institute',
+          url: 'https://nevgoinstitute.com',
+          logo: 'https://nevgoinstitute.com/assets/images/nevgo-logo-512.png',
+          sameAs: [
+            'https://www.tiktok.com/@bangnevgo',
+            'https://www.youtube.com/@bangnevgo',
+            'https://www.instagram.com/nevgoinstitute/',
+          ],
+        },
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: artikel.faq.map((f) => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
+      },
+    ],
   };
 
   return (
