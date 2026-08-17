@@ -46,3 +46,19 @@ export function getAllPartSlugs(): { slug: string; partId: string; title: string
   return [...idSlugs, ...enSlugs]
 }
 
+export function getAllLessonSlugs(): { partSlug: string; lessonNum: string; lessonTitle: string; partTitle: string }[] {
+  const results: { partSlug: string; lessonNum: string; lessonTitle: string; partTitle: string }[] = []
+  for (const part of ALL_PARTS_ID) {
+    const partSlug = titleToSlug(part.title)
+    for (const lesson of part.lessons) {
+      results.push({
+        partSlug,
+        lessonNum: lesson.num,
+        lessonTitle: lesson.title,
+        partTitle: part.title,
+      })
+    }
+  }
+  return results
+}
+

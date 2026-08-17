@@ -11,7 +11,7 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-export const dynamic = 'force-dynamic';
+
 
 // Generate static params untuk semua 10 bagian
 export async function generateStaticParams() {
