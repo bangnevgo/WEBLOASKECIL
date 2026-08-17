@@ -11,9 +11,10 @@ interface Props {
   prevPart: { slug: string; title: string; partId?: string } | null;
   nextPart: { slug: string; title: string; partId?: string } | null;
   currentSlug: string;
+  freeIndices: number[];
 }
 
-export default function PartPageClient({ part, prevPart, nextPart }: Props) {
+export default function PartPageClient({ part, prevPart, nextPart, freeIndices }: Props) {
   const { language } = useTranslation();
 
   // Resolve part to active language version
@@ -73,28 +74,48 @@ export default function PartPageClient({ part, prevPart, nextPart }: Props) {
           }
         </h2>
         <ol className="nv-lessons-list">
-          {activePart.lessons.map((lesson, i) => (
-            <li key={lesson.num} className="nv-lesson-item">
-              <div className="nv-lesson-num">{lesson.num}</div>
-              <div className="nv-lesson-content">
-                <h3 className="nv-lesson-title">{lesson.title}</h3>
-                <ul className="nv-lesson-bullets" aria-label={language === 'en' ? 'Main points of lesson' : 'Poin utama pelajaran'}>
-                  {lesson.bullets.map((b, j) => (
-                    <li key={j}>{b}</li>
-                  ))}
-                </ul>
-                {lesson.quotes[0] && (
-                  <blockquote className="nv-lesson-quote">
-                    <p>"{lesson.quotes[0].translation && language !== 'en' ? lesson.quotes[0].translation : lesson.quotes[0].text}"</p>
-                    <cite>— {lesson.quotes[0].source}</cite>
-                  </blockquote>
-                )}
-                <div className="nv-lesson-practice">
-                  <strong>{language === 'en' ? 'Practice:' : 'Praktik:'}</strong> {lesson.practice}
+          {activePart.lessons.map((lesson, i) => {
+            const isFree = freeIndices.includes(i);
+            return (
+              <li key={lesson.num} className={`nv-lesson-item${isFree ? '' : ' nv-lesson-locked'}`} id={`lesson-${lesson.num.replace('.', '-')}`}>
+                <div className="nv-lesson-num">{lesson.num}</div>
+                <div className="nv-lesson-content">
+                  <h3 className="nv-lesson-title">{lesson.title}</h3>
+                  {isFree ? (
+                    <>
+                      <ul className="nv-lesson-bullets" aria-label={language === 'en' ? 'Main points of lesson' : 'Poin utama pelajaran'}>
+                        {lesson.bullets.map((b, j) => (
+                          <li key={j}>{b}</li>
+                        ))}
+                      </ul>
+                      {lesson.quotes[0] && (
+                        <blockquote className="nv-lesson-quote">
+                          <p>"{lesson.quotes[0].translation && language !== 'en' ? lesson.quotes[0].translation : lesson.quotes[0].text}"</p>
+                          <cite>— {lesson.quotes[0].source}</cite>
+                        </blockquote>
+                      )}
+                      <div className="nv-lesson-practice">
+                        <strong>{language === 'en' ? 'Practice:' : 'Praktik:'}</strong> {lesson.practice}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="nv-lesson-gate">
+                      <ul className="nv-lesson-bullets nv-lesson-bullets-preview" aria-label={language === 'en' ? 'Preview' : 'Pratinjau'}>
+                        <li>{lesson.bullets[0]}</li>
+                      </ul>
+                      <div className="nv-lesson-lock-overlay">
+                        <span className="nv-lock-icon">🔒</span>
+                        <p>{language === 'en' ? 'Register for free to unlock this lesson' : 'Daftar gratis untuk membuka pelajaran ini'}</p>
+                        <a href="/?register=1" className="nv-lock-cta">
+                          {language === 'en' ? 'Unlock Free Access →' : 'Buka Akses Gratis →'}
+                        </a>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ol>
       </section>
 
@@ -269,6 +290,40 @@ export default function PartPageClient({ part, prevPart, nextPart }: Props) {
           font-family: 'Georgia', serif;
         }
         .nv-lesson-content { flex: 1; }
+        .nv-lesson-locked { opacity: 0.75; }
+        .nv-lesson-gate { position: relative; }
+        .nv-lesson-bullets-preview { opacity: 0.5; }
+        .nv-lesson-lock-overlay {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.5rem;
+          margin-top: 0.75rem;
+          padding: 0.875rem 1rem;
+          border: 1px solid #2a2a1a;
+          border-radius: 6px;
+          background: #0d0d00;
+        }
+        .nv-lock-icon { font-size: 1rem; }
+        .nv-lesson-lock-overlay p {
+          margin: 0;
+          font-size: 0.85rem;
+          color: #806840;
+        }
+        .nv-lock-cta {
+          display: inline-block;
+          margin-top: 0.25rem;
+          padding: 0.45rem 1rem;
+          border-radius: 4px;
+          background: #c9a84c;
+          color: #000;
+          font-size: 0.8rem;
+          font-weight: bold;
+          text-decoration: none;
+          letter-spacing: 0.03em;
+        }
+        .nv-lock-cta:hover { background: #e0c060; }
+
         .nv-lesson-title {
           font-size: 1.15rem;
           font-weight: normal;

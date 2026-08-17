@@ -1,17 +1,23 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
-import { getPartBySlug, getAllPartSlugs, titleToSlug } from '@/lib/slug-utils';
-import { ALL_PARTS } from '@/lib/curriculum-data';
+import { getPartBySlug, getAllPartSlugs } from '@/lib/slug-utils';
 import PartPageClient from './part-page-client';
-import { hasValidLeadAccess } from '@/lib/lead-access';
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
-
+/**
+ * Lesson access policy:
+ * - Part 1 : semua lesson bebas (index 0–4)
+ * - Part 2 : lesson 1 & 3 bebas (index 0 dan 2)
+ * - Part 3+ : hanya lesson 1 bebas (index 0)
+ */
+function getFreeIndices(partId: string): number[] {
+  if (partId === 'part-1') return [0, 1, 2, 3, 4];
+  if (partId === 'part-2') return [0, 2];
+  return [0];
+}
 
 // Generate static params untuk semua 10 bagian
 export async function generateStaticParams() {
@@ -61,18 +67,13 @@ export default async function PartPage({ params }: Props) {
 
   if (!part) notFound();
 
-  const cookieStore = await cookies();
-
-  // Part 1 (Lesson 1) is always open. Other parts require lead registration.
-  if (part.id !== 'part-1' && !hasValidLeadAccess(cookieStore.get('nv-lead-access')?.value)) {
-    redirect(`/?register=1&next=/belajar/${encodeURIComponent(slug)}`);
-  }
-
   // Cari index part untuk prev/next navigation
   const allSlugs = getAllPartSlugs();
   const currentIndex = allSlugs.findIndex(s => s.slug === slug);
   const prevPart = currentIndex > 0 ? allSlugs[currentIndex - 1] : null;
   const nextPart = currentIndex < allSlugs.length - 1 ? allSlugs[currentIndex + 1] : null;
+
+  const freeIndices = getFreeIndices(part.id);
 
   // JSON-LD Course schema
   const jsonLd = {
@@ -107,6 +108,7 @@ export default async function PartPage({ params }: Props) {
         prevPart={prevPart}
         nextPart={nextPart}
         currentSlug={slug}
+        freeIndices={freeIndices}
       />
     </>
   );
