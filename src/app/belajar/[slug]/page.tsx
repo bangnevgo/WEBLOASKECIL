@@ -10,12 +10,12 @@ interface Props {
 /**
  * Lesson access policy:
  * - Part 1 : semua lesson bebas (index 0–4)
- * - Part 2 : lesson 1 & 3 bebas (index 0 dan 2)
+ * - Part 2 : lesson 1 & 2 bebas (index 0 dan 1)
  * - Part 3+ : hanya lesson 1 bebas (index 0)
  */
 function getFreeIndices(partId: string): number[] {
   if (partId === 'part-1') return [0, 1, 2, 3, 4];
-  if (partId === 'part-2') return [0, 2];
+  if (partId === 'part-2') return [0, 1];
   return [0];
 }
 

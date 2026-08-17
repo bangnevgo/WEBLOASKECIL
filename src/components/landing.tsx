@@ -21,6 +21,7 @@ import dynamic from 'next/dynamic'
 import AiHubSection from '@/components/ai-hub-section'
 import FreeDownloadsSection from '@/components/free-downloads-section'
 import KnowledgeBank from '@/components/knowledge-bank'
+import type { GraphNodeTarget } from '@/components/curriculum-graph-view'
 
 const CurriculumGraphView = dynamic(() => import('@/components/curriculum-graph-view'), {
   ssr: false,
@@ -208,6 +209,43 @@ export default function Landing() {
   const scrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
+
+  // Graph node click → scroll to the related part / open the related lesson
+  // (mirrors the behavior of clicking a lesson card directly)
+  const handleGraphNodeClick = useCallback((target: GraphNodeTarget) => {
+    if (target.type === 'part') {
+      const el = document.getElementById(target.partId)
+      if (!el) return
+      const details = el.querySelector<HTMLDetailsElement>('details.nv-part-cards')
+      if (details && !details.open) details.setAttribute('open', '')
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      return
+    }
+    if (target.type === 'lesson') {
+      const part = curriculumParts.find((p) => p.id === target.partId)
+      const lesson = part?.lessons.find((l) => l.num === target.lessonNum)
+      if (!part || !lesson) return
+      const lessonIdx = part.lessons.findIndex((l) => l.num === target.lessonNum)
+      const isLessonFree = part.id === 'part-1' || 
+                           (part.id === 'part-2' && (lessonIdx === 0 || lessonIdx === 1)) || 
+                           (part.id !== 'part-1' && part.id !== 'part-2' && lessonIdx === 0)
+      const isLessonLocked = isMounted ? (!leadRegistered && !isLessonFree) : !isLessonFree
+      if (isLessonLocked) {
+        setPendingLesson({ partId: part.id, lessonNum: lesson.num })
+        setShowLeadModal(true)
+      } else {
+        useAppStore.getState().openLesson(part.id, lesson.num)
+      }
+      return
+    }
+    if (target.type === 'section') {
+      document.getElementById(target.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      return
+    }
+    if (target.type === 'url') {
+      window.open(target.url, '_blank', 'noopener,noreferrer')
+    }
+  }, [curriculumParts, isMounted, leadRegistered])
 
   return (
     <div className="nv-page" ref={mainRef}>
@@ -687,7 +725,7 @@ export default function Landing() {
 
       {/* ─── CURRICULUM PARTS ─── */}
       <div className="nv-container">
-        <CurriculumGraphView />
+        <CurriculumGraphView onNodeClick={handleGraphNodeClick} />
         <p className="nv-parts-hint">
           ✦ {language === 'en'
             ? `${curriculumParts.length} modules · ${curriculumParts.reduce((n, p) => n + p.lessons.length, 0)} lessons — click a module to explore its contents`
@@ -756,20 +794,22 @@ export default function Landing() {
               {/* Lesson Cards Grid */}
               <div className="nv-grid">
                 {part.lessons.map((lesson, lessonIdx) => {
-                  const isFreePreview = part.id === 'part-1'
-                  const isPartLocked = isMounted ? (!leadRegistered && !isFreePreview) : !isFreePreview
+                  const isLessonFree = part.id === 'part-1' || 
+                                       (part.id === 'part-2' && (lessonIdx === 0 || lessonIdx === 1)) || 
+                                       (part.id !== 'part-1' && part.id !== 'part-2' && lessonIdx === 0)
+                  const isLessonLocked = isMounted ? (!leadRegistered && !isLessonFree) : !isLessonFree
                   return (
                     <motion.div
                       key={lesson.num}
                       className="nv-card nv-glass nv-glow-border"
-                      style={{ position: 'relative', cursor: isPartLocked ? 'pointer' : 'pointer' }}
+                      style={{ position: 'relative', cursor: isLessonLocked ? 'pointer' : 'pointer' }}
                       initial={{ opacity: 0, y: 16 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, margin: '-50px' }}
                       transition={{ duration: 0.4, delay: lessonIdx * 0.05, ease: customEase }}
-                      whileHover={isPartLocked ? { scale: 1.02 } : { y: -4, transition: { duration: 0.2 } }}
+                      whileHover={isLessonLocked ? { scale: 1.02 } : { y: -4, transition: { duration: 0.2 } }}
                       onClick={() => {
-                        if (isPartLocked) {
+                        if (isLessonLocked) {
                           setPendingLesson({ partId: part.id, lessonNum: lesson.num })
                           setShowLeadModal(true)
                         } else {
@@ -777,7 +817,7 @@ export default function Landing() {
                         }
                       }}
                     >
-                      {isPartLocked && (
+                      {isLessonLocked && (
                         <span
                           aria-label={language === 'en' ? 'Register Free to unlock' : 'Daftar Free untuk membuka'}
                           style={{
@@ -1285,99 +1325,62 @@ export default function Landing() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6" style={{ marginTop: 40 }}>
-            {/* Card 1: BN Mentoring (flyer) */}
+          <div className="max-w-3xl mx-auto" style={{ marginTop: 40 }}>
+            {/* Single Combined Flyer Card: Private Zoom & Live Coaching */}
             <motion.div
-              className="nv-cohort-card nv-glass p-6 rounded-2xl flex flex-col"
-              whileHover={{ y: -6, borderColor: 'rgba(212,160,83,0.4)' }}
+              className="nv-cohort-card nv-glass p-4 sm:p-6 rounded-2xl flex flex-col"
+              whileHover={{ y: -4, borderColor: 'rgba(212,160,83,0.4)' }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: '340px' }}
             >
               <a
                 href={'https://wa.me/628989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin konsultasi gratis 30 menit. Tolong bantu pilih program yang cocok.')}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block mb-4 rounded-xl overflow-hidden"
+                className="block mb-6 rounded-xl overflow-hidden shadow-2xl border border-white/5"
               >
-                <img src="/flyers/bn-mentoring.png" alt="BN Mentoring — Konsultasi 2 Jam Bersama Bang Nevgo (Rp 500.000/sesi)" loading="lazy" width={502} height={900} className="w-full h-auto rounded-xl" />
+                <img
+                  src="/flyers/private-zoom-flyer.png"
+                  alt="Private Zoom — Live Coaching On Demand Bersama Bang Nevgo"
+                  loading="lazy"
+                  width={1024}
+                  height={1024}
+                  className="w-full h-auto rounded-xl object-contain hover:scale-[1.01] transition-transform duration-300"
+                />
               </a>
-              <h3 className="nv-cohort-card-title font-outfit font-bold text-lg sm:text-xl text-[#e8e4dc] mb-2">
-                {language === 'en' ? 'BN Mentoring — 2-Hour Private Session' : 'BN Mentoring — Sesi Privat 2 Jam'}
-              </h3>
-              <div className="flex justify-between items-center border-t border-neutral-900 pt-3 mb-3">
-                <span className="text-xs text-neutral-500">{language === 'en' ? 'Investment' : 'Investasi'}</span>
-                <span className="text-sm font-bold text-[#d4a053]">Rp 500.000 / Sesi</span>
-              </div>
-              <div className="mt-auto flex flex-col gap-2">
-                <a
-                  href={'https://wa.me/628989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin konsultasi gratis 30 menit. Tolong bantu pilih program yang cocok.')}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full text-center py-3 bg-[#d4a053] hover:bg-[#c39043] text-black font-extrabold text-xs sm:text-sm rounded-xl transition block"
-                  style={{ textDecoration: 'none' }}
-                >
-                  🎯 {language === 'en' ? 'Free 30-Min Consultation' : 'Konsultasi Gratis 30 Menit'}
-                </a>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 <a
                   href={'https://wa.me/628989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin mendaftar ikut konsultasi 2 jam (BN Mentoring).')}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full text-center py-3 bg-[#25d366] hover:bg-[#20ba5a] text-white font-extrabold text-xs sm:text-sm rounded-xl transition block"
+                  className="w-full text-center py-3 px-4 bg-[#d4a053] hover:bg-[#c39043] text-black font-extrabold text-xs sm:text-sm rounded-xl transition block shadow-md"
                   style={{ textDecoration: 'none' }}
                 >
-                  ⚡ {language === 'en' ? 'Direct via WhatsApp' : 'Langsung via WhatsApp'}
-                </a>
-              </div>
-            </motion.div>
-
-            {/* Card 2: Private ZOOM 101 (flyer) */}
-            <motion.div
-              className="nv-cohort-card nv-glass p-6 rounded-2xl flex flex-col"
-              whileHover={{ y: -6, borderColor: 'rgba(212,160,83,0.4)' }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: '340px' }}
-            >
-              <a
-                href={'https://wa.me/628989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin konsultasi gratis 30 menit. Tolong bantu pilih program yang cocok.')}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block mb-4 rounded-xl overflow-hidden"
-              >
-                <img src="/flyers/private-zoom-101.jpg" alt="Private ZOOM 101 — 4 Sesi Live Zoom Bersama Bang Nevgo (Rp 1.500.000)" loading="lazy" width={900} height={754} className="w-full h-auto rounded-xl" />
-              </a>
-              <h3 className="nv-cohort-card-title font-outfit font-bold text-lg sm:text-xl text-[#e8e4dc] mb-2">
-                {language === 'en' ? 'Private ZOOM 101 — 4 Live Sessions' : 'Private ZOOM 101 — 4 Sesi Live Zoom'}
-              </h3>
-              <div className="flex justify-between items-center border-t border-neutral-900 pt-3 mb-3">
-                <span className="text-xs text-neutral-500">{language === 'en' ? 'Investment' : 'Investasi'}</span>
-                <span className="text-sm font-bold text-[#d4a053]">Rp 1.500.000</span>
-              </div>
-              <div className="mt-auto flex flex-col gap-2">
-                <a
-                  href={'https://wa.me/628989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin konsultasi gratis 30 menit. Tolong bantu pilih program yang cocok.')}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full text-center py-3 bg-[#d4a053] hover:bg-[#c39043] text-black font-extrabold text-xs sm:text-sm rounded-xl transition block"
-                  style={{ textDecoration: 'none' }}
-                >
-                  🎯 {language === 'en' ? 'Free 30-Min Consultation' : 'Konsultasi Gratis 30 Menit'}
+                  ⚡ {language === 'en' ? 'Book Sesi 2 Jam (Rp 500k)' : 'Daftar Sesi Privat 2 Jam (Rp 500rb)'}
                 </a>
                 <a
                   href={'https://wa.me/628989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin ambil kelas Zoom 101.')}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full text-center py-3 bg-[#25d366] hover:bg-[#20ba5a] text-white font-extrabold text-xs sm:text-sm rounded-xl transition block"
+                  className="w-full text-center py-3 px-4 bg-[#25d366] hover:bg-[#20ba5a] text-white font-extrabold text-xs sm:text-sm rounded-xl transition block shadow-md"
                   style={{ textDecoration: 'none' }}
                 >
-                  ⚡ {language === 'en' ? 'Direct via WhatsApp' : 'Langsung via WhatsApp'}
+                  ⚡ {language === 'en' ? 'Book Live Coaching 4 Sesi (Rp 1.5M)' : 'Daftar Live Coaching 4 Sesi (Rp 1,5jt)'}
                 </a>
               </div>
+
+              <a
+                href="https://loas.nevgoinstitute.com/pendampingan-101.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 w-full text-center py-3.5 px-4 bg-gradient-to-r from-[#d4a053]/20 via-[#d4a053]/30 to-[#d4a053]/20 hover:from-[#d4a053]/30 hover:to-[#d4a053]/40 border border-[#d4a053]/50 text-[#f5d590] font-extrabold text-xs sm:text-sm rounded-xl transition block shadow-lg hover:shadow-[#d4a053]/10"
+                style={{ textDecoration: 'none' }}
+              >
+                👑 {language === 'en' ? 'Explore Private 101 Mentoring Program →' : 'Detail Program Pendampingan Private 101 →'}
+              </a>
             </motion.div>
 
           </div>
@@ -1385,17 +1388,17 @@ export default function Landing() {
           {/* Opsi lain: Private 101 Pendampingan + banner konsultasi WA */}
           <div className="mt-8 text-center">
             <p className="text-sm text-neutral-400">
-              {language === 'en' ? 'Other option — ' : 'Opsi lain — '}
+              {language === 'en' ? 'Looking for full 1-on-1 mentorship? ' : 'Butuh pendampingan privat intensif 1-on-1? '}
               <a
-                href={'https://wa.me/628989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin ambil paket pendampingan Private 101.')}
+                href="https://loas.nevgoinstitute.com/pendampingan-101.html"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[#d4a053] font-bold hover:underline"
                 style={{ textDecoration: 'none' }}
               >
-                {language === 'en' ? 'Private 101 Mentoring (Rp 1jt–5jt)' : 'Private 101 Pendampingan (Rp 1jt–5jt)'}
+                {language === 'en' ? 'View Private 101 Mentoring' : 'Lihat Program Pendampingan 101'}
               </a>
-              {language === 'en' ? ' · or ask directly via WhatsApp below.' : ' · atau tanya langsung via WhatsApp di bawah.'}
+              {language === 'en' ? ' · or consult with us directly.' : ' · atau konsultasikan langsung.'}
             </p>
             <a
               href={'https://wa.me/628989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin konsultasi gratis 30 menit. Tolong bantu pilih program yang cocok.')}
@@ -1503,7 +1506,7 @@ export default function Landing() {
             ].map((a) => (
               <a
                 key={a.slug}
-                href={`https://cohort.nevgoinstitute.com/blog/${a.slug}`}
+                href={`https://cohort.nevgoinstitute.com/blog.html#${a.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="nv-blog-bridge-card"
