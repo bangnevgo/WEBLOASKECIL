@@ -19,12 +19,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!artikel) return { title: 'Tidak Ditemukan' };
 
   const url = `https://loas.nevgoinstitute.com/artikel/${slug}`;
+  // Artikel kini di-hosting di domain induk (nevgoinstitute.com) yang punya
+  // aset brand — canonical mengarah ke versi parent agar tidak ada duplikat
+  // konten di Google. Halaman loas tetap live sebagai akses kontekstual.
+  const parentUrl = `https://nevgoinstitute.com/artikel/${slug}/`;
 
   return {
     title: artikel.title,
     description: artikel.description,
     keywords: artikel.keywords,
-    alternates: { canonical: url },
+    alternates: { canonical: parentUrl },
     openGraph: {
       title: artikel.title,
       description: artikel.description,
@@ -56,7 +60,7 @@ export default async function ArtikelPage({ params }: Props) {
     description: artikel.description,
     datePublished: artikel.publishedAt,
     inLanguage: 'id',
-    mainEntityOfPage: `https://loas.nevgoinstitute.com/artikel/${slug}`,
+    mainEntityOfPage: `https://nevgoinstitute.com/artikel/${slug}/`,
     publisher: {
       '@type': 'Organization',
       name: 'Nevgo Institute',
