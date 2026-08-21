@@ -56,8 +56,8 @@ export default function AudioLessonView({ lesson }: Props) {
       <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[#d4a053]/10 blur-[130px] pointer-events-none -z-10" />
 
       {/* Top Navbar */}
-      <nav className="sticky top-0 z-40 bg-[#0a0a0a]/90 backdrop-blur-md border-b border-neutral-900 px-4 sm:px-8 py-3.5 flex items-center justify-between">
-        <div className="flex items-center gap-3 sm:gap-4">
+      <nav className="sticky top-0 z-40 bg-[#070707]/95 backdrop-blur-md border-b border-neutral-900 px-4 sm:px-8 py-2.5 sm:py-3.5 flex items-center justify-between">
+        <div className="flex items-center gap-3">
           <a 
             href="https://nevgoinstitute.com" 
             target="_blank" 
@@ -65,10 +65,10 @@ export default function AudioLessonView({ lesson }: Props) {
             className="flex items-center gap-2 text-xs sm:text-sm font-bold text-white hover:text-[#d4a053] transition"
             title="Kunjungi Website Utama Nevgo Institute"
           >
-            <div className="w-6 h-6 rounded-md bg-gradient-to-br from-[#d4a053] to-[#8a5a1f] flex items-center justify-center text-neutral-950 font-black text-xs shadow">
+            <div className="w-6 h-6 rounded-md bg-gradient-to-br from-[#d4a053] to-[#8a5a1f] flex items-center justify-center text-neutral-950 font-black text-xs shadow shrink-0">
               N
             </div>
-            <span className="font-outfit tracking-wide font-extrabold text-xs sm:text-sm">NEVGO INSTITUTE</span>
+            <span className="font-outfit tracking-wide font-extrabold text-xs sm:text-sm whitespace-nowrap">NEVGO INSTITUTE</span>
           </a>
 
           <span className="text-neutral-700 hidden sm:inline">|</span>
@@ -82,99 +82,84 @@ export default function AudioLessonView({ lesson }: Props) {
           </Link>
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3">
-          <a
-            href="https://nevgoinstitute.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden md:inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold text-neutral-400 hover:text-[#d4a053] transition border border-neutral-800 bg-neutral-950"
-          >
-            <span>nevgoinstitute.com</span>
-            <ExternalLink size={12} className="text-[#d4a053]" />
-          </a>
-
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <button
             onClick={handleCopyLink}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-neutral-900 border border-neutral-800 text-neutral-300 hover:text-white hover:border-neutral-700 transition"
+            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold bg-neutral-900 border border-neutral-800 text-neutral-300 hover:text-white hover:border-neutral-700 transition"
             title="Salin Link"
           >
-            {copied ? <Check size={13} className="text-emerald-400" /> : <Share2 size={13} />}
-            <span>{copied ? 'Tersalin' : 'Salin Link'}</span>
+            {copied ? <Check size={12} className="text-emerald-400" /> : <Share2 size={12} />}
+            <span className="hidden min-[380px]:inline">{copied ? 'Tersalin' : 'Salin'}</span>
           </button>
 
           <button
             onClick={handleShareWhatsApp}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#25D366]/10 border border-[#25D366]/30 text-[#25D366] hover:bg-[#25D366]/20 transition"
+            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-[#25D366]/15 border border-[#25D366]/40 text-[#25D366] hover:bg-[#25D366]/25 transition"
           >
-            <span>Share ke WA</span>
+            <Share2 size={12} />
+            <span>WA</span>
           </button>
         </div>
       </nav>
 
       {/* Main Container */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-        {/* Header Badges with Instant Free 50 Modules CTA */}
-        <div className="flex flex-wrap items-center gap-2 mb-4">
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-widest bg-[#d4a053]/10 border border-[#d4a053]/30 text-[#d4a053]">
-            <Headphones size={12} /> {lesson.category}
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+        {/* Sleek Single Row Metadata */}
+        <div className="flex items-center gap-2 text-[11px] sm:text-xs font-mono mb-3">
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider bg-[#d4a053]/15 text-[#ffd27d] border border-[#d4a053]/30">
+            <Headphones size={11} /> {lesson.category}
           </span>
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-mono font-bold text-neutral-400 bg-neutral-900 border border-neutral-800">
-            <Clock size={12} /> {lesson.duration}
+          <span className="text-neutral-600">·</span>
+          <span className="text-neutral-400 flex items-center gap-1">
+            <Clock size={11} /> {lesson.duration}
           </span>
-
-          {/* 🌟 Mini Mobile-First Hero CTA */}
-          <Link
-            href="/#curriculum"
-            className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider bg-gradient-to-r from-[#d4a053]/20 to-amber-500/25 text-[#ffd27d] border border-[#d4a053]/60 shadow-sm hover:brightness-125 transition ml-auto sm:ml-0"
-          >
-            <Sparkles size={12} className="text-[#ffd27d]" />
-            <span>AKSES FREE MATERI 50 MODUL ➔</span>
-          </Link>
+          <span className="text-neutral-600">·</span>
+          <span className="text-neutral-400">Oleh Bang Nevgo</span>
         </div>
 
         {/* Title & Subtitle */}
-        <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight font-outfit m-0">
+        <h1 className="text-xl min-[400px]:text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight font-outfit m-0">
           {lesson.title}
         </h1>
-        <p className="text-sm sm:text-base text-neutral-400 mt-3 leading-relaxed max-w-2xl">
+        <p className="text-xs sm:text-sm text-neutral-400 mt-2 sm:mt-3 leading-relaxed max-w-2xl">
           {lesson.subtitle}
         </p>
 
         {/* 🎧 Dedicated Audio Player Card */}
         <motion.div 
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mt-8 rounded-2xl overflow-hidden border border-[#d4a053]/30 bg-gradient-to-b from-[#16130e] to-[#0c0c0c] shadow-2xl p-4 sm:p-6"
+          transition={{ duration: 0.4 }}
+          className="mt-5 sm:mt-7 rounded-2xl overflow-hidden border border-[#d4a053]/30 bg-gradient-to-b from-[#16130e] to-[#0c0c0c] shadow-2xl p-4 sm:p-6"
         >
-          <div className="flex items-center justify-between pb-4 mb-4 border-b border-neutral-800/80">
+          <div className="flex items-center justify-between pb-3 mb-3 border-b border-neutral-800/60">
             <div className="flex items-center gap-2">
-              <span className="relative flex h-3 w-3">
+              <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#d4a053] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-[#d4a053]"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#d4a053]"></span>
               </span>
-              <span className="text-xs font-mono font-bold text-[#d4a053] uppercase tracking-wider">
+              <span className="text-[11px] sm:text-xs font-mono font-bold text-[#d4a053] uppercase tracking-wider">
                 Pemutar Audio Khusus
               </span>
             </div>
-            <span className="text-xs text-neutral-500 font-mono">
-              High Quality Stereo (AAC / MP3)
+            <span className="text-[10px] text-neutral-500 font-mono">
+              High Quality Stereo
             </span>
           </div>
 
           <CustomAudioPlayer 
             src={lesson.audioUrl} 
-            title={lesson.title} 
+            title="Audio Bedah Batin" 
             subtitle={`Oleh ${lesson.author.name} · ${lesson.duration}`}
           />
         </motion.div>
 
-        {/* 🚀 Instant Under-Player Mini Banner CTA (Directly visible on Mobile) */}
+        {/* 🚀 Single Prominent Under-Player CTA */}
         <Link
-          href="/#curriculum"
-          className="mt-3.5 w-full py-2.5 px-4 rounded-xl text-xs font-extrabold bg-gradient-to-r from-[#1f180d] via-[#2a1e0f] to-[#1f180d] border border-[#d4a053]/50 text-[#ffd27d] hover:border-[#d4a053] hover:brightness-110 transition flex items-center justify-center gap-2 shadow-lg font-mono tracking-wide group"
+          href="/#knowledge-bank"
+          className="mt-3.5 w-full py-3 px-4 rounded-xl text-xs sm:text-sm font-extrabold bg-gradient-to-r from-[#d4a053] via-[#e6b467] to-[#d4a053] text-neutral-950 hover:brightness-110 transition flex items-center justify-center gap-2 shadow-lg shadow-[#d4a053]/15 font-mono tracking-wide group"
         >
-          <Sparkles size={14} className="text-[#ffd27d]" />
+          <Sparkles size={14} className="text-neutral-950 shrink-0" />
           <span>AKSES FREE MATERI 50 MODUL ➔</span>
         </Link>
 
