@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3000 2>&1 | tee dev.log",
-    "build": "prisma generate && (prisma db push || echo 'prisma db push skipped/failed - DB may be unreachable; Lead table will be created once DATABASE_URL is valid') && next build",
+    "build": "prisma generate && next build",
     "start": "NODE_ENV=production bun .next/standalone/server.js 2>&1 | tee server.log",
     "lint": "eslint .",
     "record:tiktok": "node scripts/record-tiktok-lead-magnet.mjs",

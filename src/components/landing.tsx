@@ -1432,6 +1432,46 @@ export default function Landing() {
               💬 {language === 'en' ? 'Free 30-Min Consultation / Guidance via WhatsApp' : 'Konsultasi Gratis 30 Menit / Bimbingan via WhatsApp'}
             </a>
           </div>
+
+          {/* 🏛️ Founder & Mother Institute Section */}
+          <div className="mt-16 max-w-3xl mx-auto p-6 sm:p-8 rounded-2xl bg-gradient-to-b from-[#16120b] to-[#090807] border border-[#d4a053]/30 shadow-2xl">
+            <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-6 text-center sm:text-left">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-[#d4a053] to-[#7a4f1a] flex items-center justify-center font-black text-neutral-950 text-xl sm:text-2xl shadow-xl shrink-0">
+                BN
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                  <h3 className="font-outfit font-extrabold text-lg sm:text-xl text-white m-0">Bang Nevgo</h3>
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#ffd27d] bg-[#d4a053]/20 px-2 py-0.5 rounded-full border border-[#d4a053]/30">
+                    Founder Nevgo Institute
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm text-neutral-400 mt-2 leading-relaxed m-0">
+                  Praktisi & Peneliti Hukum Asumsi Neville Goddard, Rekayasa Realitas Batin, dan Transformasi Pola Pikir. Didirikan sebagai ekosistem pembelajaran batin terstruktur di Indonesia.
+                </p>
+                <div className="mt-4 flex flex-wrap items-center justify-center sm:justify-start gap-3">
+                  <a
+                    href="https://nevgoinstitute.com/#bangnevgo"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-[#d4a053] text-neutral-950 hover:bg-[#c49247] transition shadow-md"
+                  >
+                    <span>Profil & Riset Bang Nevgo</span>
+                    <span className="text-xs">↗</span>
+                  </a>
+                  <a
+                    href="https://nevgoinstitute.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-neutral-900 border border-neutral-700 text-[#e8e4dc] hover:text-white hover:border-neutral-500 transition"
+                  >
+                    <span>Kunjungi Website Utama (nevgoinstitute.com)</span>
+                    <span className="text-xs text-[#d4a053]">↗</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* ─── FAQ SECTION ─── */}

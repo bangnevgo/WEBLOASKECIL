@@ -14,7 +14,8 @@ import {
   Users, 
   HelpCircle,
   Volume2,
-  ChevronDown
+  ChevronDown,
+  ExternalLink
 } from 'lucide-react'
 import { toast } from 'sonner'
 import CustomAudioPlayer from '@/components/ui/audio-player'
@@ -138,34 +139,6 @@ export default function AudioLessonView({ lesson }: Props) {
         <p className="text-sm sm:text-base text-neutral-400 mt-3 leading-relaxed max-w-2xl">
           {lesson.subtitle}
         </p>
-
-        {/* Speaker Info */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-6 pt-6 border-t border-neutral-900">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#d4a053] to-[#8a5a1f] flex items-center justify-center font-bold text-neutral-950 text-sm shadow-md">
-              BN
-            </div>
-            <div>
-              <div className="text-sm font-bold text-white flex items-center gap-2">
-                <span>{lesson.author.name}</span>
-                <span className="text-[10px] font-mono text-[#d4a053] bg-[#d4a053]/10 px-2 py-0.5 rounded border border-[#d4a053]/20">
-                  Founder
-                </span>
-              </div>
-              <div className="text-xs text-neutral-400">{lesson.author.role}</div>
-            </div>
-          </div>
-
-          <a 
-            href="https://nevgoinstitute.com/#bangnevgo" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs text-neutral-400 hover:text-[#d4a053] transition self-start sm:self-auto font-medium"
-          >
-            <span>Tentang Nevgo Institute</span>
-            <ExternalLink size={12} className="text-[#d4a053]" />
-          </a>
-        </div>
 
         {/* 🎧 Dedicated Audio Player Card */}
         <motion.div 
