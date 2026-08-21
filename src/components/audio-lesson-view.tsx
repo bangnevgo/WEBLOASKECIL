@@ -55,16 +55,43 @@ export default function AudioLessonView({ lesson }: Props) {
       <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[#d4a053]/10 blur-[130px] pointer-events-none -z-10" />
 
       {/* Top Navbar */}
-      <nav className="sticky top-0 z-40 bg-[#0a0a0a]/80 backdrop-blur-md border-b border-neutral-900 px-4 sm:px-8 py-3.5 flex items-center justify-between">
-        <Link 
-          href="/#knowledge-bank" 
-          className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-neutral-400 hover:text-white transition group"
-        >
-          <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform text-[#d4a053]" />
-          <span>Kembali ke Kurikulum LOAS</span>
-        </Link>
+      <nav className="sticky top-0 z-40 bg-[#0a0a0a]/90 backdrop-blur-md border-b border-neutral-900 px-4 sm:px-8 py-3.5 flex items-center justify-between">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <a 
+            href="https://nevgoinstitute.com" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-xs sm:text-sm font-bold text-white hover:text-[#d4a053] transition"
+            title="Kunjungi Website Utama Nevgo Institute"
+          >
+            <div className="w-6 h-6 rounded-md bg-gradient-to-br from-[#d4a053] to-[#8a5a1f] flex items-center justify-center text-neutral-950 font-black text-xs shadow">
+              N
+            </div>
+            <span className="font-outfit tracking-wide font-extrabold text-xs sm:text-sm">NEVGO INSTITUTE</span>
+          </a>
+
+          <span className="text-neutral-700 hidden sm:inline">|</span>
+
+          <Link 
+            href="/#knowledge-bank" 
+            className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-400 hover:text-white transition group"
+          >
+            <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform text-[#d4a053]" />
+            <span>Kurikulum LOAS</span>
+          </Link>
+        </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          <a
+            href="https://nevgoinstitute.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden md:inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold text-neutral-400 hover:text-[#d4a053] transition border border-neutral-800 bg-neutral-950"
+          >
+            <span>nevgoinstitute.com</span>
+            <ExternalLink size={12} className="text-[#d4a053]" />
+          </a>
+
           <button
             onClick={handleCopyLink}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-neutral-900 border border-neutral-800 text-neutral-300 hover:text-white hover:border-neutral-700 transition"
@@ -113,14 +140,31 @@ export default function AudioLessonView({ lesson }: Props) {
         </p>
 
         {/* Speaker Info */}
-        <div className="flex items-center gap-3 mt-6 pt-6 border-t border-neutral-900">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#d4a053] to-[#8a5a1f] flex items-center justify-center font-bold text-neutral-950 text-sm shadow-md">
-            BN
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-6 pt-6 border-t border-neutral-900">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#d4a053] to-[#8a5a1f] flex items-center justify-center font-bold text-neutral-950 text-sm shadow-md">
+              BN
+            </div>
+            <div>
+              <div className="text-sm font-bold text-white flex items-center gap-2">
+                <span>{lesson.author.name}</span>
+                <span className="text-[10px] font-mono text-[#d4a053] bg-[#d4a053]/10 px-2 py-0.5 rounded border border-[#d4a053]/20">
+                  Founder
+                </span>
+              </div>
+              <div className="text-xs text-neutral-400">{lesson.author.role}</div>
+            </div>
           </div>
-          <div>
-            <div className="text-sm font-bold text-white">{lesson.author.name}</div>
-            <div className="text-xs text-neutral-400">{lesson.author.role}</div>
-          </div>
+
+          <a 
+            href="https://nevgoinstitute.com/#bangnevgo" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs text-neutral-400 hover:text-[#d4a053] transition self-start sm:self-auto font-medium"
+          >
+            <span>Tentang Nevgo Institute</span>
+            <ExternalLink size={12} className="text-[#d4a053]" />
+          </a>
         </div>
 
         {/* 🎧 Dedicated Audio Player Card */}

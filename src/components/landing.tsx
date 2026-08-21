@@ -258,7 +258,19 @@ export default function Landing() {
           </div>
 
           {/* Desktop Navigation & Actions */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2.5">
+            {/* Mother Website Link */}
+            <a
+              href="https://nevgoinstitute.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-900/80 hover:bg-neutral-800 border border-neutral-700 text-[#ffd27d] text-xs font-bold rounded-lg transition"
+              title="Kunjungi Website Utama Nevgo Institute"
+            >
+              <span>🏛️ Nevgo Institute</span>
+              <span className="text-[10px] text-[#d4a053]">↗</span>
+            </a>
+
             {/* Toko & Event Lynk.id Link */}
             <a
               href="https://lynk.id/bangnevgo"
@@ -459,6 +471,16 @@ export default function Landing() {
                   Navigasi Utama
                 </div>
                 <div className="flex flex-col gap-1 text-xs">
+                  <a
+                    href="https://nevgoinstitute.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-left py-2 px-3 hover:bg-neutral-900 text-[#ffd27d] rounded-lg transition flex items-center justify-between font-bold"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span>🏛️ Website Utama (nevgoinstitute.com)</span>
+                    <span className="text-[#d4a053] text-[10px]">↗</span>
+                  </a>
                   <button
                     className="text-left py-2 px-3 hover:bg-neutral-900 text-neutral-300 rounded-lg transition flex items-center justify-between"
                     onClick={() => {
@@ -1561,6 +1583,15 @@ export default function Landing() {
             </ul>
           </div>
           <div className="nv-footer-col">
+            <h4 className="nv-footer-col-title">Nevgo Institute</h4>
+            <ul className="nv-footer-col-links">
+              <li><a href="https://nevgoinstitute.com" target="_blank" rel="noopener noreferrer">Website Utama (nevgoinstitute.com) ↗</a></li>
+              <li><a href="https://nevgoinstitute.com/artikel" target="_blank" rel="noopener noreferrer">Hub Artikel &amp; GEO ↗</a></li>
+              <li><a href="https://cohort.nevgoinstitute.com" target="_blank" rel="noopener noreferrer">Program Cohort ↗</a></li>
+              <li><a href="https://lynk.id/bangnevgo" target="_blank" rel="noopener noreferrer">Toko Ebook &amp; Event ↗</a></li>
+            </ul>
+          </div>
+          <div className="nv-footer-col">
             <h4 className="nv-footer-col-title">{t('footerColLegal')}</h4>
             <ul className="nv-footer-col-links">
               <li><a href="https://wa.me/628989221700" target="_blank" rel="noopener noreferrer">{language === 'en' ? 'Terms & Conditions' : 'Syarat & Ketentuan'}</a></li>
@@ -1586,7 +1617,7 @@ export default function Landing() {
         </div>
 
         <div className="nv-footer-bottom">
-          <span>{t('footerRights').replace('{year}', new Date().getFullYear().toString())}</span>
+          <span>{t('footerRights').replace('{year}', new Date().getFullYear().toString())} · Mother Website: <a href="https://nevgoinstitute.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--nv-gold)', textDecoration: 'underline' }}>nevgoinstitute.com</a></span>
           <span className="nv-footer-bottom-accent">{t('footerMadeWith')}</span>
         </div>
 
