@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1080, height=1920, initial-scale=1.0">
+  <title>TikTok iPad Pro POV Mockup Player</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      width: 1080px;
+      height: 1920px;
+      background: #050507;
+      overflow: hidden;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      position: relative;
+    }
+
+    /* Background Lifestyle iPad POV */
+    .pov-container {
+      position: absolute;
+      inset: 0;
+      background: url('tablet_mockup.jpg') no-repeat center center;
+      background-size: cover;
+      transform-origin: 52% 52%;
+      transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    /* iPad Screen Display Layer */
+    .ipad-screen-embed {
+      position: absolute;
+      left: 240px;
+      top: 480px;
+      width: 480px;
+      height: 660px;
+      border-radius: 24px;
+      overflow: hidden;
+      background: #08080a;
+      transform: rotate(-3.5deg) skew(-1.5deg);
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.9), 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 35px rgba(212, 160, 83, 0.25);
+    }
+
+    .ipad-screen-embed video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.03);
+    }
+
+    /* Zoom Camera States */
+    .zoom-normal {
+      transform: scale(1) translateY(0);
+    }
+
+    .zoom-close {
+      transform: scale(1.6) translateY(-80px);
+    }
+
+    .zoom-ultra-close {
+      transform: scale(2.05) translateY(-140px);
+    }
+
+    /* Top/Bottom Kinetic Text Overlays */
+    .overlay-hud {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 120px 48px 240px 48px;
+      text-align: center;
+    }
+
+    .hud-top, .hud-bottom {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .kinetic-badge {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #d4a053;
+      background: rgba(8, 8, 12, 0.88);
+      border: 1.5px solid rgba(212, 160, 83, 0.6);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.7), 0 0 20px rgba(212, 160, 83, 0.3);
+      padding: 10px 28px;
+      border-radius: 999px;
+      margin-bottom: 16px;
+      backdrop-filter: blur(12px);
+    }
+
+    .kinetic-card {
+      background: rgba(8, 8, 12, 0.92);
+      border: 2px solid rgba(212, 160, 83, 0.4);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95), 0 0 40px rgba(212, 160, 83, 0.35);
+      backdrop-filter: blur(16px);
+      border-radius: 26px;
+      padding: 28px 36px;
+      max-width: 960px;
+      width: 100%;
+    }
+
+    .kinetic-title {
+      font-size: 44px;
+      font-weight: 900;
+      line-height: 1.25;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+    }
+
+    .gold-glow {
+      color: #ffd700;
+      background: linear-gradient(135deg, #ffe066 0%, #d4a053 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 16px rgba(212, 160, 83, 0.6));
+    }
+
+    .kinetic-sub {
+      font-size: 26px;
+      font-weight: 700;
+      color: #d1d5db;
+      margin-top: 10px;
+      line-height: 1.35;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="povWrap" class="pov-container zoom-normal">
+    <!-- Live screen video playing inside iPad display -->
+    <div class="ipad-screen-embed">
+      <video id="liveScreenVid" src="LOAS_LIVE_TIKTOK_FINAL_SIAP_POST.mp4" muted autoplay playsinline loop></video>
+    </div>
+  </div>
+
+  <div class="overlay-hud">
+    <div class="hud-top">
+      <div id="kineticBadge" class="kinetic-badge">01 • HOOK</div>
+      <div class="kinetic-card">
+        <div id="kineticTitle" class="kinetic-title">
+          Belajar Manifestasi<br><span class="gold-glow">JANGAN CUMA DARI POTONGAN KONTEN</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hud-bottom">
+      <div class="kinetic-card">
+        <div id="kineticSub" class="kinetic-sub">
+          Akses materi terstruktur & bertahap di website resmi LOAS
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const povWrap = document.getElementById('povWrap');
+    const badge = document.getElementById('kineticBadge');
+    const title = document.getElementById('kineticTitle');
+    const sub = document.getElementById('kineticSub');
+    const vid = document.getElementById('liveScreenVid');
+
+    const timeline = [
+      {
+        t: 0,
+        zoom: 'zoom-normal',
+        badge: '01 • HOOK',
+        title: 'Belajar Manifestasi<br><span class="gold-glow">JANGAN CUMA DARI POTONGAN KONTEN</span>',
+        sub: 'Buka kurikulum terstruktur langsung di website resmi LOAS'
+      },
+      {
+        t: 3,
+        zoom: 'zoom-close',
+        badge: '02 • MASALAH 1',
+        title: 'Banyak orang <span class="gold-glow">langsung praktik…</span>',
+        sub: 'Tanpa memahami fondasi dasarnya dengan tepat'
+      },
+      {
+        t: 6,
+        zoom: 'zoom-close',
+        badge: '03 • MASALAH 2',
+        title: 'Tapi tidak memahami<br><span class="gold-glow">TEORINYA DENGAN BENAR</span>',
+        sub: 'Hanya mengandalkan potongan video pendek di medsos'
+      },
+      {
+        t: 10,
+        zoom: 'zoom-normal',
+        badge: '04 • KONSEKUENSI',
+        title: 'Saat muncul hambatan...',
+        sub: 'Akhirnya bingung harus bagaimana & berhenti di tengah jalan'
+      },
+      {
+        t: 13,
+        zoom: 'zoom-close',
+        badge: '05 • PEMBEDA',
+        title: 'Disusun dari<br><span class="gold-glow">PENGALAMAN MEMBIMBING</span>',
+        sub: 'Bukan sekadar rangkuman teori buku'
+      },
+      {
+        t: 18,
+        zoom: 'zoom-ultra-close',
+        badge: '06 • KURIKULUM',
+        title: '<span class="gold-glow">10 MODUL • 49 PELAJARAN</span>',
+        sub: 'Tersusun bertahap & terstruktur dari dasar hingga mahir'
+      },
+      {
+        t: 23,
+        zoom: 'zoom-close',
+        badge: '07 • PENAWARAN',
+        title: 'Dapatkan<br><span class="gold-glow">FREE AKSES KE SELURUH MATERI</span>',
+        sub: 'Buka semua modul pembelajaran tanpa biaya'
+      },
+      {
+        t: 26,
+        zoom: 'zoom-ultra-close',
+        badge: '08 • DAFTAR SEKARANG',
+        title: '👉 <span class="gold-glow">KLIK LINK DI BIO</span>',
+        sub: 'Daftar Free → Langsung Buka 10 Modul & 49 Pelajaran'
+      }
+    ];
+
+    function checkTime() {
+      const cur = vid.currentTime;
+      for (let i = timeline.length - 1; i >= 0; i--) {
+        if (cur >= timeline[i].t) {
+          const item = timeline[i];
+          povWrap.className = 'pov-container ' + item.zoom;
+          badge.textContent = item.badge;
+          title.innerHTML = item.title;
+          sub.innerHTML = item.sub;
+          break;
+        }
+      }
+      requestAnimationFrame(checkTime);
+    }
+    requestAnimationFrame(checkTime);
+  </script>
+</body>
+</html>

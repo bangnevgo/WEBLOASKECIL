@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preview Video TikTok Lead Magnet LOAS (9:16)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Cinzel:wght@600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #070709;
+      --card-dark: #111116;
+      --gold: #d4a053;
+      --gold-glow: rgba(212, 160, 83, 0.4);
+      --text-white: #ffffff;
+      --text-muted: #9ca3af;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #030304;
+      color: #e5e7eb;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      overflow-x: hidden;
+    }
+
+    .header-bar {
+      text-align: center;
+      margin-bottom: 20px;
+      max-width: 600px;
+    }
+
+    .header-bar h1 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .header-bar h1 span.gold {
+      color: var(--gold);
+    }
+
+    .header-bar p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .preview-container {
+      display: flex;
+      flex-direction: row;
+      gap: 32px;
+      align-items: flex-start;
+      justify-content: center;
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    /* TikTok Phone Frame (9:16) */
+    .phone-wrapper {
+      position: relative;
+      width: 360px;
+      height: 640px;
+      background: #000;
+      border-radius: 40px;
+      border: 8px solid #22222a;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 30px var(--gold-glow);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    /* Notch */
+    .phone-notch {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 20px;
+      background: #22222a;
+      border-radius: 12px;
+      z-index: 50;
+    }
+
+    .screen-content {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: #08080a;
+      overflow: hidden;
+    }
+
+    /* Background Simulated Web Visual */
+    .scene-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      transition: opacity 0.5s ease, transform 0.8s ease;
+      opacity: 0.4;
+      transform: scale(1.02);
+    }
+
+    .scene-gradient {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(212, 160, 83, 0.15) 0%, rgba(7, 7, 9, 0.85) 70%, #070709 100%);
+      pointer-events: none;
+    }
+
+    /* Kinetic Text Display */
+    .kinetic-box {
+      position: absolute;
+      top: 35%;
+      left: 20px;
+      right: 50px; /* Leave space for TikTok right action buttons */
+      transform: translateY(-50%);
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .kinetic-badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: rgba(212, 160, 83, 0.15);
+      border: 1px solid rgba(212, 160, 83, 0.3);
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      backdrop-filter: blur(8px);
+    }
+
+    .kinetic-title {
+      font-size: 1.45rem;
+      font-weight: 900;
+      line-height: 1.25;
+      color: #ffffff;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.9);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .kinetic-title .highlight {
+      color: var(--gold);
+      background: linear-gradient(135deg, #ffd700, #d4a053);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .kinetic-sub {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #d1d5db;
+      margin-top: 10px;
+      line-height: 1.4;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    }
+
+    /* TikTok UI Overlay Simulation */
+    .tiktok-ui {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 30;
+    }
+
+    .tiktok-top {
+      position: absolute;
+      top: 36px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .tiktok-top .active {
+      color: #fff;
+      border-bottom: 2px solid #fff;
+      padding-bottom: 2px;
+    }
+
+    .tiktok-right {
+      position: absolute;
+      right: 12px;
+      bottom: 90px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .tiktok-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 600;
+    }
+
+    .tiktok-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .tiktok-bottom {
+      position: absolute;
+      bottom: 20px;
+      left: 16px;
+      right: 70px;
+      color: #fff;
+    }
+
+    .tiktok-account {
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tiktok-caption {
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.85);
+      margin-top: 4px;
+      line-height: 1.3;
+    }
+
+    .tiktok-audio {
+      font-size: 0.65rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Safe Area Guide Box */
+    .safe-area-overlay {
+      position: absolute;
+      inset: 0;
+      border-top: 75px dashed rgba(239, 68, 68, 0.6);
+      border-bottom: 125px dashed rgba(239, 68, 68, 0.6);
+      border-right: 55px dashed rgba(239, 68, 68, 0.6);
+      border-left: 12px dashed rgba(239, 68, 68, 0.6);
+      pointer-events: none;
+      z-index: 40;
+      display: none;
+    }
+
+    .safe-area-overlay.visible {
+      display: block;
+    }
+
+    .safe-area-label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: rgba(239, 68, 68, 0.8);
+      background: rgba(0, 0, 0, 0.7);
+      padding: 4px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* Controller Panel */
+    .control-panel {
+      flex: 1;
+      background: var(--card-dark);
+      border: 1px solid #1f1f28;
+      border-radius: 20px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 500px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-header h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .time-badge {
+      font-family: monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--gold);
+      background: rgba(212, 160, 83, 0.1);
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(212, 160, 83, 0.2);
+    }
+
+    .timeline-slider-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .timeline-slider {
+      width: 100%;
+      -webkit-appearance: none;
+      height: 6px;
+      border-radius: 3px;
+      background: #272732;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .timeline-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 10px var(--gold);
+      cursor: pointer;
+    }
+
+    .timeline-ticks {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      font-family: monospace;
+    }
+
+    .play-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #d4a053, #b8862d);
+      color: #000;
+      flex: 1;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: #1e1e28;
+      color: #e5e7eb;
+      border: 1px solid #2d2d3c;
+    }
+
+    .btn-secondary:hover {
+      background: #292938;
+    }
+
+    .scene-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 280px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+
+    .scene-list::-webkit-scrollbar {
+      width: 4px;
+    }
+    .scene-list::-webkit-scrollbar-thumb {
+      background: #2d2d3c;
+      border-radius: 4px;
+    }
+
+    .scene-item {
+      padding: 10px 12px;
+      background: #0d0d12;
+      border: 1px solid #1c1c24;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .scene-item:hover, .scene-item.active {
+      border-color: var(--gold);
+      background: rgba(212, 160, 83, 0.08);
+    }
+
+    .scene-item .info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .scene-item .time {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--gold);
+      font-family: monospace;
+    }
+
+    .scene-item .name {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .checklist-card {
+      background: #0d0d12;
+      border: 1px solid #1e1e28;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .checklist-card ul {
+      list-style-type: none;
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .checklist-card li {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .checklist-card li span.ok {
+      color: #10b981;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-bar">
+    <h1>✦ <span class="gold">LOAS</span> TikTok Video Preview</h1>
+    <p>Simulasi Interaktif 9:16 Storyboard Lead Magnet (Durasi: 30 Detik)</p>
+  </div>
+
+  <div class="preview-container">
+    <!-- TikTok Vertical Mockup -->
+    <div class="phone-wrapper">
+      <div class="phone-notch"></div>
+
+      <div class="screen-content">
+        <!-- Background Mockup -->
+        <div id="sceneBg" class="scene-bg"></div>
+        <div class="scene-gradient"></div>
+
+        <!-- Safe Area Overlay -->
+        <div id="safeArea" class="safe-area-overlay">
+          <div class="safe-area-label">TikTok Safe Zone</div>
+        </div>
+
+        <!-- Kinetic Text Content -->
+        <div class="kinetic-box">
+          <div id="kineticBadge" class="kinetic-badge">01 • HOOK</div>
+          <div id="kineticTitle" class="kinetic-title">
+            “Belajar manifestasi <span class="highlight">jangan cuma</span> dari potongan konten.”
+          </div>
+          <div id="kineticSub" class="kinetic-sub">
+            Potongan konten singkat bergerak cepat → halaman utama LOAS
+          </div>
+        </div>
+
+        <!-- Simulated TikTok Interface -->
+        <div class="tiktok-ui">
+          <div class="tiktok-top">
+            <span>Following</span>
+            <span class="active">For You</span>
+          </div>
+
+          <div class="tiktok-right">
+            <div class="tiktok-btn">
+              <div class="tiktok-icon">❤️</div>
+              <span>48.2K</span>
+            </div>
+            <div class="tiktok-btn">
+              <div class="tiktok-icon">💬</div>
+              <span>1.8K</span>
+            </div>
+            <div class="tiktok-btn">
+              <div class="tiktok-icon">🔖</div>
+              <span>12.4K</span>
+            </div>
+            <div class="tiktok-btn">
+              <div class="tiktok-icon">↗️</div>
+              <span>Share</span>
+            </div>
+          </div>
+
+          <div class="tiktok-bottom">
+            <div class="tiktok-account">@bangnevgo ✦</div>
+            <div class="tiktok-caption">Materi Hukum Asumsi tersusun bertahap. FREE AKSES 10 Modul • 49 Pelajaran di link bio 🔗 #manifestasi #lawofassumption</div>
+            <div class="tiktok-audio">🎵 Instrumental Motivational Modern - LOAS Original</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline & Play Controller -->
+    <div class="control-panel">
+      <div class="panel-header">
+        <h2>Storyboard Controller</h2>
+        <span id="timeDisplay" class="time-badge">00:00 / 00:30</span>
+      </div>
+
+      <div class="timeline-slider-wrap">
+        <input type="range" id="timeSlider" class="timeline-slider" min="0" max="30" step="0.1" value="0">
+        <div class="timeline-ticks">
+          <span>0s</span>
+          <span>6s</span>
+          <span>13s (Beat Drop)</span>
+          <span>23s (Offer)</span>
+          <span>30s (CTA)</span>
+        </div>
+      </div>
+
+      <div class="play-buttons">
+        <button id="playBtn" class="btn btn-primary">▶ Play Video</button>
+        <button id="safeAreaBtn" class="btn btn-secondary">🛡 Toggle Safe Area</button>
+      </div>
+
+      <div class="scene-list" id="sceneList">
+        <!-- Generated Dynamically -->
+      </div>
+
+      <div class="checklist-card">
+        <strong>📋 Compliance & Quality Checklist</strong>
+        <ul>
+          <li><span class="ok">✓</span> Menggunakan istilah <strong>FREE AKSES</strong> (bukan gratis).</li>
+          <li><span class="ok">✓</span> Klaim kuantitas valid: <strong>10 Modul • 49 Pelajaran</strong>.</li>
+          <li><span class="ok">✓</span> Tidak menjanjikan hasil instan/finansial/penyembuhan.</li>
+          <li><span class="ok">✓</span> Form CTA akhir bertahan 3+ detik.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const scenes = [
+      {
+        id: 1,
+        start: 0,
+        end: 3,
+        badge: "01 • HOOK (0–3s)",
+        title: "“Belajar manifestasi <span class='highlight'>jangan cuma</span> dari potongan konten.”",
+        sub: "Visual: Fast-paced reels montage lalu mendarat di landing page LOAS.",
+        bg: "radial-gradient(circle at center, #1a1a24 0%, #08080a 100%)"
+      },
+      {
+        id: 2,
+        start: 3,
+        end: 6,
+        badge: "02 • MASALAH 1 (3–6s)",
+        title: "“Banyak orang <span class='highlight'>langsung praktik…</span>”",
+        sub: "Visual: Teks kinetik muncul cepat di atas visual modul & overview.",
+        bg: "radial-gradient(circle at center, #18151f 0%, #070709 100%)"
+      },
+      {
+        id: 3,
+        start: 6,
+        end: 10,
+        badge: "03 • MASALAH 2 (6–10s)",
+        title: "“Tapi <span class='highlight'>tidak memahami teorinya</span> dengan benar.”",
+        sub: "Visual: Smooth scrolling menuju struktur kurikulum pembelajaran bertahap.",
+        bg: "radial-gradient(circle at center, #1b1622 0%, #070709 100%)"
+      },
+      {
+        id: 4,
+        start: 10,
+        end: 13,
+        badge: "04 • KONSEKUENSI (10–13s)",
+        title: "“Saat muncul hambatan, akhirnya <span class='highlight'>tidak tahu harus bagaimana.</span>”",
+        sub: "Visual: Freeze/slow-motion untuk memberi tekanan & empati pada kendala pemula.",
+        bg: "radial-gradient(circle at center, #141419 0%, #070709 100%)"
+      },
+      {
+        id: 5,
+        start: 13,
+        end: 18,
+        badge: "05 • PEMBEDA (13–18s) 🎵 BEAT UP",
+        title: "“Materi ini disusun dari <span class='highlight'>pengalaman membimbing</span>—bukan rangkuman buku.”",
+        sub: "Visual: Profil Bang Nevgo + cuplikan lesson overview yang tersusun rapi.",
+        bg: "radial-gradient(circle at center, #241c10 0%, #070709 100%)"
+      },
+      {
+        id: 6,
+        start: 18,
+        end: 23,
+        badge: "06 • BUKTI PRODUK (18–23s)",
+        title: "<span class='highlight'>10 MODUL • 49 PELAJARAN</span>",
+        sub: "Teks pendukung: “Tersusun bertahap.” Visual: Montage daftar lesson & roadmap materi.",
+        bg: "radial-gradient(circle at center, #2a1f0d 0%, #070709 100%)"
+      },
+      {
+        id: 7,
+        start: 23,
+        end: 26,
+        badge: "07 • PENAWARAN (23–26s)",
+        title: "“Dapatkan <span class='highlight'>FREE AKSES</span> ke seluruh materi.”",
+        sub: "Visual: Aksen emas menguat, tombol 'Daftar Free' di-highlight & glow.",
+        bg: "radial-gradient(circle at center, #35260f 0%, #070709 100%)"
+      },
+      {
+        id: 8,
+        start: 26,
+        end: 30,
+        badge: "08 • CTA FINAL (26–30s)",
+        title: "👉 <span class='highlight'>Klik link di bio</span><br><span style='font-size:1.05rem; font-weight:700;'>Daftar Free → Buka 10 Modul</span>",
+        sub: "Visual: Klik Daftar Free → Form pendaftaran (Nama, Email, WhatsApp) aktif.",
+        bg: "radial-gradient(circle at center, #2e210c 0%, #070709 100%)"
+      }
+    ];
+
+    const timeSlider = document.getElementById('timeSlider');
+    const timeDisplay = document.getElementById('timeDisplay');
+    const playBtn = document.getElementById('playBtn');
+    const safeAreaBtn = document.getElementById('safeAreaBtn');
+    const safeArea = document.getElementById('safeArea');
+    const kineticBadge = document.getElementById('kineticBadge');
+    const kineticTitle = document.getElementById('kineticTitle');
+    const kineticSub = document.getElementById('kineticSub');
+    const sceneBg = document.getElementById('sceneBg');
+    const sceneList = document.getElementById('sceneList');
+
+    let isPlaying = false;
+    let playInterval = null;
+    let currentTime = 0;
+
+    // Render Scene List Items
+    scenes.forEach((sc) => {
+      const item = document.createElement('div');
+      item.className = 'scene-item';
+      item.id = `scene-item-${sc.id}`;
+      item.innerHTML = `
+        <div class="info">
+          <span class="time">${sc.start}s – ${sc.end}s</span>
+          <span class="name">${sc.badge}</span>
+        </div>
+        <span style="font-size: 0.7rem; color: #888;">▶</span>
+      `;
+      item.onclick = () => {
+        seekTo(sc.start);
+      };
+      sceneList.appendChild(item);
+    });
+
+    function updateScene(t) {
+      const scene = scenes.find(s => t >= s.start && t < s.end) || scenes[scenes.length - 1];
+      kineticBadge.innerHTML = scene.badge;
+      kineticTitle.innerHTML = scene.title;
+      kineticSub.innerHTML = scene.sub;
+      sceneBg.style.background = scene.bg;
+
+      // Update active highlight on scene list
+      document.querySelectorAll('.scene-item').forEach(el => el.classList.remove('active'));
+      const activeEl = document.getElementById(`scene-item-${scene.id}`);
+      if (activeEl) activeEl.classList.add('active');
+
+      const sec = Math.floor(t);
+      const ms = Math.floor((t % 1) * 10);
+      timeDisplay.textContent = `00:${sec < 10 ? '0' + sec : sec}.${ms} / 00:30`;
+      timeSlider.value = t;
+    }
+
+    function seekTo(t) {
+      currentTime = t;
+      updateScene(t);
+    }
+
+    timeSlider.addEventListener('input', (e) => {
+      currentTime = parseFloat(e.target.value);
+      updateScene(currentTime);
+    });
+
+    playBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        pause();
+      } else {
+        play();
+      }
+    });
+
+    function play() {
+      isPlaying = true;
+      playBtn.textContent = '⏸ Pause';
+      playBtn.style.background = '#e5e7eb';
+      playBtn.style.color = '#000';
+
+      const intervalMs = 50;
+      playInterval = setInterval(() => {
+        currentTime += intervalMs / 1000;
+        if (currentTime >= 30) {
+          currentTime = 30;
+          pause();
+        }
+        updateScene(currentTime);
+      }, intervalMs);
+    }
+
+    function pause() {
+      isPlaying = false;
+      playBtn.textContent = '▶ Play Video';
+      playBtn.style.background = 'linear-gradient(135deg, #d4a053, #b8862d)';
+      playBtn.style.color = '#000';
+      if (playInterval) clearInterval(playInterval);
+    }
+
+    safeAreaBtn.addEventListener('click', () => {
+      safeArea.classList.toggle('visible');
+      safeAreaBtn.classList.toggle('btn-primary');
+    });
+
+    // Initial render
+    updateScene(0);
+  </script>
+</body>
+</html>

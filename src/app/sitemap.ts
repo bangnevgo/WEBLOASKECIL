@@ -38,6 +38,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })
   );
 
+  // Audio lessons
+  const audioEntries = [
+    {
+      url: `${baseUrl}/audio/tubuh-anda-kecanduan-masa-lalu`,
+      lastModified: '2026-08-21',
+      changeFrequency: 'weekly' as const,
+      priority: 0.85,
+    }
+  ];
+
   return [
     {
       url: baseUrl,
@@ -63,6 +73,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.9,
     },
+    ...audioEntries,
     ...artikelEntries,
     ...partEntries,
   ];

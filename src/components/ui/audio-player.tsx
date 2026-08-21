@@ -12,7 +12,8 @@ interface AudioPlayerProps {
 }
 
 export default function AudioPlayer({ src, audioSrc, title, subtitle = '', onComplete }: AudioPlayerProps) {
-  const finalSrc = src || audioSrc || ''
+  const initialSrc = src || audioSrc || ''
+  const [currentSrc, setCurrentSrc] = useState(initialSrc)
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -24,10 +25,17 @@ export default function AudioPlayer({ src, audioSrc, title, subtitle = '', onCom
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const sliderRef = useRef<HTMLDivElement>(null)
 
+  // Sync currentSrc when prop changes
+  useEffect(() => {
+    if (initialSrc) {
+      setCurrentSrc(initialSrc)
+    }
+  }, [initialSrc])
+
   // Initialize audio
   useEffect(() => {
-    if (!finalSrc) return
-    const audio = new Audio(finalSrc)
+    if (!currentSrc) return
+    const audio = new Audio(currentSrc)
     audioRef.current = audio
 
     const onTimeUpdate = () => setCurrentTime(audio.currentTime)
@@ -41,24 +49,42 @@ export default function AudioPlayer({ src, audioSrc, title, subtitle = '', onCom
         if (onComplete) onComplete()
       }
     }
+    const onError = () => {
+      // If remote CDN fails (404/CORS), gracefully fallback to local asset
+      if (currentSrc.startsWith('http') && currentSrc !== '/audio/tubuh-anda-kecanduan-masa-lalu.mp3') {
+        console.warn('Remote audio unavailable, falling back to local asset...')
+        setCurrentSrc('/audio/tubuh-anda-kecanduan-masa-lalu.mp3')
+      } else {
+        setIsPlaying(false)
+      }
+    }
 
     audio.addEventListener('timeupdate', onTimeUpdate)
     audio.addEventListener('loadedmetadata', onLoadedMetadata)
     audio.addEventListener('ended', onEnded)
+    audio.addEventListener('error', onError)
 
     // Apply initial settings
     audio.playbackRate = playbackSpeed
     audio.loop = isLooping
     audio.volume = isMuted ? 0 : volume
 
+    audio.play()
+      .then(() => setIsPlaying(true))
+      .catch(() => {
+        // Autoplay prevented by browser policy until user clicks play
+        setIsPlaying(false)
+      })
+
     return () => {
       audio.pause()
       audio.removeEventListener('timeupdate', onTimeUpdate)
       audio.removeEventListener('loadedmetadata', onLoadedMetadata)
       audio.removeEventListener('ended', onEnded)
+      audio.removeEventListener('error', onError)
       audioRef.current = null
     }
-  }, [src, onComplete])
+  }, [currentSrc, onComplete])
 
   // Sync speed, loop, volume
   useEffect(() => {

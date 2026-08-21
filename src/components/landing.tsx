@@ -1368,7 +1368,7 @@ export default function Landing() {
                   className="w-full text-center py-3 px-4 bg-[#25d366] hover:bg-[#20ba5a] text-white font-extrabold text-xs sm:text-sm rounded-xl transition block shadow-md"
                   style={{ textDecoration: 'none' }}
                 >
-                  ⚡ {language === 'en' ? 'Book Live Coaching 4 Sesi (Rp 1.5M)' : 'Daftar Live Coaching 4 Sesi (Rp 1,5jt)'}
+                  ⚡ {language === 'en' ? 'Book Live Coaching 4 Sesi (Rp 1M)' : 'Daftar Live Coaching 4 Sesi (Rp 1jt)'}
                 </a>
               </div>
 
@@ -1379,13 +1379,13 @@ export default function Landing() {
                 className="mt-3 w-full text-center py-3.5 px-4 bg-gradient-to-r from-[#d4a053]/20 via-[#d4a053]/30 to-[#d4a053]/20 hover:from-[#d4a053]/30 hover:to-[#d4a053]/40 border border-[#d4a053]/50 text-[#f5d590] font-extrabold text-xs sm:text-sm rounded-xl transition block shadow-lg hover:shadow-[#d4a053]/10"
                 style={{ textDecoration: 'none' }}
               >
-                👑 {language === 'en' ? 'Explore Private 101 Mentoring Program →' : 'Detail Program Pendampingan Private 101 →'}
+                👑 {language === 'en' ? 'Explore Private 101 — Non-Zoom Mentoring →' : 'Detail Private 101 — Non-Zoom (Pendampingan) →'}
               </a>
             </motion.div>
 
           </div>
 
-          {/* Opsi lain: Private 101 Pendampingan + banner konsultasi WA */}
+          {/* Opsi lain: Private 101 — Non-Zoom + banner konsultasi WA */}
           <div className="mt-8 text-center">
             <p className="text-sm text-neutral-400">
               {language === 'en' ? 'Looking for full 1-on-1 mentorship? ' : 'Butuh pendampingan privat intensif 1-on-1? '}
@@ -1396,7 +1396,7 @@ export default function Landing() {
                 className="text-[#d4a053] font-bold hover:underline"
                 style={{ textDecoration: 'none' }}
               >
-                {language === 'en' ? 'View Private 101 Mentoring' : 'Lihat Program Pendampingan 101'}
+                {language === 'en' ? 'View Private 101 — Non-Zoom Mentoring' : 'Lihat Private 101 — Non-Zoom (Pendampingan)'}
               </a>
               {language === 'en' ? ' · or consult with us directly.' : ' · atau konsultasikan langsung.'}
             </p>

@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useRef, useEffect, useMemo, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import { ZoomIn, ZoomOut, RotateCcw } from 'lucide-react'
 
 // ECharts Type declaration
@@ -31,13 +30,132 @@ const UI_TRANSLATIONS = {
   id: {
     title: 'Hukum Asumsi — Second Brain',
     subtitle: 'Graf pengetahuan kurikulum lengkap ajaran & praktik Neville Goddard — 10 Bagian, 49 Pelajaran.',
-    instruction: 'Scroll untuk zoom · Drag untuk menggeser · Sorot node untuk eksplorasi koneksi',
+    instruction: 'Scroll untuk zoom · Drag untuk menggeser · Sorot node untuk eksplorasi koneksi · Klik node untuk membuka pelajaran',
   },
   en: {
     title: 'Hukum Asumsi — Second Brain',
     subtitle: 'Knowledge graph of the complete Neville Goddard curriculum — 10 Parts, 49 Lessons.',
-    instruction: 'Scroll to zoom · Drag to pan · Hover node to explore connections',
+    instruction: 'Scroll to zoom · Drag to pan · Hover node to explore connections · Click node to open a lesson',
   }
+}
+
+// ── Click targets: map a graph node back to the curriculum section it belongs to ──
+export type GraphNodeTarget =
+  | { type: 'part'; partId: string }
+  | { type: 'lesson'; partId: string; lessonNum: string }
+  | { type: 'section'; id: string }
+  | { type: 'url'; url: string }
+
+function resolveNodeTarget(name: string): GraphNodeTarget | null {
+  // "Part N: …" hub nodes → part section
+  const partMatch = name.match(/^Part (\d+):/)
+  if (partMatch) {
+    const n = parseInt(partMatch[1], 10)
+    if (n >= 1 && n <= 10) return { type: 'part', partId: `part-${n}` }
+    return null
+  }
+  // "X.Y …" lesson nodes → the lesson inside part X
+  const lessonMatch = name.match(/^(\d+)\.(\d+) /)
+  if (lessonMatch) {
+    const partN = parseInt(lessonMatch[1], 10)
+    if (partN >= 1 && partN <= 10) {
+      return { type: 'lesson', partId: `part-${partN}`, lessonNum: `${lessonMatch[1]}.${lessonMatch[2]}` }
+    }
+    return null
+  }
+  if (name === 'coolwisdombooks.com\n/neville') {
+    return { type: 'url', url: 'https://coolwisdombooks.com/neville/' }
+  }
+  // Resource + book nodes → essential books section
+  if (name.startsWith('Sumber Daya') || name.includes('(19')) {
+    return { type: 'section', id: 'bonus' }
+  }
+  return null
+}
+
+// ── Static mini-map ──
+// Serves as the permanent view on mobile (no ECharts = no ~1MB JS on phones)
+// and as the placeholder on desktop until the interactive graph lazily loads.
+interface StaticPart {
+  partId: string
+  num: string
+  label: string
+  color: string
+  lessonCount: number
+}
+
+function buildStaticParts(): StaticPart[] {
+  const { nodes } = buildGraphData()
+  const parts: StaticPart[] = []
+  nodes.forEach((n: any) => {
+    const m = n.name.match(/^Part (\d+):/)
+    if (!m) return
+    const nPart = parseInt(m[1], 10)
+    if (nPart < 1 || nPart > 10) return
+    const lessonCount = nodes.filter((o: any) => {
+      const lm = o.name.match(/^(\d+)\.(\d+) /)
+      return lm ? parseInt(lm[1], 10) === nPart : false
+    }).length
+    parts.push({
+      partId: `part-${nPart}`,
+      num: String(nPart).padStart(2, '0'),
+      label: n.name.replace(/^Part \d+:\s*/, '').replace(/\n/g, ' '),
+      color: (CATEGORIES[n.category] || CATEGORIES[0]).color,
+      lessonCount,
+    })
+  })
+  return parts
+}
+
+function StaticMap({ parts, onPick, failed, loading, isMobile }: {
+  parts: StaticPart[]
+  onPick: (partId: string) => void
+  failed: boolean
+  loading: boolean
+  isMobile: boolean
+}) {
+  return (
+    <div className="w-full h-full flex flex-col">
+      <div className="flex-1 min-h-0 overflow-y-auto px-3 md:px-6 pt-24 md:pt-64 pb-3 md:pb-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
+          {parts.map((p) => (
+            <button
+              key={p.partId}
+              type="button"
+              onClick={() => onPick(p.partId)}
+              className="group text-left rounded-lg md:rounded-xl border border-neutral-800 bg-[#0d0d10] hover:border-[rgba(245,200,66,0.45)] hover:bg-[#121216] transition-colors p-2.5 md:p-4 cursor-pointer"
+            >
+              <div className="flex items-center gap-1.5 md:gap-2">
+                <span className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full shrink-0" style={{ background: p.color }} />
+                <span className="text-[9px] md:text-[11px] font-bold text-[#5c574d] tracking-wider">{p.num}</span>
+              </div>
+              <div className="mt-1 md:mt-1.5 text-[10px] md:text-[13px] font-semibold text-[#d4caba] leading-snug group-hover:text-[#fef9e7]">
+                {p.label}
+              </div>
+              <div className="mt-0.5 text-[8px] md:text-[10px] text-[#5c574d]">
+                {p.lessonCount} Pelajaran
+              </div>
+            </button>
+          ))}
+        </div>
+        {loading && !failed && (
+          <p className="text-center mt-4 text-[10px] md:text-[11px] text-[#8a8275] animate-pulse">
+            ✦ Memuat peta interaktif…
+          </p>
+        )}
+        {failed && (
+          <p className="text-center mt-4 text-[10px] md:text-[11px] text-[#8a8275]">
+            Peta interaktif gagal dimuat — gunakan peta statis ini untuk bernavigasi.
+          </p>
+        )}
+      </div>
+      {isMobile && (
+        <div className="shrink-0 border-t border-neutral-900 px-3 py-2 text-center text-[9px] md:text-[10px] text-[#5c574d]">
+          Peta interaktif tersedia di layar desktop · Ketuk bagian untuk membuka
+        </div>
+      )}
+    </div>
+  )
 }
 
 // ── Graph data builders ──
@@ -476,54 +594,72 @@ function buildGraphData() {
   return { nodes, links };
 }
 
-export default function CurriculumGraphView() {
+export default function CurriculumGraphView({ onNodeClick }: { onNodeClick?: (target: GraphNodeTarget) => void }) {
   const t = UI_TRANSLATIONS.id
 
+  const sectionRef = useRef<HTMLElement>(null)
   const chartRef = useRef<HTMLDivElement>(null)
-  const [chartInstance, setChartInstance] = useState<any>(null)
+  const chartInstanceRef = useRef<any>(null)
   const [scriptLoaded, setScriptLoaded] = useState(false)
+  const [scriptFailed, setScriptFailed] = useState(false)
+  const [inView, setInView] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
-  // Load Apache ECharts dynamically to support SSR
+  const graphData = useMemo(() => buildGraphData(), [])
+  const staticParts = useMemo(() => buildStaticParts(), [])
+
+  // ── 1. Mobile detection — phones get a static map instead of the ECharts canvas ──
   useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return
+    const mq = window.matchMedia('(max-width: 767px)')
+    const update = () => setIsMobile(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
+
+  // ── 2. True lazy-loading: only initialize once the section is near the viewport ──
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      setInView(true)
+      return
+    }
+    const obs = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        setInView(true)
+        obs.disconnect()
+      }
+    }, { rootMargin: '600px 0px', threshold: 0 })
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
+
+  // ── 3. Load Apache ECharts (CDN) only when actually needed ──
+  const shouldLoadScript = inView && !isMobile && !scriptLoaded && !scriptFailed
+  useEffect(() => {
+    if (!shouldLoadScript) return
     if (window.echarts) {
       setScriptLoaded(true)
       return
     }
-
     const script = document.createElement('script')
     script.src = 'https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js'
     script.async = true
     script.onload = () => setScriptLoaded(true)
+    script.onerror = () => setScriptFailed(true)
     document.body.appendChild(script)
-  }, [])
+  }, [shouldLoadScript])
 
-  const graphData = useMemo(() => buildGraphData(), [])
+  const chartReady = !isMobile && inView && scriptLoaded && !scriptFailed
 
-  // Post-process node sizes for mobile
-  const getScaledNodes = useCallback((nodes: any[], isMobile: boolean) => {
-    if (!isMobile) return nodes
-    const scale = 0.55
-    return nodes.map(n => ({
-      ...n,
-      symbolSize: Math.round((n.symbolSize || 30) * scale),
-      label: n.label ? { ...n.label, fontSize: Math.round((n.label.fontSize || 10) * scale) } : n.label,
-    }))
-  }, [])
-
-  // Render ECharts Instance
+  // ── 4. Render the ECharts instance ──
   useEffect(() => {
-    if (!scriptLoaded || !chartRef.current || typeof window === 'undefined' || !window.echarts) return;
+    if (!chartReady || !chartRef.current || typeof window === 'undefined' || !window.echarts) return
 
-    if (chartInstance) {
-      chartInstance.dispose();
-    }
-
-    const echarts = window.echarts;
-    const myChart = echarts.init(chartRef.current, null, { renderer: 'canvas' });
-
-    const isMobile = window.innerWidth < 768;
-
-    const baseFontSize = isMobile ? 13 : 10;
+    const echarts = window.echarts
+    const myChart = echarts.init(chartRef.current, null, { renderer: 'canvas' })
+    chartInstanceRef.current = myChart
 
     const option = {
       backgroundColor: '#0a0a0c',
@@ -538,7 +674,9 @@ export default function CurriculumGraphView() {
           if (params.dataType === 'node') {
             const cat = CATEGORIES[params.data.category];
             const name = params.name.replace(/\n/g, ' ');
-            return `<span style="color:${cat.color};font-weight:600">${name}</span><br/><span style="color:#8a8275;font-size:11px">${cat.name}</span>`;
+            const target = resolveNodeTarget(params.name);
+            const hint = target ? '<br/><span style="color:#f5c842;font-size:11px">Klik untuk membuka →</span>' : '';
+            return `<span style="color:${cat.color};font-weight:600">${name}</span><br/><span style="color:#8a8275;font-size:11px">${cat.name}</span>${hint}`;
           }
           return '';
         }
@@ -547,13 +685,13 @@ export default function CurriculumGraphView() {
       series: [{
         type: 'graph',
         layout: 'force',
-        zoom: isMobile ? 0.37 : 0.85,
-        center: isMobile ? ['50%', '45%'] : ['50%', '50%'],
+        zoom: 0.85,
+        center: ['50%', '50%'],
 
         force: {
-          repulsion: isMobile ? 600 : 380,
+          repulsion: 380,
           gravity: 0.03,
-          edgeLength: isMobile ? [60, 250] : [70, 240],
+          edgeLength: [70, 240],
           layoutAnimation: true,
           friction: 0.6,
         },
@@ -563,15 +701,15 @@ export default function CurriculumGraphView() {
 
         symbolSize: undefined,
 
-        data: getScaledNodes(graphData.nodes, isMobile),
+        data: graphData.nodes,
         links: graphData.links,
         categories: CATEGORIES.map((c, i) => ({ name: c.name, itemStyle: { color: c.color } })),
 
         label: {
           show: true,
           position: 'right',
-          distance: isMobile ? 4 : 8,
-          fontSize: baseFontSize,
+          distance: 8,
+          fontSize: 10,
           color: '#b8b0a2',
           fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
         },
@@ -600,9 +738,14 @@ export default function CurriculumGraphView() {
       }],
     };
 
-    myChart.setOption(option);
+    // Node click → navigate to the related curriculum section
+    myChart.on('click', (params: any) => {
+      if (params?.dataType !== 'node') return
+      const target = resolveNodeTarget(params.data.name)
+      if (target && onNodeClick) onNodeClick(target)
+    })
 
-    setChartInstance(myChart);
+    myChart.setOption(option);
 
     // Resize handler
     const handleResize = () => myChart.resize();
@@ -611,11 +754,13 @@ export default function CurriculumGraphView() {
     return () => {
       window.removeEventListener('resize', handleResize);
       myChart.dispose();
+      if (chartInstanceRef.current === myChart) chartInstanceRef.current = null;
     };
-  }, [scriptLoaded, graphData, getScaledNodes]);
+  }, [chartReady, graphData, onNodeClick]);
 
-  // Zoom actions
+  // ── 5. Zoom actions ──
   const handleZoom = (type: 'in' | 'out' | 'reset') => {
+    const chartInstance = chartInstanceRef.current
     if (!chartInstance) return;
     const option = chartInstance.getOption();
     const currentZoom = option.series[0].zoom || 1;
@@ -640,8 +785,12 @@ export default function CurriculumGraphView() {
     });
   };
 
+  const handleStaticPick = useCallback((partId: string) => {
+    if (onNodeClick) onNodeClick({ type: 'part', partId })
+  }, [onNodeClick])
+
   return (
-    <section id="curriculum-graph" className="w-full py-8 md:py-16 bg-[#0a0a0c] border-y border-neutral-900 overflow-hidden relative select-none">
+    <section id="curriculum-graph" ref={sectionRef} className="w-full py-8 md:py-16 bg-[#0a0a0c] border-y border-neutral-900 overflow-hidden relative select-none">
       <div className="max-w-[1400px] mx-auto px-4 md:px-6 relative">
 
         {/* Main Canvas Frame */}
@@ -692,33 +841,46 @@ export default function CurriculumGraphView() {
             </div>
           </div>
 
-          {/* Chart container */}
-          <div ref={chartRef} className="w-full h-full" />
+          {/* Interactive chart (desktop only, lazily loaded) */}
+          {chartReady ? (
+            <>
+              <div ref={chartRef} className="w-full h-full" />
 
-          {/* Navigation Scale Controls (Bottom-Right) */}
-          <div className="absolute bottom-2 right-2 md:bottom-6 md:right-6 z-20 flex md:flex-col gap-1.5 md:gap-2 pointer-events-auto">
-            <button
-              onClick={() => handleZoom('in')}
-              className="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-[#0a0a0c]/95 border border-neutral-700 text-neutral-400 hover:text-white flex items-center justify-center cursor-pointer shadow-md hover:bg-neutral-800"
-              title="Zoom In"
-            >
-              <ZoomIn size={13} />
-            </button>
-            <button
-              onClick={() => handleZoom('out')}
-              className="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-[#0a0a0c]/95 border border-neutral-700 text-neutral-400 hover:text-white flex items-center justify-center cursor-pointer shadow-md hover:bg-neutral-800"
-              title="Zoom Out"
-            >
-              <ZoomOut size={13} />
-            </button>
-            <button
-              onClick={() => handleZoom('reset')}
-              className="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-[#0a0a0c]/95 border border-neutral-700 text-neutral-400 hover:text-white flex items-center justify-center cursor-pointer shadow-md hover:bg-neutral-800"
-              title="Reset View"
-            >
-              <RotateCcw size={12} />
-            </button>
-          </div>
+              {/* Navigation Scale Controls (Bottom-Right) */}
+              <div className="absolute bottom-2 right-2 md:bottom-6 md:right-6 z-20 flex md:flex-col gap-1.5 md:gap-2 pointer-events-auto">
+                <button
+                  onClick={() => handleZoom('in')}
+                  className="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-[#0a0a0c]/95 border border-neutral-700 text-neutral-400 hover:text-white flex items-center justify-center cursor-pointer shadow-md hover:bg-neutral-800"
+                  title="Zoom In"
+                >
+                  <ZoomIn size={13} />
+                </button>
+                <button
+                  onClick={() => handleZoom('out')}
+                  className="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-[#0a0a0c]/95 border border-neutral-700 text-neutral-400 hover:text-white flex items-center justify-center cursor-pointer shadow-md hover:bg-neutral-800"
+                  title="Zoom Out"
+                >
+                  <ZoomOut size={13} />
+                </button>
+                <button
+                  onClick={() => handleZoom('reset')}
+                  className="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-[#0a0a0c]/95 border border-neutral-700 text-neutral-400 hover:text-white flex items-center justify-center cursor-pointer shadow-md hover:bg-neutral-800"
+                  title="Reset View"
+                >
+                  <RotateCcw size={12} />
+                </button>
+              </div>
+            </>
+          ) : (
+            /* Static mini-map — permanent on mobile; placeholder until the chart lazily loads on desktop */
+            <StaticMap
+              parts={staticParts}
+              onPick={handleStaticPick}
+              failed={scriptFailed}
+              loading={!isMobile && !scriptLoaded}
+              isMobile={isMobile}
+            />
+          )}
 
         </div>
 

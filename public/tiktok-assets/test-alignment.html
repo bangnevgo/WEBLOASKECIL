@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1080, height=1920, initial-scale=1.0">
+  <title>Test Full Glass Alignment</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { width: 1080px; height: 1920px; background: #000; overflow: hidden; position: relative; }
+    .bg {
+      position: absolute;
+      inset: 0;
+      background: url('tablet_mockup.jpg') no-repeat center center;
+      background-size: cover;
+    }
+    .screen-overlay {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 500px;
+      height: 700px;
+      transform-origin: 0 0;
+      transform: matrix3d(0.807724, -0.043440, 0, 0.00001091, 0.157578, 0.861030, 0, 0.00005794, 0, 0, 1, 0, 308, 442, 0, 1);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+      background: #000;
+    }
+    .screen-overlay video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg">
+    <div class="screen-overlay">
+      <video src="LOAS_LIVE_TIKTOK_FINAL_SIAP_POST.mp4" muted autoplay></video>
+    </div>
+  </div>
+</body>
+</html>

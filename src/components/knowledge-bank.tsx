@@ -26,6 +26,7 @@ interface KnowledgeItem {
   durationOrPages: string
   sourceUrl?: string
   coverImg?: string
+  subpageUrl?: string
   isVip?: boolean
 }
 
@@ -157,6 +158,17 @@ const KNOWLEDGE_ITEMS_ID: KnowledgeItem[] = [
     isVip: false
   },
   // Audios
+  {
+    id: 'audio-tubuh-masa-lalu',
+    title: 'Audio Eksklusif: Tubuh Anda Ternyata Kecanduan Masa Lalu',
+    category: 'audio',
+    description: 'Bedah mendalam bagaimana memori biologis dan respon emosional otomatis tubuh memenjarakan Anda pada realitas lama, serta cara melepaskan kecanduan tersebut agar asumsi baru mewujud.',
+    durationOrPages: '20 Menit',
+    sourceUrl: '/audio/tubuh-anda-kecanduan-masa-lalu.mp3',
+    subpageUrl: '/audio/tubuh-anda-kecanduan-masa-lalu',
+    coverImg: '/images/illustrations/tubuh-kecanduan-masa-lalu.svg',
+    isVip: false
+  },
   {
     id: 'audio-1',
     title: 'Meditasi Theta: Induksi SATS Sebelum Tidur',
@@ -328,6 +340,17 @@ const KNOWLEDGE_ITEMS_EN: KnowledgeItem[] = [
     isVip: false
   },
   // Audios
+  {
+    id: 'audio-tubuh-masa-lalu',
+    title: 'Exclusive Audio: Your Body is Addicted to the Past',
+    category: 'audio',
+    description: 'An in-depth breakdown of how biological memory and automatic bodily emotional responses trap you in old realities, and how to release this addiction so new assumptions manifest.',
+    durationOrPages: '20 Mins',
+    sourceUrl: '/audio/tubuh-anda-kecanduan-masa-lalu.mp3',
+    subpageUrl: '/audio/tubuh-anda-kecanduan-masa-lalu',
+    coverImg: '/images/illustrations/tubuh-kecanduan-masa-lalu.svg',
+    isVip: false
+  },
   {
     id: 'audio-1',
     title: 'Theta Meditation: SATS Induction Before Sleep',
@@ -523,8 +546,8 @@ export default function KnowledgeBank({ isCommunityMode = false }: { isCommunity
                 className="nv-premium-glass p-5 border border-neutral-900 flex flex-col justify-between group hover:border-neutral-800/80 transition relative"
                 layout
               >
-                {/* Visual Cover for Video Categories */}
-                {(item.category === 'webinar' || item.category === 'tiktok') && item.coverImg && (
+                {/* Visual Cover for Video & Audio Categories */}
+                {(item.category === 'webinar' || item.category === 'tiktok' || item.category === 'audio') && item.coverImg && (
                   <div 
                     className="relative w-full aspect-video rounded-xl overflow-hidden border border-neutral-850 bg-neutral-950 mb-4 cursor-pointer"
                     onClick={() => handleItemAction(item)}
@@ -536,7 +559,7 @@ export default function KnowledgeBank({ isCommunityMode = false }: { isCommunity
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="w-11 h-11 rounded-full bg-[#d4a053] text-neutral-950 flex items-center justify-center shadow-lg group-hover:scale-108 transition">
-                        <Play size={16} fill="currentColor" />
+                        {item.category === 'audio' ? <Music size={16} /> : <Play size={16} fill="currentColor" />}
                       </div>
                     </div>
                   </div>
@@ -611,12 +634,24 @@ export default function KnowledgeBank({ isCommunityMode = false }: { isCommunity
                   <span className="text-[10px] font-bold text-amber-500 flex items-center gap-1.5 uppercase font-mono">
                     <Music size={12} /> {t.nowPlaying}
                   </span>
-                  <button 
-                    onClick={() => setActiveAudioItem(null)}
-                    className="text-neutral-500 hover:text-white"
-                  >
-                    <X size={14} />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    {activeAudioItem.subpageUrl && (
+                      <a
+                        href={activeAudioItem.subpageUrl}
+                        className="text-[10px] font-semibold text-neutral-400 hover:text-[#d4a053] flex items-center gap-1 transition mr-2"
+                        title="Buka halaman khusus audio ini"
+                      >
+                        <ExternalLink size={11} />
+                        <span>Halaman Penuh</span>
+                      </a>
+                    )}
+                    <button 
+                      onClick={() => setActiveAudioItem(null)}
+                      className="text-neutral-500 hover:text-white transition"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
                 </div>
                 <div className="p-1">
                   <CustomAudioPlayer 
