@@ -515,17 +515,28 @@
       margin-top: 24px;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      align-items: center;
+      gap: 28px;
+      align-items: start;
+    }
+    .pay-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--sage);
+      background: rgba(58,89,75,0.12);
+      padding: 4px 10px;
+      border-radius: 100px;
+      margin-bottom: 10px;
     }
     .pay-info h4 {
       font-family: 'DM Serif Display', serif;
-      font-size: 20px;
+      font-size: 22px;
       color: var(--ink);
       font-weight: 400;
       margin-bottom: 8px;
     }
-    .pay-info p { font-size: 13px; color: var(--ink-soft); }
+    .pay-info p { font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
     .pay-detail {
       background: white;
       border: 1px solid var(--sage-100);
@@ -541,6 +552,52 @@
     .pay-row span:first-child { color: var(--muted); }
     .pay-row span:last-child { color: var(--ink); font-weight: 500; }
     .pay-row.mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+    .pay-qris-box {
+      background: white;
+      border: 1px solid var(--sage-100);
+      border-radius: 12px;
+      padding: 18px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+    .qris-header {
+      margin-bottom: 12px;
+    }
+    .qris-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--ink);
+    }
+    .qris-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .qris-img-wrap {
+      background: #fafafa;
+      border: 1px solid #e8e8e8;
+      border-radius: 8px;
+      padding: 8px;
+      display: inline-block;
+      max-width: 220px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .qris-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 4px;
+    }
+    .qris-note {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+    .qris-note strong {
+      color: var(--ink);
+    }
 
     /* FAQ */
     .faq-list {
@@ -1146,13 +1203,27 @@
 
     <div class="pay-card">
       <div class="pay-info">
-        <h4>Rekening pembayaran</h4>
-        <p>Untuk program Private (BN Mentoring, Private Zoom 101, dan Private 101 — Non-Zoom), pembayaran dilakukan via transfer langsung.</p>
+        <span class="pay-badge">PEMBAYARAN RESMI</span>
+        <h4>Metode Pembayaran</h4>
+        <p>Untuk program Private (BN Mentoring, Private Zoom 101, dan Pendampingan Bulanan), kamu bisa memilih transfer bank langsung atau scan QRIS.</p>
+        
+        <div class="pay-detail" style="margin-top: 16px;">
+          <div class="pay-row"><span>Metode</span><span>Transfer Bank</span></div>
+          <div class="pay-row"><span>Bank</span><span>Bank Mandiri</span></div>
+          <div class="pay-row mono"><span>No. Rekening</span><span>1290013006842</span></div>
+          <div class="pay-row"><span>Atas Nama</span><span>GADING PRAKOSO</span></div>
+        </div>
       </div>
-      <div class="pay-detail">
-        <div class="pay-row"><span>Bank</span><span>Mandiri</span></div>
-        <div class="pay-row mono"><span>No. Rekening</span><span>1290013006842</span></div>
-        <div class="pay-row"><span>Atas nama</span><span>GADING PRAKOSO</span></div>
+      
+      <div class="pay-qris-box">
+        <div class="qris-header">
+          <div class="qris-title">Scan QRIS Nasional</div>
+          <div class="qris-sub">BCA, Mandiri, BRI, BNI, GoPay, OVO, DANA, ShopeePay</div>
+        </div>
+        <div class="qris-img-wrap">
+          <img src="/images/qris-nevgo.jpg" alt="QRIS Nevgo Institute - Digital & Kreatif" class="qris-img" width="726" height="1024" loading="lazy" />
+        </div>
+        <p class="qris-note">NMID: <strong>ID1026574413864</strong> · NEVGO INSTITUTE</p>
       </div>
     </div>
   </div>
@@ -1189,7 +1260,7 @@
           <svg class="faq-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </button>
         <div class="faq-a"><div class="faq-a-inner">
-          Untuk program Private, pembayaran via transfer Mandiri. Untuk produk digital (e-book, audio, webinar) tersedia di <a href="https://lynk.id/bangnevgo" style="color:var(--sage)">lynk.id/bangnevgo</a> dengan payment gateway otomatis.
+          Untuk program Private, pembayaran bisa melalui <strong>Transfer Bank Mandiri</strong> atau scan <strong>QRIS</strong> (mendukung seluruh Mobile Banking & E-Wallet: BCA, Mandiri, BRI, BNI, GoPay, OVO, DANA, ShopeePay). Untuk produk digital (e-book, audio, webinar) tersedia di <a href="https://lynk.id/bangnevgo" style="color:var(--sage)">lynk.id/bangnevgo</a> dengan payment gateway otomatis.
         </div></div>
       </div>
 
