@@ -129,7 +129,7 @@ export default function PartPageClient({ part, prevPart, nextPart, freeIndices }
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', maxWidth: '440px', margin: '0 auto' }}>
           <a href="https://cohort.nevgoinstitute.com" target="_blank" rel="noopener noreferrer" className="nv-part-cta-btn" style={{ textDecoration: 'none', textAlign: 'center' }}>
-            ✦ {language === 'en' ? 'Decided to Transform Yourself → Join 30-Day Cohort/Bootcamp' : 'Sudah memutuskan untuk Transformasi diri → Ikut Program Bootcamp/Cohort 30 Hari'}
+            ✦ {language === 'en' ? 'Live Mentoring with Bang Nevgo → Join Interactive Class' : 'Ingin Bimbingan Tatap Muka? Ikut Kelas Interaktif Bang Nevgo →'}
           </a>
           <a
             href="https://lynk.id/bangnevgo"

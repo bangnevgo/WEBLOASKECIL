@@ -277,15 +277,15 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Cohort CTA */}
+          {/* Kelas Interaktif CTA */}
           <div className="nv-dash-sidebar-cohort p-4 rounded-lg mb-4 border border-amber-500/20 bg-amber-500/5">
             <h4 className="text-[11px] font-bold text-amber-500 uppercase tracking-wider flex items-center gap-1.5 mb-2">
-              <Sparkles size={12} /> Cohort Nevgo
+              <Sparkles size={12} /> Kelas Interaktif Bang Nevgo
             </h4>
             <p className="text-[11px] text-neutral-400 leading-relaxed mb-3">
               {language === 'en'
-                ? 'Join the guided Cohort program. 1 month of structured manifestation practice (4 live sessions).'
-                : 'Ikuti program Cohort terbimbing. 1 bulan praktik manifestasi terstruktur (4 sesi live).'}
+                ? 'Join 1-month live Zoom group coaching with Bang Nevgo (4 interactive sessions + personal case breakdown).'
+                : 'Ikuti bimbingan tatap muka 1 bulan via Zoom & bedah kasus personal langsung bersama Bang Nevgo.'}
             </p>
             <a
               href="https://cohort.nevgoinstitute.com"
@@ -357,7 +357,7 @@ export default function Dashboard() {
                 })}
               </nav>
 
-              {/* Sidebar CTA Links: Cohort & Lynk.id */}
+              {/* Sidebar CTA Links: Kelas Interaktif & Lynk.id */}
               <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-neutral-900">
                 <a
                   href="https://cohort.nevgoinstitute.com"
@@ -366,7 +366,7 @@ export default function Dashboard() {
                   className="flex items-center justify-center gap-1.5 w-full py-2.5 px-3 rounded-lg text-xs font-bold text-black transition shadow-md hover:scale-[1.02] text-center"
                   style={{ background: 'linear-gradient(135deg, #d4a053, #b8862d)' }}
                 >
-                  <span>✦ {language === 'en' ? 'Decided to Transform Yourself → Join 30-Day Cohort/Bootcamp' : 'Sudah memutuskan untuk Transformasi diri → Ikut Program Bootcamp/Cohort 30 Hari'}</span>
+                  <span>✦ {language === 'en' ? 'Live Mentoring with Bang Nevgo → Join Interactive Class' : 'Ingin Bimbingan Tatap Muka? Ikut Kelas Interaktif Bang Nevgo →'}</span>
                   <span className="text-[10px]">↗</span>
                 </a>
 
@@ -548,7 +548,7 @@ export default function Dashboard() {
                       })}
                     </div>
 
-                    {/* Cohort CTA */}
+                    {/* Kelas Interaktif CTA */}
                     <motion.div
                       className="nv-dash-cohort-cta"
                       initial={{ opacity: 0 }}
@@ -562,7 +562,7 @@ export default function Dashboard() {
                         rel="noopener noreferrer"
                         className="nv-dash-cohort-cta-link"
                       >
-                        ✦ {language === 'en' ? 'Master with Live Guidance — Join Cohort →' : 'Kuasai dengan Bimbingan Langsung — Ikut Cohort →'}
+                        ✦ {language === 'en' ? 'Master with Live Guidance — Join Interactive Class →' : 'Kuasai dengan Bimbingan Langsung — Ikut Kelas Interaktif →'}
                       </a>
                     </motion.div>
 

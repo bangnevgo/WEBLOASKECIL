@@ -86,7 +86,7 @@ export default function TestimoniModal({ isOpen, onClose, initialIndex = 0 }: Pr
               ✦ Screenshot asli percakapan hasil nyata mentoring murid
             </p>
             <a
-              href="https://wa.me/628989221700?text=Halo%20Bang%20Nevgo,%20saya%20tertarik%20tanya%20program%20mentoring%20setelah%20melihat%20testimoni"
+              href="https://wa.me/6288989221700?text=Halo%20Bang%20Nevgo,%20saya%20tertarik%20tanya%20program%20mentoring%20setelah%20melihat%20testimoni"
               target="_blank"
               rel="noopener noreferrer"
               className="px-3 py-1.5 text-xs font-bold text-black rounded-lg bg-gradient-to-r from-[#d4a053] to-[#b8862d] hover:opacity-90 transition-opacity"

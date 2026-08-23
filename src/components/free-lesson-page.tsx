@@ -448,8 +448,8 @@ export default function FreeLessonPage() {
           <h2 className="nv-fl-conversion-title">{language === 'en' ? 'You have just begun the journey.' : 'Anda baru saja memulai perjalanan.'}</h2>
           <p className="nv-fl-conversion-desc">
             {language === 'en'
-              ? <>This is just the beginning. All <strong style={{ color: 'var(--nv-gold)' }}>50 lessons</strong> are free — just register. Ready to go deeper? Join the <strong style={{ color: 'var(--nv-gold)' }}>Cohort Program</strong> for guided group practice.</>
-              : <>Ini baru permulaan. Lanjutkan dengan <strong style={{ color: 'var(--nv-gold)' }}>Daftar Free</strong> untuk membuka seluruh pelajaran. Siap melangkah lebih dalam? Ikuti <strong style={{ color: 'var(--nv-gold)' }}>Program Cohort</strong> untuk latihan kelompok terbimbing.</>
+              ? <>This is just the beginning. All <strong style={{ color: 'var(--nv-gold)' }}>50 lessons</strong> are free — just register. Ready to go deeper? Join <strong style={{ color: 'var(--nv-gold)' }}>Interactive Live Class</strong> for guided group practice with Bang Nevgo.</>
+              : <>Ini baru permulaan. Lanjutkan dengan <strong style={{ color: 'var(--nv-gold)' }}>Daftar Free</strong> untuk membuka seluruh pelajaran. Siap melangkah lebih dalam? Ikuti <strong style={{ color: 'var(--nv-gold)' }}>Kelas Interaktif</strong> untuk bimbingan langsung tatap muka via Zoom bersama Bang Nevgo.</>
             }
           </p>
           <ul className="nv-fl-conversion-teases">
@@ -467,7 +467,7 @@ export default function FreeLessonPage() {
             whileTap={{ scale: 0.97 }}
           >
             <span className="nv-cta-icon">✦</span>
-            {language === 'en' ? 'Join the Cohort Program — Rp 1.000.000' : 'Ikut Program Cohort — Rp 1.000.000'}
+            {language === 'en' ? 'Join Interactive Class — Rp 1.000.000' : 'Daftar Kelas Interaktif Bersama Bang Nevgo — Rp 1.000.000'}
           </motion.button>
           <div className="nv-fl-progress-bar">
             <div className="nv-fl-progress-track">
@@ -519,9 +519,9 @@ export default function FreeLessonPage() {
           <div className="nv-footer-col">
             <h4 className="nv-footer-col-title">{t('footerColLegal')}</h4>
             <ul className="nv-footer-col-links">
-              <li><a href="https://wa.me/628989221700" target="_blank" rel="noopener noreferrer">{language === 'en' ? 'Terms & Conditions' : 'Syarat & Ketentuan'}</a></li>
-              <li><a href="https://wa.me/628989221700" target="_blank" rel="noopener noreferrer">{language === 'en' ? 'Privacy Policy' : 'Kebijakan Privasi'}</a></li>
-              <li><a href="https://wa.me/628989221700" target="_blank" rel="noopener noreferrer">{language === 'en' ? 'Contact' : 'Kontak'}</a></li>
+              <li><a href="https://wa.me/6288989221700" target="_blank" rel="noopener noreferrer">{language === 'en' ? 'Terms & Conditions' : 'Syarat & Ketentuan'}</a></li>
+              <li><a href="https://wa.me/6288989221700" target="_blank" rel="noopener noreferrer">{language === 'en' ? 'Privacy Policy' : 'Kebijakan Privasi'}</a></li>
+              <li><a href="https://wa.me/6288989221700" target="_blank" rel="noopener noreferrer">{language === 'en' ? 'Contact' : 'Kontak'}</a></li>
             </ul>
           </div>
         </div>

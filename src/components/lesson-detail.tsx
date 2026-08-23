@@ -447,39 +447,39 @@ export default function LessonDetail() {
                 const partNum = part?.num ?? 1
                 const cohortCtasId: Record<number, string> = {
                   1: 'Latih kesadarannya bareng Bang Nevgo',
-                  2: 'Lihat cara Cohort membimbingmu',
+                  2: 'Lihat cara Kelas Interaktif membimbingmu',
                   3: 'Dapatkan panduan saat kamu "lupa"',
                   4: 'Pelajari praktik diam yang aktif',
-                  5: 'Mulai method terbimbing di Cohort',
-                  6: 'Praktik Revisi bersama mentor',
-                  7: 'Arahkan imajinasimu di Cohort',
+                  5: 'Mulai metode di Kelas Interaktif',
+                  6: 'Praktik Revisi bersama Bang Nevgo',
+                  7: 'Arahkan imajinasimu bareng Bang Nevgo',
                   8: 'Masuk ke keadaan barumu',
-                  9: 'Lewati fase ini bareng Cohort',
-                  10: 'Ikut Program Bootcamp/Cohort 30 Hari',
+                  9: 'Lewati fase ini di Kelas Interaktif',
+                  10: 'Ikut Kelas Interaktif (Live Zoom 4 Sesi)',
                 }
                 const cohortCtasEn: Record<number, string> = {
                   1: 'Train your awareness with Bang Nevgo',
-                  2: 'See how Cohort guides you',
+                  2: 'See how Interactive Live Class guides you',
                   3: 'Get guidance when you "forget"',
                   4: 'Learn the active practice of stillness',
-                  5: 'Start the guided method in Cohort',
-                  6: 'Practice Revision with a mentor',
-                  7: 'Direct your imagination in Cohort',
+                  5: 'Start the method in Interactive Class',
+                  6: 'Practice Revision with Bang Nevgo',
+                  7: 'Direct your imagination with Bang Nevgo',
                   8: 'Step into your new state',
-                  9: 'Pass this phase with Cohort',
-                  10: 'Join 30-Day Cohort/Bootcamp',
+                  9: 'Pass this phase in Interactive Class',
+                  10: 'Join Interactive Live Class (4 Zoom Sessions)',
                 }
                 const subId: Record<number, string> = {
                   1: 'Rutin harian, bukan cuma teori.',
                   2: 'Konsistensi merasa "sudah punya".',
                   3: 'Ingatkan kamu balik ke perasaan.',
                   4: 'Diam yang aktif, bukan menyerah.',
-                  5: 'Method sistematis yang menahan.',
+                  5: 'Metode sistematis yang menahan.',
                   6: 'Dipraktikkan langsung, bukan dibaca.',
                   7: 'Imajinasi jadi alat yang disiplin.',
                   8: 'Langkah harian yang diawasi.',
-                  9: 'Komunitas + mentor di fase ini.',
-                  10: 'Bimbingan 30 hari bersama Bang Nevgo.',
+                  9: 'Komunitas kecil + mentor di fase ini.',
+                  10: 'Bimbingan tatap muka 1 bulan bersama Bang Nevgo.',
                 }
                 const subEn: Record<number, string> = {
                   1: 'Daily routine, not just theory.',
@@ -490,8 +490,8 @@ export default function LessonDetail() {
                   6: 'Practiced live, not just read.',
                   7: 'Imagination as a disciplined tool.',
                   8: 'Daily steps, closely guided.',
-                  9: 'Community + mentor for this phase.',
-                  10: '30-day guided mentoring with Bang Nevgo.',
+                  9: 'Small group + mentor for this phase.',
+                  10: '1-Month live guided mentoring with Bang Nevgo.',
                 }
                 const ctaText = language === 'en' ? (cohortCtasEn[partNum] ?? cohortCtasEn[10]) : (cohortCtasId[partNum] ?? cohortCtasId[10])
                 const subText = language === 'en' ? (subEn[partNum] ?? subEn[10]) : (subId[partNum] ?? subId[10])

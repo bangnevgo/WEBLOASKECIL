@@ -333,7 +333,7 @@ export default function AiManifestation() {
                 whileTap={{ scale: 0.97 }}
               >
                 <span className="nv-cta-icon">✦</span>
-                {language === 'en' ? 'Join the Cohort Program →' : 'Ikut Program Cohort →'}
+                {language === 'en' ? 'Join Interactive Class →' : 'Ikut Kelas Interaktif Bersama Bang Nevgo →'}
               </motion.button>
             </motion.div>
           </motion.div>

@@ -498,7 +498,7 @@ export default function Landing() {
                     className="text-left py-2 px-3 hover:bg-neutral-900 text-neutral-300 rounded-lg transition flex items-center justify-between"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <span>✦ Program Cohort</span>
+                    <span>✦ Kelas Interaktif</span>
                     <span className="text-[#d4a053] text-[10px]">↗</span>
                   </a>
                   <a
@@ -645,7 +645,7 @@ export default function Landing() {
                     animate="animate"
                   >
                     <a
-                      href="https://wa.me/628989221700"
+                      href="https://wa.me/6288989221700"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="nv-hero-wa-link"
@@ -657,7 +657,7 @@ export default function Landing() {
                     </a>
                   </motion.div>
                 </div>
-                {/* Subtle Cohort + Pendampingan 101 mention in hero */}
+                {/* Subtle Kelas Interaktif + Pendampingan 101 mention in hero */}
                 <motion.div
                   variants={fadeInUp}
                   initial="initial"
@@ -670,7 +670,7 @@ export default function Landing() {
                     rel="noopener noreferrer"
                     className="nv-hero-cohort-link"
                   >
-                    ✦ {language === 'en' ? 'Cohort Program Available' : 'Ada Program Cohort'} <span className="nv-hero-cohort-arrow">→</span>
+                    ✦ {language === 'en' ? 'Interactive Live Class Available' : 'Kelas Interaktif Bang Nevgo'} <span className="nv-hero-cohort-arrow">→</span>
                   </a>
                   <a
                     href="/pendampingan-101.html"
@@ -1358,7 +1358,7 @@ export default function Landing() {
               transition={{ duration: 0.5, delay: 0.1 }}
             >
               <a
-                href={'https://wa.me/628989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin konsultasi gratis 30 menit. Tolong bantu pilih program yang cocok.')}
+                href={'https://wa.me/6288989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin konsultasi gratis 30 menit. Tolong bantu pilih program yang cocok.')}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block mb-6 rounded-xl overflow-hidden shadow-2xl border border-white/5"
@@ -1375,7 +1375,7 @@ export default function Landing() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 <a
-                  href={'https://wa.me/628989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin mendaftar ikut konsultasi 2 jam (BN Mentoring).')}
+                  href={'https://wa.me/6288989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin mendaftar ikut konsultasi 2 jam (BN Mentoring).')}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full text-center py-3 px-4 bg-[#d4a053] hover:bg-[#c39043] text-black font-extrabold text-xs sm:text-sm rounded-xl transition block shadow-md"
@@ -1384,7 +1384,7 @@ export default function Landing() {
                   ⚡ {language === 'en' ? 'Book Sesi 2 Jam (Rp 500k)' : 'Daftar Sesi Privat 2 Jam (Rp 500rb)'}
                 </a>
                 <a
-                  href={'https://wa.me/628989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin ambil kelas Zoom 101.')}
+                  href={'https://wa.me/6288989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin ambil kelas Zoom 101.')}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full text-center py-3 px-4 bg-[#25d366] hover:bg-[#20ba5a] text-white font-extrabold text-xs sm:text-sm rounded-xl transition block shadow-md"
@@ -1423,7 +1423,7 @@ export default function Landing() {
               {language === 'en' ? ' · or consult with us directly.' : ' · atau konsultasikan langsung.'}
             </p>
             <a
-              href={'https://wa.me/628989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin konsultasi gratis 30 menit. Tolong bantu pilih program yang cocok.')}
+              href={'https://wa.me/6288989221700?text=' + encodeURIComponent('Halo Bang Nevgo, saya ingin konsultasi gratis 30 menit. Tolong bantu pilih program yang cocok.')}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 mt-3 px-6 py-3 bg-[#25d366] hover:bg-[#20ba5a] text-white font-extrabold text-sm rounded-xl transition"
@@ -1627,16 +1627,16 @@ export default function Landing() {
             <ul className="nv-footer-col-links">
               <li><a href="https://nevgoinstitute.com" target="_blank" rel="noopener noreferrer">Website Utama (nevgoinstitute.com) ↗</a></li>
               <li><a href="https://nevgoinstitute.com/artikel" target="_blank" rel="noopener noreferrer">Hub Artikel &amp; GEO ↗</a></li>
-              <li><a href="https://cohort.nevgoinstitute.com" target="_blank" rel="noopener noreferrer">Program Cohort ↗</a></li>
+              <li><a href="https://cohort.nevgoinstitute.com" target="_blank" rel="noopener noreferrer">{language === 'en' ? 'Interactive Live Class ↗' : 'Kelas Interaktif ↗'}</a></li>
               <li><a href="https://lynk.id/bangnevgo" target="_blank" rel="noopener noreferrer">Toko Ebook &amp; Event ↗</a></li>
             </ul>
           </div>
           <div className="nv-footer-col">
             <h4 className="nv-footer-col-title">{t('footerColLegal')}</h4>
             <ul className="nv-footer-col-links">
-              <li><a href="https://wa.me/628989221700" target="_blank" rel="noopener noreferrer">{language === 'en' ? 'Terms & Conditions' : 'Syarat & Ketentuan'}</a></li>
-              <li><a href="https://wa.me/628989221700" target="_blank" rel="noopener noreferrer">{language === 'en' ? 'Privacy Policy' : 'Kebijakan Privasi'}</a></li>
-              <li><a href="https://wa.me/628989221700" target="_blank" rel="noopener noreferrer">{language === 'en' ? 'Contact' : 'Kontak'}</a></li>
+              <li><a href="https://wa.me/6288989221700" target="_blank" rel="noopener noreferrer">{language === 'en' ? 'Terms & Conditions' : 'Syarat & Ketentuan'}</a></li>
+              <li><a href="https://wa.me/6288989221700" target="_blank" rel="noopener noreferrer">{language === 'en' ? 'Privacy Policy' : 'Kebijakan Privasi'}</a></li>
+              <li><a href="https://wa.me/6288989221700" target="_blank" rel="noopener noreferrer">{language === 'en' ? 'Contact' : 'Kontak'}</a></li>
             </ul>
           </div>
         </div>
@@ -1644,7 +1644,7 @@ export default function Landing() {
         {/* ── WhatsApp CTA ── */}
         <div className="nv-footer-wa-cta">
           <a
-            href="https://wa.me/628989221700"
+            href="https://wa.me/6288989221700"
             target="_blank"
             rel="noopener noreferrer"
             className="nv-footer-wa-link"
