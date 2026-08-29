@@ -33,19 +33,44 @@ export function AnalyticsDashboard() {
   const [ga4Data, setGa4Data] = useState<GA4Data | null>(null);
   const [gscData, setGscData] = useState<GSCData | null>(null);
   const [bookings, setBookings] = useState<BookingItem[]>([]);
+  const [bookingsError, setBookingsError] = useState('');
   const [loadingBookings, setLoadingBookings] = useState(true);
   const [loading, setLoading] = useState(true);
 
   const fetchBookings = async () => {
     setLoadingBookings(true);
+    setBookingsError('');
     try {
-      const res = await fetch('/api/booking/admin');
+      // Kunci admin diketik owner sekali dan disimpan di localStorage browser
+      // (tidak pernah ikut bundle). Endpoint menolak request tanpa header ini.
+      let adminKey = window.localStorage.getItem('nevgo_admin_key') || '';
+      if (!adminKey) {
+        adminKey = window.prompt('Masukkan Admin Access Key untuk memuat dashboard:') || '';
+        if (adminKey) window.localStorage.setItem('nevgo_admin_key', adminKey);
+      }
+      if (!adminKey) {
+        setBookingsError('Admin Access Key diperlukan untuk memuat jadwal. Klik Refresh untuk memasukkan key.');
+        setBookings([]);
+        return;
+      }
+      const res = await fetch('/api/booking/admin', {
+        headers: adminKey ? { 'x-admin-key': adminKey } : undefined,
+      });
+      if (res.status === 401) {
+        window.localStorage.removeItem('nevgo_admin_key');
+        setBookings([]);
+        setBookingsError('Admin Access Key ditolak. Klik Refresh lalu masukkan key yang benar.');
+        return;
+      }
       const data = await res.json();
       if (data.success && Array.isArray(data.bookings)) {
         setBookings(data.bookings);
+      } else {
+        setBookingsError(data.error || 'Jadwal gagal dimuat dari server.');
       }
     } catch (err) {
       console.error('Error fetching bookings:', err);
+      setBookingsError('Koneksi ke data booking terganggu. Coba Refresh kembali.');
     } finally {
       setLoadingBookings(false);
     }
@@ -107,6 +132,11 @@ export function AnalyticsDashboard() {
         <CardContent>
           {loadingBookings ? (
             <div className="text-xs text-muted-foreground py-4 text-center">Memuat daftar booking...</div>
+          ) : bookingsError ? (
+            <div className="p-6 text-center bg-amber-500/10 rounded-xl border border-amber-500/30">
+              <p className="text-sm font-semibold text-amber-500">Jadwal tidak dapat dimuat</p>
+              <p className="text-xs text-muted-foreground mt-1">{bookingsError}</p>
+            </div>
           ) : bookings.length === 0 ? (
             <div className="p-6 text-center bg-muted/40 rounded-xl border border-dashed">
               <p className="text-sm font-semibold text-muted-foreground">Belum ada booking konsultasi untuk hari ini.</p>

@@ -21,6 +21,7 @@ import dynamic from 'next/dynamic'
 import AiHubSection from '@/components/ai-hub-section'
 import FreeDownloadsSection from '@/components/free-downloads-section'
 import KnowledgeBank from '@/components/knowledge-bank'
+import MiniCourseSection from '@/components/mini-course-section'
 import type { GraphNodeTarget } from '@/components/curriculum-graph-view'
 
 const CurriculumGraphView = dynamic(() => import('@/components/curriculum-graph-view'), {
@@ -757,7 +758,8 @@ export default function Landing() {
           const partImage = partImages[partIdx] || partImages[0]
 
           return (
-            <div key={part.id} id={part.id} className="nv-part">
+            <div key={part.id}>
+              <div id={part.id} className="nv-part">
               {/* Part Header with Image — seragam Teks Pengantar dulu, lalu Gambar */}
               <div className="nv-part-hero-row">
                 <motion.div
@@ -963,8 +965,131 @@ export default function Landing() {
               )}
               </details>
             </div>
+
+            {/* ─── NEVGO LEARNING ECOSYSTEM INFOGRAPHIC (ANTARA BAGIAN 02 & 03) ─── */}
+            {partIdx === 1 && (
+              <motion.div
+                className="nv-ecosystem-banner"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
+                <div className="nv-banner-header">
+                  <span
+                    className="nv-pricing-cta-badge"
+                    style={{
+                      background: 'rgba(212,160,83,0.12)',
+                      color: 'var(--nv-gold)',
+                      padding: '5px 12px',
+                      borderRadius: '999px',
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      letterSpacing: '0.06em',
+                      display: 'inline-block',
+                    }}
+                  >
+                    ✦ {language === 'en' ? 'LEARNING ECOSYSTEM FRAMEWORK' : 'STRUKTUR EKOSISTEM · LEARNING FRAMEWORK'}
+                  </span>
+                  <h3 className="nv-banner-title">
+                    {language === 'en' ? 'Nevgo Learning Ecosystem' : 'Ekosistem Platform Belajar Nevgo'}
+                  </h3>
+                  <p className="nv-banner-desc">
+                    {language === 'en'
+                      ? 'An integrated learning architecture connecting free inspiration, curriculum modules, practical tools, interactive classes, to 1-on-1 personal guidance.'
+                      : 'Satu arsitektur pembelajaran terpadu yang menghubungkan inspirasi gratis, modul kurikulum, materi terapan, kelas interaktif, hingga pendampingan personal.'}
+                  </p>
+                </div>
+
+                <div className="nv-banner-media-wrap">
+                  <Image
+                    src="/images/nevgo-learning-ecosystem.webp"
+                    alt="Infografis enam jalur belajar dalam Nevgo Learning Ecosystem"
+                    width={1672}
+                    height={941}
+                    className="w-full h-auto object-contain block"
+                    sizes="(max-width: 768px) 100vw, 1000px"
+                  />
+                </div>
+              </motion.div>
+            )}
+
+            {/* ─── VIDEO TOUR / TEASER MINI COURSE (ANTARA BAGIAN 04 & 05) ─── */}
+            {partIdx === 3 && (
+              <motion.div
+                className="nv-video-teaser-banner"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
+                <div className="nv-banner-header">
+                  <span
+                    className="nv-pricing-cta-badge"
+                    style={{
+                      background: 'rgba(212,160,83,0.12)',
+                      color: 'var(--nv-gold)',
+                      padding: '5px 12px',
+                      borderRadius: '999px',
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      letterSpacing: '0.06em',
+                      display: 'inline-block',
+                    }}
+                  >
+                    🎬 {language === 'en' ? 'PLATFORM TOUR & VIDEO PREVIEW' : 'TOUR PLATFORM & VIDEO PREVIEW'}
+                  </span>
+                  <h3 className="nv-banner-title">
+                    {language === 'en'
+                      ? 'Explore Mini Course: Asumsimu Itu Dahsyat'
+                      : 'Lihat Isi Lengkap Mini Course (Tour 2 Menit)'}
+                  </h3>
+                  <p className="nv-banner-desc">
+                    {language === 'en'
+                      ? 'A 2-minute overview of the 5 masterclass modules, 20 ebooks, 12 webinar recordings, meditation audio, and 24/7 Nevi AI.'
+                      : 'Simak penjelasan 4 modul inti + 1 bridging, brankas 20 ebook, 12 rekaman webinar eksklusif, audio meditasi, hingga asisten Nevi AI.'}
+                  </p>
+                </div>
+
+                <div className="nv-video-media-wrap">
+                  <video
+                    controls
+                    playsInline
+                    preload="metadata"
+                    className="nv-video-player"
+                    src="https://audio.nevgoinstitute.com/nevgo-minicourse-videos/Promo_Mini_Course_Asumsimu_Itu_Dahsyat.mp4"
+                  >
+                    Browser Anda tidak mendukung pemutaran video HTML5.
+                  </video>
+                </div>
+
+                {/* ── CTA Bubble Hijau — Aktifkan Trial 7 Hari ── */}
+                <div className="nv-green-bubble-wrap">
+                  <motion.a
+                    href="https://course.nevgoinstitute.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="nv-green-bubble-cta"
+                    whileHover={{ scale: 1.03, y: -2 }}
+                    whileTap={{ scale: 0.97 }}
+                  >
+                    <span style={{ fontSize: '1.05rem' }}>✦</span>
+                    <span>{language === 'en' ? 'Aktifkan Trial 7 Hari Bebas Biaya →' : 'Aktifkan Trial 7 Hari Bebas Biaya →'}</span>
+                  </motion.a>
+                  <span className="nv-green-bubble-sub">
+                    {language === 'en'
+                      ? 'Akses instan 7 hari · Tanpa komitmen · Langsung coba modul & materi'
+                      : 'Akses instan 7 hari · Tanpa komitmen · Langsung coba modul & materi'}
+                  </span>
+                </div>
+              </motion.div>
+            )}
+            </div>
           )
         })}
+        {/* ─── MINI COURSE SECTION ─── */}
+        <MiniCourseSection />
+
         {/* ─── PROGRAM COHORT SECTION ─── */}
         <motion.section
           id="cohort"
@@ -1207,7 +1332,7 @@ export default function Landing() {
                   style={{ textDecoration: 'none' }}
                 >
                   <span className="nv-cta-icon">✦</span>
-                  {language === 'en' ? 'Join Cohort — Rp 1.000.000 →' : 'Gabung Cohort — Rp 1.000.000 →'}
+                  {language === 'en' ? 'Join Cohort →' : 'Gabung Cohort →'}
                 </motion.a>
                 <motion.a
                   href="https://cohort.nevgoinstitute.com"
@@ -1451,7 +1576,7 @@ export default function Landing() {
                 </p>
                 <div className="mt-4 flex flex-wrap items-center justify-center sm:justify-start gap-3">
                   <a
-                    href="https://nevgoinstitute.com/#bangnevgo"
+                    href="https://nevgoinstitute.com/bang-nevgo/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-[#d4a053] text-neutral-950 hover:bg-[#c49247] transition shadow-md"
@@ -1627,6 +1752,7 @@ export default function Landing() {
             <ul className="nv-footer-col-links">
               <li><a href="https://nevgoinstitute.com" target="_blank" rel="noopener noreferrer">Website Utama (nevgoinstitute.com) ↗</a></li>
               <li><a href="https://nevgoinstitute.com/artikel" target="_blank" rel="noopener noreferrer">Hub Artikel &amp; GEO ↗</a></li>
+              <li><a href="https://course.nevgoinstitute.com/" data-cta-id="mini-course-loas-footer" target="_blank" rel="noopener noreferrer">Mini Course Asumsimu Itu Dahsyat ↗</a></li>
               <li><a href="https://cohort.nevgoinstitute.com" target="_blank" rel="noopener noreferrer">{language === 'en' ? 'Interactive Live Class ↗' : 'Kelas Interaktif ↗'}</a></li>
               <li><a href="https://lynk.id/bangnevgo" target="_blank" rel="noopener noreferrer">Toko Ebook &amp; Event ↗</a></li>
             </ul>

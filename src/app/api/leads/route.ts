@@ -1,9 +1,14 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { isAdminRequest, unauthorizedResponse } from '@/lib/adminAuth'
 
 // GET /api/leads
 // Fetch recent leads from Neon DB for the Nevgo OS Dashboard CRM
-export async function GET(request: Request) {
+// Auth: header `x-admin-key` (lihat src/lib/adminAuth.ts)
+export async function GET(request: NextRequest) {
+  if (!isAdminRequest(request)) {
+    return unauthorizedResponse()
+  }
   try {
     const { searchParams } = new URL(request.url)
     const limit = Math.min(parseInt(searchParams.get('limit') || '100', 10), 500)

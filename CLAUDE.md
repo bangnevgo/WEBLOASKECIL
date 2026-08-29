@@ -28,3 +28,18 @@ bun run start          # Start production server
 - Build script: `prisma generate && next build` (prisma di-build time)
 - Deploy otomatis via Vercel git integration
 - Source: `/Users/ding/projects/web-apps/WEBLOASKECIL/` (sebelumnya)
+
+---
+
+## 🌐 NEVGO GLOBAL AGENT RULES (WAJIB — semua agent, semua platform)
+
+Sumber: `AGENTS.md` root workspace NEVGO BISNIS V4 (Aturan Kerja 15–16).
+
+1. **Prinsip Read-First & Ask-First:** Jangan pernah membuat file, kode produk,
+   atau struktur bab baru sebelum pengguna memberikan instruksi atau persetujuan
+   tertulis.
+2. **Aturan Grounding Ketat:** Jika file atau data spesifik tidak ditemukan di
+   memori/database, langsung jawab "Data tidak ditemukan" dalam satu kalimat
+   tanpa memberikan alternatif atau asumsi. Berlaku untuk pencarian file/data
+   spesifik; klaim kapabilitas/sistem (audit & laporan formal) tetap ikut Aturan 5
+   root AGENTS.md (*Verification Before Verdict*) dengan scope pemeriksaan.

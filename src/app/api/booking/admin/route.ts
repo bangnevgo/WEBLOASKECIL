@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { getCalendarClient } from '@/lib/google-calendar';
+import { isAdminRequest, unauthorizedResponse } from '@/lib/adminAuth';
 
 export async function GET(request: NextRequest) {
+  if (!isAdminRequest(request)) {
+    return unauthorizedResponse();
+  }
   try {
     const { searchParams } = new URL(request.url);
     const dateStr = searchParams.get('date');
@@ -90,6 +94,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
+  if (!isAdminRequest(request)) {
+    return unauthorizedResponse();
+  }
   try {
     const { id, status, calendarEventId } = await request.json();
 

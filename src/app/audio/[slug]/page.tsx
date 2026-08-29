@@ -89,7 +89,7 @@ export default async function AudioPage({ params }: Props) {
         author: {
           '@type': 'Person',
           name: lesson.author.name,
-          url: 'https://nevgoinstitute.com/#bangnevgo'
+          url: 'https://nevgoinstitute.com/bang-nevgo/'
         }
       },
       {
@@ -103,7 +103,7 @@ export default async function AudioPage({ params }: Props) {
         author: {
           '@type': 'Person',
           name: lesson.author.name,
-          url: 'https://nevgoinstitute.com/#bangnevgo',
+          url: 'https://nevgoinstitute.com/bang-nevgo/',
           sameAs: [
             'https://www.tiktok.com/@bangnevgo',
             'https://www.youtube.com/@bangnevgo',

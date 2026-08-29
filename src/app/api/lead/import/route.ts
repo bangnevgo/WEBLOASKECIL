@@ -1,7 +1,11 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { isAdminRequest, unauthorizedResponse } from '@/lib/adminAuth'
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  if (!isAdminRequest(request)) {
+    return unauthorizedResponse()
+  }
   try {
     const body = await request.json()
     const leads = Array.isArray(body.leads) ? body.leads : Array.isArray(body) ? body : null

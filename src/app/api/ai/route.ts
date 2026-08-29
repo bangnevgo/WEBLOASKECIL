@@ -30,7 +30,12 @@ async function getZAI() {
         }
       }
     }
-    zaiInstance = await ZAI.create()
+    try {
+      zaiInstance = await ZAI.create()
+    } catch (e) {
+      console.warn('ZAI.create() not available, will use OpenRouter:', e)
+      return null
+    }
   }
   return zaiInstance
 }
@@ -97,13 +102,24 @@ function buildMessages(feature: Feature, payload: Record<string, unknown>, langu
         ...userMessages,
       ]
     }
+    case 'nevi-coach': {
+      const { messages } = payload
+      const userMessages = (messages as Array<{ role: string; content: string }>).map((m) => ({
+        role: m.role as 'user' | 'assistant',
+        content: m.content,
+      }))
+      return [
+        { role: 'system' as const, content: systemPrompt },
+        ...userMessages,
+      ]
+    }
     default:
       return []
   }
 }
 
 function parseAIResponse(text: string, feature: Feature) {
-  if (feature === 'private-session') {
+  if (feature === 'private-session' || feature === 'nevi-coach') {
     return { message: text }
   }
 
@@ -137,7 +153,7 @@ function parseAIResponse(text: string, feature: Feature) {
 
 async function callOpenRouter(messages: Array<{ role: 'system' | 'assistant' | 'user'; content: string }>) {
   const apiKey = process.env.OPENROUTER_API_KEY
-  const model = process.env.OPENROUTER_MODEL || 'openrouter/owl-alpha'
+  const model = process.env.OPENROUTER_MODEL || 'openrouter/free'
   const baseUrl = process.env.OPENROUTER_BASE_URL || 'https://openrouter.ai/api/v1'
 
   if (!apiKey) {
@@ -176,6 +192,9 @@ async function callWithRetry(messages: Array<{ role: 'system' | 'assistant' | 'u
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       const zai = await getZAI()
+      if (!zai) {
+        throw new Error('ZAI SDK instance not initialized')
+      }
       const completion = await zai.chat.completions.create({
         model: "nvidia/nemotron-3-super-120b-a12b:free",
         messages,
@@ -210,12 +229,25 @@ async function callWithRetry(messages: Array<{ role: 'system' | 'assistant' | 'u
   }
 }
 
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+}
+
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: CORS_HEADERS })
+}
+
 export async function GET() {
-  return NextResponse.json({
-    status: 'ok',
-    features: ['manifestation', 'limiting-belief', 'shadow', 'private-session'],
-    provider: 'z-ai-web-dev-sdk',
-  })
+  return NextResponse.json(
+    {
+      status: 'ok',
+      features: ['manifestation', 'limiting-belief', 'shadow', 'private-session', 'nevi-coach'],
+      provider: 'z-ai-web-dev-sdk',
+    },
+    { headers: CORS_HEADERS }
+  )
 }
 
 export async function POST(request: Request) {
@@ -226,8 +258,8 @@ export async function POST(request: Request) {
     // Validate feature
     if (!feature || (!PROMPT_MAP[feature] && !PROMPT_MAP_EN[feature])) {
       return NextResponse.json(
-        { success: false, error: 'Invalid feature. Must be one of: manifestation, limiting-belief, shadow, private-session' },
-        { status: 400 }
+        { success: false, error: 'Invalid feature. Must be one of: manifestation, limiting-belief, shadow, private-session, nevi-coach' },
+        { status: 400, headers: CORS_HEADERS }
       )
     }
 
@@ -235,7 +267,7 @@ export async function POST(request: Request) {
     if (!payload) {
       return NextResponse.json(
         { success: false, error: 'Payload is required' },
-        { status: 400 }
+        { status: 400, headers: CORS_HEADERS }
       )
     }
 
@@ -243,19 +275,19 @@ export async function POST(request: Request) {
     if (feature === 'manifestation' && (!payload.manifestation || !payload.category)) {
       return NextResponse.json(
         { success: false, error: 'manifestation and category are required' },
-        { status: 400 }
+        { status: 400, headers: CORS_HEADERS }
       )
     }
     if ((feature === 'limiting-belief' || feature === 'shadow') && !payload.answers) {
       return NextResponse.json(
         { success: false, error: 'answers are required' },
-        { status: 400 }
+        { status: 400, headers: CORS_HEADERS }
       )
     }
-    if (feature === 'private-session' && (!payload.messages || !Array.isArray(payload.messages))) {
+    if ((feature === 'private-session' || feature === 'nevi-coach') && (!payload.messages || !Array.isArray(payload.messages))) {
       return NextResponse.json(
         { success: false, error: 'messages array is required' },
-        { status: 400 }
+        { status: 400, headers: CORS_HEADERS }
       )
     }
 
@@ -272,7 +304,7 @@ export async function POST(request: Request) {
       success: true,
       feature,
       data,
-    })
+    }, { headers: CORS_HEADERS })
   } catch (error) {
     console.error('AI API error:', error)
     return NextResponse.json(
@@ -280,7 +312,7 @@ export async function POST(request: Request) {
         success: false,
         error: error instanceof Error ? error.message : 'Internal server error',
       },
-      { status: 500 }
+      { status: 500, headers: CORS_HEADERS }
     )
   }
 }

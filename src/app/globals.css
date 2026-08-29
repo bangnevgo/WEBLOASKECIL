@@ -913,6 +913,300 @@ html, body {
 
 .nv-bonus-icon { font-size: 16px; flex-shrink: 0; }
 
+/* ===== Mini Course Section ===== */
+.nv-mini-course-section {
+  position: relative;
+  padding: 64px 32px 48px;
+  margin: 48px 0;
+  border: 1px solid rgba(212, 160, 83, 0.25);
+  border-radius: 20px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(212, 160, 83, 0.06), transparent 70%);
+  overflow: hidden;
+  text-align: center;
+}
+
+.nv-mini-course-glow {
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 500px;
+  height: 300px;
+  background: radial-gradient(ellipse, rgba(212, 160, 83, 0.12), transparent 70%);
+  pointer-events: none;
+}
+
+.nv-mini-course-content {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.nv-mini-course-badge-wrap {
+  margin-bottom: 16px;
+}
+
+.nv-mini-course-headline {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 800;
+  color: var(--nv-text);
+  margin: 0 0 16px;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.nv-mini-course-subheadline {
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  color: var(--nv-muted);
+  line-height: 1.7;
+  margin: 0 auto 28px;
+  max-width: 720px;
+}
+
+.nv-mini-course-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 36px;
+}
+
+@media (max-width: 640px) {
+  .nv-mini-course-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+.nv-mini-course-card {
+  padding: 22px 20px;
+  border-radius: 14px;
+  border: 1px solid var(--nv-glass-border);
+  background: var(--nv-glass);
+  text-align: left;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.nv-mini-course-card:hover {
+  border-color: rgba(212, 160, 83, 0.35);
+}
+
+.nv-mini-course-card-icon {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.nv-mini-course-card-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--nv-gold);
+  margin: 0 0 6px;
+  letter-spacing: 0.01em;
+}
+
+.nv-mini-course-card-desc {
+  font-size: 0.82rem;
+  color: var(--nv-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.nv-mini-course-cta-wrap {
+  text-align: center;
+}
+
+.nv-mini-course-cohort-link {
+  font-size: 0.85rem;
+  color: #ffd27d;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nv-mini-course-cohort-link:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.nv-mini-course-cta-note {
+  font-size: 0.78rem;
+  color: var(--nv-dim);
+  margin: 12px 0 0;
+  letter-spacing: 0.02em;
+}
+
+/* ===== Ecosystem Banner & Video Teaser Banner ===== */
+.nv-ecosystem-banner,
+.nv-video-teaser-banner {
+  margin: 56px 0 48px;
+  padding: 36px 24px;
+  border-radius: 24px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(212, 160, 83, 0.08), rgba(10, 10, 12, 0.96));
+  border: 1px solid rgba(212, 160, 83, 0.35);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(212, 160, 83, 0.08);
+  text-align: center;
+}
+
+.nv-banner-header {
+  max-width: 720px;
+  margin: 0 auto 24px;
+}
+
+.nv-banner-title {
+  font-size: clamp(1.25rem, 3.5vw, 1.85rem);
+  font-weight: 800;
+  color: var(--nv-text);
+  margin: 14px 0 10px;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.nv-banner-desc {
+  font-size: 0.88rem;
+  color: var(--nv-muted);
+  line-height: 1.65;
+  margin: 0 auto;
+}
+
+.nv-banner-media-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 160, 83, 0.3);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.4);
+  background: #f7f1e7;
+}
+
+.nv-video-media-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 160, 83, 0.3);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+  background: #0a0a0c;
+}
+
+.nv-video-player {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: block;
+  object-fit: contain;
+  background: #000;
+}
+
+.nv-green-bubble-wrap {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.nv-green-bubble-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #25d366, #1fad53);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.35), 0 0 16px rgba(37, 211, 102, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  letter-spacing: 0.01em;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nv-green-bubble-cta:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(37, 211, 102, 0.45);
+}
+
+.nv-green-bubble-sub {
+  font-size: 0.75rem;
+  color: #a1a1aa;
+  letter-spacing: 0.02em;
+}
+
+/* Mobile Responsiveness for Banners & Sections */
+@media (max-width: 640px) {
+  .nv-ecosystem-banner,
+  .nv-video-teaser-banner {
+    margin: 32px 0 24px;
+    padding: 22px 12px 18px;
+    border-radius: 16px;
+  }
+
+  .nv-banner-header {
+    margin-bottom: 16px;
+  }
+
+  .nv-banner-title {
+    font-size: 1.2rem;
+    margin: 10px 0 6px;
+  }
+
+  .nv-banner-desc {
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+
+  .nv-banner-media-wrap,
+  .nv-video-media-wrap {
+    border-radius: 10px;
+  }
+
+  .nv-green-bubble-cta {
+    width: 100%;
+    max-width: 320px;
+    padding: 12px 16px;
+    font-size: 0.85rem;
+  }
+
+  .nv-mini-course-section {
+    padding: 32px 14px 24px;
+    margin: 32px 0;
+    border-radius: 16px;
+  }
+
+  .nv-mini-course-headline {
+    font-size: 1.35rem;
+  }
+
+  .nv-mini-course-subheadline {
+    font-size: 0.8rem;
+    line-height: 1.5;
+    margin-bottom: 18px;
+  }
+
+  .nv-mini-course-card {
+    padding: 14px 12px;
+    border-radius: 12px;
+  }
+
+  .nv-mini-course-card-title {
+    font-size: 0.86rem;
+  }
+
+  .nv-mini-course-card-desc {
+    font-size: 0.76rem;
+  }
+}
+
 /* ===== Cohort Section ===== */
 .nv-cohort-section {
   position: relative;

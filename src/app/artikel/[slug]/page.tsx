@@ -68,7 +68,7 @@ export default async function ArtikelPage({ params }: Props) {
         author: {
           '@type': 'Person',
           name: 'Bang Nevgo',
-          url: 'https://nevgoinstitute.com/#bangnevgo',
+          url: 'https://nevgoinstitute.com/bang-nevgo/',
           sameAs: [
             'https://www.tiktok.com/@bangnevgo',
             'https://www.youtube.com/@bangnevgo',
