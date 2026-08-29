@@ -29,8 +29,8 @@ const FEATURES = [
     icon: '⚡',
     titleId: 'Akses Seumur Hidup',
     titleEn: 'Lifetime Full Access',
-    descId: 'Investasi sekali Rp499.000 untuk akses materi dan update kurikulum selamanya.',
-    descEn: 'One-time investment of Rp499.000 for permanent access and future updates.',
+    descId: 'Akses seumur hidup untuk seluruh materi dan update kurikulum mendatang.',
+    descEn: 'Lifetime access for all materials and future curriculum updates.',
   },
 ]
 
@@ -52,7 +52,7 @@ export default function MiniCourseSection() {
         {/* Badge */}
         <div className="nv-mini-course-badge-wrap">
           <span className="nv-pricing-cta-badge">
-            ✦ {isEn ? 'STRUCTURED SELF-PACED LEARNING' : 'BELAJAR MANDIRI TERSTRUKTUR'}
+            ✦ {isEn ? 'FEATURED PROGRAM' : 'PROGRAM UNGGULAN'}
           </span>
         </div>
 
@@ -64,8 +64,8 @@ export default function MiniCourseSection() {
         {/* Subheadline / Body */}
         <p className="nv-mini-course-subheadline">
           {isEn
-            ? 'Mini Course Law of Assumption for structured self-paced learning with 5 LMS modules, 20 ebooks, 12 webinar recordings, meditation audio, and 24/7 Nevi AI. Lifetime access, Rp499.000.'
-            : 'Mini Course Law of Assumption untuk belajar mandiri melalui 5 modul LMS, 20 ebook, 12 rekaman webinar, audio meditasi, dan Nevi AI 24/7. Akses seumur hidup, Rp499.000.'}
+            ? 'Mini Course Law of Assumption for structured self-paced learning with 5 LMS modules, 20 ebooks, 12 webinar recordings, meditation audio, and 24/7 Nevi AI. Lifetime access.'
+            : 'Mini Course Law of Assumption untuk belajar mandiri melalui 5 modul LMS, 20 ebook, 12 rekaman webinar, audio meditasi, dan Nevi AI 24/7. Akses seumur hidup.'}
         </p>
 
         {/* Features Grid */}
@@ -120,8 +120,8 @@ export default function MiniCourseSection() {
 
           <p className="nv-mini-course-cta-note">
             {isEn
-              ? 'Rp 499.000 · One-time payment · Instant LMS Access'
-              : 'Rp 499.000 · Sekali bayar · Akses instan ke LMS'}
+              ? 'Sekali bayar · Akses instan ke LMS'
+              : 'Sekali bayar · Akses instan ke LMS'}
           </p>
         </div>
       </div>
