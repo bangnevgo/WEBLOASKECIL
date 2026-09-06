@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { hasProgramAccess, normalizeTier } from '@/lib/access-tier-policy.mjs';
 
 /**
  * GET /api/access/check?email=...&program=MINI_COURSE|BOOTCAMP
@@ -36,18 +37,11 @@ export async function GET(req: NextRequest) {
 
     const user = await db.user.findUnique({ where: { email } });
 
-    // MINI_COURSE → premium or master ; BOOTCAMP → master
-    let granted = false;
-    if (user) {
-      if (program === 'MINI_COURSE') {
-        granted = user.tier === 'premium' || user.tier === 'master';
-      } else if (program === 'BOOTCAMP') {
-        granted = user.tier === 'master';
-      }
-    }
+    const tier = normalizeTier(user?.tier || 'free');
+    const granted = user ? hasProgramAccess(tier, program) : false;
 
     return NextResponse.json(
-      { success: true, email, program, granted, tier: user?.tier || 'free' },
+      { success: true, email, program, granted, tier },
       { status: 200, headers }
     );
   } catch (error: any) {

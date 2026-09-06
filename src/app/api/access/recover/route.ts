@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { isAdminRequest, unauthorizedResponse } from '@/lib/adminAuth';
+import { hasProgramAccess, normalizeTier } from '@/lib/access-tier-policy.mjs';
 
 function normalizePhone(value: string): string {
   const digits = value.replace(/\D/g, '');
@@ -49,7 +50,8 @@ export async function POST(req: NextRequest) {
       where: { email },
       select: { email: true, name: true, tier: true },
     });
-    if (!user || !['premium', 'master'].includes(user.tier)) {
+    const tier = normalizeTier(user?.tier || 'free');
+    if (!user || !hasProgramAccess(tier, 'MINI_COURSE')) {
       return NextResponse.json({ success: false, error: 'Akses tidak ditemukan.' }, { status: 404 });
     }
 
@@ -67,7 +69,7 @@ export async function POST(req: NextRequest) {
         name: user.name || matchedLead?.name || user.email.split('@')[0],
         email: user.email,
         phone: matchedLead?.phone || '',
-        tier: user.tier,
+        tier,
       },
     });
   } catch (error: any) {

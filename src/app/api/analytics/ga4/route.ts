@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { google } from 'googleapis';
 
 // GA4 property that covers BOTH loas.nevgoinstitute.com and cohort.nevgoinstitute.com
-const PROPERTY_ID = '469650688';
+const PROPERTY_ID = '539977846';
 
 function buildCredentials() {
   // Preferred: a single service-account JSON secret (same credential BOS uses).

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { normalizeTier, resolveGrantTier, tierRank } from '@/lib/access-tier-policy.mjs';
 
 /**
  * POST /api/access/grant
@@ -10,12 +11,6 @@ import { db } from '@/lib/db';
  * Body: { email, program: "MINI_COURSE" | "BOOTCAMP", action: "grant" | "revoke" }
  */
 const ADMIN_ACCESS_KEY = process.env.ADMIN_ACCESS_KEY || '';
-
-// Tier mapping: Mini Course → premium, Bootcamp → master
-const PROGRAM_TIER: Record<string, string> = {
-  MINI_COURSE: 'premium',
-  BOOTCAMP: 'master',
-};
 
 export async function POST(req: NextRequest) {
   // CORS for Mini Course admin UI
@@ -50,11 +45,10 @@ export async function POST(req: NextRequest) {
     let user = await db.user.findUnique({ where: { email } });
 
     if (action === 'grant') {
-      const targetTier = PROGRAM_TIER[program];
+      const targetTier = resolveGrantTier(program, body.tier);
       if (user) {
         // Grant: upgrade tier if the target tier is higher than current
-        const tierRank: Record<string, number> = { free: 0, basic: 1, premium: 2, master: 3 };
-        if ((tierRank[targetTier] || 0) > (tierRank[user.tier] || 0)) {
+        if (tierRank(targetTier) > tierRank(user.tier)) {
           user = await db.user.update({
             where: { id: user.id },
             data: { tier: targetTier },
@@ -72,16 +66,16 @@ export async function POST(req: NextRequest) {
         });
       }
     } else if (program === 'MINI_COURSE') {
-      // A master account may also hold Bootcamp access. The legacy single-tier
+      // A Bootcamp account also holds Mini Course access. Refuse an ambiguous
       // schema cannot safely remove only Mini Course, so refuse the ambiguous
       // downgrade instead of silently destroying the stronger entitlement.
-      if (user?.tier === 'master') {
+      if (normalizeTier(user?.tier) === 'bootcamp') {
         return NextResponse.json(
-          { success: false, error: 'Akun master tidak dapat dicabut lewat revoke Mini Course karena akses program masih berbagi satu tier.' },
+          { success: false, error: 'Akun Bootcamp tidak dapat dicabut lewat revoke Mini Course.' },
           { status: 409, headers }
         );
       }
-      if (user?.tier === 'premium') {
+      if (user && ['legacy', 'premium'].includes(normalizeTier(user.tier))) {
         user = await db.user.update({
           where: { id: user.id },
           data: { tier: 'free' },
@@ -89,7 +83,7 @@ export async function POST(req: NextRequest) {
       }
     } else {
       // Removing Bootcamp preserves the lower Mini Course entitlement.
-      if (user?.tier === 'master') {
+      if (user && normalizeTier(user.tier) === 'bootcamp') {
         user = await db.user.update({
           where: { id: user.id },
           data: { tier: 'premium' },
@@ -108,7 +102,7 @@ export async function POST(req: NextRequest) {
       {
         success: true,
         email: user.email,
-        tier: user.tier,
+        tier: normalizeTier(user.tier),
         program,
         action,
       },

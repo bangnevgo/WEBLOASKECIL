@@ -104,3 +104,9 @@ public/               # Static assets
 ## Lisensi
 
 Hak cipta © Bang Nevgo. Seluruh hak cipta dilindungi.
+
+## Tracking & Analytics
+
+- **GA4:** measurement ID `G-C8N91XC6NL` (property `539977846` LOASNEVGO). Nilai disimpan di env Vercel `NEXT_PUBLIC_GA_ID` (project `webloaskecil-niob`, Production & Development) dan `.env` lokal. Jangan ganti tanpa alasan jelas.
+- **Analytics internal** (`/api/analytics/ga4`) memakai `PROPERTY_ID = '539977846'` di `src/app/api/analytics/ga4/route.ts`.
+- 📖 **Referensi lengkap semua ID:** `WEBSITE/REFERENSI_GA4_WEBSITE.md` (workspace NEVGO BISNIS V4) — baca sebelum mengubah tracking.

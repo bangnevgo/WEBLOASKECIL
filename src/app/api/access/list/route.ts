@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { normalizeDistributionStatus, normalizeTier } from '@/lib/access-tier-policy.mjs';
 
 /**
  * GET /api/access/list
@@ -18,11 +19,13 @@ export async function GET(req: NextRequest) {
 
   try {
     const users = await db.user.findMany({
-      where: { tier: { in: ['premium', 'master'] } },
+      where: { tier: { in: ['legacy', 'premium', 'bootcamp', 'master'] } },
       select: {
         email: true,
         name: true,
         tier: true,
+        distributionStatus: true,
+        distributedAt: true,
         createdAt: true,
       },
       orderBy: { createdAt: 'desc' },
@@ -49,7 +52,9 @@ export async function GET(req: NextRequest) {
         name: u.name || lead?.name || u.email.split('@')[0],
         email: u.email,
         phone: lead?.phone || '',
-        tier: u.tier,
+        tier: normalizeTier(u.tier),
+        distributionStatus: normalizeDistributionStatus(u.distributionStatus),
+        distributedAt: u.distributedAt,
         joinedAt: u.createdAt,
       }}),
     });

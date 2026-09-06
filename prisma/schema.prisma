@@ -28,7 +28,9 @@ model User {
   email         String       @unique
   name          String?
   passwordHash  String
-  tier          String       @default("free") // "free" | "basic" | "premium" | "master"
+  tier          String       @default("free") // "free" | "legacy" | "premium" | "bootcamp"
+  distributionStatus String  @default("not_sent")
+  distributedAt DateTime?
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
   completions   Completion[]
