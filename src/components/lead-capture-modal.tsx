@@ -102,7 +102,13 @@ export default function LeadCaptureModal({ isOpen, onClose, onRegistered, onStar
           return
         }
 
-        toast.success(isIndo ? '✦ Pendaftaran berhasil! Akses penuh ke semua modul telah dibuka.' : '✦ Registration successful! Full access to all modules is now unlocked.')
+        toast.success(
+          data.duplicate
+            ? (isIndo
+              ? '✦ Anda sudah terdaftar sebelumnya. Akses penuh tetap dibuka.'
+              : "✦ You're already registered. Full access is still unlocked.")
+            : (isIndo ? '✦ Pendaftaran berhasil! Akses penuh ke semua modul telah dibuka.' : '✦ Registration successful! Full access to all modules is now unlocked.')
+        )
         setJustRegistered(true)
       } else {
         toast.error(data.error || (isIndo ? 'Gagal mendaftar. Coba lagi.' : 'Registration failed. Try again.'))

@@ -76,9 +76,30 @@ export async function POST(request: Request) {
     const ipAddress = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
     const userAgent = request.headers.get('user-agent') || 'unknown'
 
-    // 1. Send to Google Sheet via POST
+    // Dedup: one email = one lead row and one "new lead" notification. Repeat
+    // submissions still unlock access (cookie below) but only trigger a
+    // repeat-visit notice so Telegram, the sheet, and Neon stay duplicate-free.
+    let isRepeat = false
+    try {
+      const existing = await db.lead.findFirst({
+        where: { email: { equals: email.trim().toLowerCase(), mode: 'insensitive' } }
+      })
+      if (existing) {
+        isRepeat = true
+        await db.lead.update({
+          where: { id: existing.id },
+          data: { phone: existing.phone || phone }
+        })
+      }
+    } catch (err) {
+      // If the lookup fails, treat the submission as new: capturing a lead
+      // must never depend on the database being healthy.
+      console.error('Lead dedup lookup error:', err)
+    }
+
+    // 1. Send to Google Sheet via POST (first submission only)
     let sheetResult = 'not_sent'
-    if (GOOGLE_SHEET_URL) {
+    if (GOOGLE_SHEET_URL && !isRepeat) {
       try {
         const sheetRes = await fetch(GOOGLE_SHEET_URL, {
           method: 'POST',
@@ -100,9 +121,10 @@ export async function POST(request: Request) {
       }
     }
 
-    // 2. Send Telegram notification
+    // 2. Send Telegram notification (new leads only; repeat submissions are
+    // informed on the website itself and stay silent on Telegram)
     let tgResult = 'not_sent'
-    if (TELEGRAM_BOT_TOKEN && TELEGRAM_ADMIN_CHAT_ID && !body.skipTelegram) {
+    if (TELEGRAM_BOT_TOKEN && TELEGRAM_ADMIN_CHAT_ID && !body.skipTelegram && !isRepeat) {
       try {
         const tgMessage = `✦ *Lead Baru Akses Loas!* ✦\n\n👤 *Nama:* ${name}\n📧 *Email:* ${email}\n📱 *No HP/WA:* ${phone}\n🕐 *Waktu:* ${new Date(timestamp).toLocaleString('id-ID')}\n🌐 *Sumber:* ${source}\n🌐 *IP:* ${ipAddress}\n📱 *UA:* ${userAgent.slice(0, 80)}`
 
@@ -129,17 +151,23 @@ export async function POST(request: Request) {
     // the durable capture boundary while Neon is being repaired. A database
     // outage must not make a successfully captured lead disappear.
     let dbResult = 'not_saved'
-    try {
-      await db.lead.create({ data: { name, email, phone, source } })
-      dbResult = 'saved'
-    } catch (err) {
-      console.error('Lead DB save error:', err)
-      dbResult = 'error'
+    if (isRepeat) {
+      // The lead row already exists; the dedup lookup above refreshed it.
+      dbResult = 'duplicate'
+    } else {
+      try {
+        await db.lead.create({ data: { name, email, phone, source } })
+        dbResult = 'saved'
+      } catch (err) {
+        console.error('Lead DB save error:', err)
+        dbResult = 'error'
+      }
     }
 
     // Google Sheet is the intake system. If it accepted the lead, return
     // success even when the downstream Neon mirror is temporarily unavailable.
-    if (GOOGLE_SHEET_URL && sheetResult !== 'sent') {
+    // Repeat submissions skip the sheet by design, so they pass straight through.
+    if (GOOGLE_SHEET_URL && !isRepeat && sheetResult !== 'sent') {
       return NextResponse.json(
         { success: false, error: 'Data belum diterima sistem. Silakan coba lagi.' },
         { status: 502 }
@@ -148,7 +176,7 @@ export async function POST(request: Request) {
 
     const response = NextResponse.json({
       success: true,
-      data: { sheet: sheetResult, telegram: tgResult, db: dbResult, syncPending: dbResult !== 'saved', source }
+      data: { sheet: sheetResult, telegram: tgResult, db: dbResult, duplicate: isRepeat, syncPending: dbResult === 'error', source }
     })
 
     response.cookies.set('nv-lead-access', createLeadAccessToken(), {
