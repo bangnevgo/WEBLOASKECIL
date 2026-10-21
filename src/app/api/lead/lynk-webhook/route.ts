@@ -84,17 +84,24 @@ export async function POST(request: Request) {
 
     // 1. Send Telegram Notification
     if (TELEGRAM_BOT_TOKEN && TELEGRAM_ADMIN_CHAT_ID) {
-      const tgMsg = `🛍️ *Lynk.id Transaksi Baru!* 🛍️\n\n👤 *Nama:* ${name}\n📧 *Email:* ${email}\n📱 *No HP/WA:* ${phone || '-'}\n📦 *Produk:* ${itemTitle}\n💰 *Total:* Rp ${Number(amount).toLocaleString('id-ID')}\n🔖 *Ref ID:* \`${refId || '-'}\``
+      const tgMsg = `🛍️ Lynk.id Transaksi Baru! 🛍️\n\n👤 Nama: ${name}\n📧 Email: ${email}\n📱 No HP/WA: ${phone || '-'}\n📦 Produk: ${itemTitle}\n💰 Total: Rp ${Number(amount).toLocaleString('id-ID')}\n🔖 Ref ID: ${refId || '-'}`
       dispatches.push(
         fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          signal: AbortSignal.timeout(15000),
           body: JSON.stringify({
             chat_id: TELEGRAM_ADMIN_CHAT_ID,
-            text: tgMsg,
-            parse_mode: 'Markdown'
+            text: tgMsg
           })
-        }).catch((tgErr) => console.warn('Telegram notification async error:', tgErr))
+        }).then(async (response) => {
+          const result = await response.json()
+          if (!response.ok || result.ok !== true) {
+            console.warn('Lynk Telegram rejected', { status: response.status, errorCode: result.error_code })
+            return
+          }
+          console.info('Lynk Telegram delivered')
+        }).catch((error) => console.warn('Lynk Telegram failed', { error: error.name }))
       )
     }
 
@@ -105,8 +112,13 @@ export async function POST(request: Request) {
         fetch(GOOGLE_APPS_SCRIPT_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          signal: AbortSignal.timeout(15000),
           body: rawBody
-        }).catch((sheetErr) => console.warn('Google Apps Script parallel forward error:', sheetErr))
+        }).then(async (response) => {
+          // Consume the response inside the timeout, including Apps Script redirects.
+          await response.text()
+          console.info('Lynk Google Sheet response', { status: response.status })
+        }).catch((error) => console.warn('Lynk Google Sheet failed', { error: error.name }))
       )
     }
 

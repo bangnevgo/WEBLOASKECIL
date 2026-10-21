@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -56,3 +57,16 @@ server.log
 
 # Agent worktrees
 /.worktrees/
+
+# Local scratch & session dumps
+2026-05-24-043612-this-session-is-being-continued-from-a-previous-c.txt
+Screenshot*.png
+websiteloas*.html
+full_spreadsheet.zip
+debug-admin.js
+test-admin-flow.js
+test-graph.mjs
+test_zai.js
+take-screenshots.mjs
+take_screenshot.mjs
+
