@@ -1,10 +1,12 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { PartFull, ALL_PARTS as ALL_PARTS_ID } from '@/lib/curriculum-data';
 import { ALL_PARTS_EN } from '@/lib/curriculum-data-en';
 import { titleToSlug } from '@/lib/slug-utils';
 import { useTranslation } from '@/lib/translations';
+import { useAppStore } from '@/lib/store';
 
 interface Props {
   part: PartFull;
@@ -14,8 +16,15 @@ interface Props {
   freeIndices: number[];
 }
 
-export default function PartPageClient({ part, prevPart, nextPart, freeIndices }: Props) {
+export default function PartPageClient({ part, prevPart, nextPart, currentSlug, freeIndices }: Props) {
   const { language } = useTranslation();
+  const { leadRegistered, isAuthenticated, checkLeadAccess } = useAppStore();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    checkLeadAccess();
+  }, [checkLeadAccess]);
 
   // Resolve part to active language version
   const activePart = language === 'en'
@@ -75,7 +84,7 @@ export default function PartPageClient({ part, prevPart, nextPart, freeIndices }
         </h2>
         <ol className="nv-lessons-list">
           {activePart.lessons.map((lesson, i) => {
-            const isFree = freeIndices.includes(i);
+            const isFree = freeIndices.includes(i) || (isMounted && (leadRegistered || isAuthenticated));
             return (
               <li key={lesson.num} className={`nv-lesson-item${isFree ? '' : ' nv-lesson-locked'}`} id={`lesson-${lesson.num.replace('.', '-')}`}>
                 <div className="nv-lesson-num">{lesson.num}</div>
@@ -106,9 +115,18 @@ export default function PartPageClient({ part, prevPart, nextPart, freeIndices }
                       <div className="nv-lesson-lock-overlay">
                         <span className="nv-lock-icon">🔒</span>
                         <p>{language === 'en' ? 'Register for free to unlock this lesson' : 'Daftar gratis untuk membuka pelajaran ini'}</p>
-                        <a href="/?register=1" className="nv-lock-cta">
-                          {language === 'en' ? 'Unlock Free Access →' : 'Buka Akses Gratis →'}
-                        </a>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '0.25rem' }}>
+                          <a href={`/?register=1&next=/belajar/${currentSlug}`} className="nv-lock-cta" style={{ marginTop: 0 }}>
+                            {language === 'en' ? 'Unlock Free Access →' : 'Buka Akses Gratis →'}
+                          </a>
+                          <a
+                            href={`/?login=1&next=/belajar/${currentSlug}`}
+                            className="nv-lock-cta"
+                            style={{ marginTop: 0, background: 'transparent', color: '#c9a84c', border: '1px solid rgba(201,168,76,0.45)' }}
+                          >
+                            {language === 'en' ? 'Already Registered? Login →' : 'Sudah Pernah Daftar? Masuk →'}
+                          </a>
+                        </div>
                       </div>
                     </div>
                   )}

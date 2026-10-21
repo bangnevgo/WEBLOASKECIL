@@ -12,15 +12,18 @@ interface Props {
   onClose: () => void
   onRegistered?: () => void
   onStartLearning?: () => void
+  defaultMode?: 'register' | 'restore'
 }
 
-export default function LeadCaptureModal({ isOpen, onClose, onRegistered, onStartLearning }: Props) {
-  const { language, registerLead } = useAppStore()
+export default function LeadCaptureModal({ isOpen, onClose, onRegistered, onStartLearning, defaultMode = 'register' }: Props) {
+  const { language, registerLead, restoreLead } = useAppStore()
+  const [mode, setMode] = useState<'register' | 'restore'>('register')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [justRegistered, setJustRegistered] = useState(false)
+  const [justRestored, setJustRestored] = useState(false)
   const [showTestimoniGallery, setShowTestimoniGallery] = useState(false)
   const submitLock = useRef(false)
 
@@ -29,12 +32,14 @@ export default function LeadCaptureModal({ isOpen, onClose, onRegistered, onStar
   useEffect(() => {
     if (isOpen) {
       setJustRegistered(false)
+      setJustRestored(false)
+      setMode(defaultMode)
       setName('')
       setEmail('')
       setPhone('')
       submitLock.current = false
     }
-  }, [isOpen])
+  }, [isOpen, defaultMode])
 
   useEffect(() => {
     if (!isOpen) return
@@ -123,6 +128,63 @@ export default function LeadCaptureModal({ isOpen, onClose, onRegistered, onStar
     }
   }
 
+  const handleRestore = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (submitLock.current) return
+
+    const inputVal = email.trim()
+    const digitsOnly = inputVal.replace(/\D/g, '')
+    const isEmailInput = inputVal.includes('@') && inputVal.includes('.')
+    const isPhoneInput = digitsOnly.length >= 8
+
+    if (!isEmailInput && !isPhoneInput) {
+      toast.error(
+        isIndo
+          ? 'Masukkan email atau nomor HP/WA yang pernah didaftarkan'
+          : 'Enter your registered email or phone/WhatsApp number'
+      )
+      return
+    }
+
+    submitLock.current = true
+    setIsSubmitting(true)
+
+    try {
+      const ok = await restoreLead(inputVal)
+      if (ok) {
+        const next = new URLSearchParams(window.location.search).get('next')
+        if (next?.startsWith('/belajar/')) {
+          window.location.assign(next)
+          return
+        }
+        if (onRegistered) {
+          onRegistered()
+          return
+        }
+        toast.success(isIndo ? '✦ Akses lama dipulihkan! Seluruh modul terbuka lagi.' : '✦ Previous access restored!')
+        setJustRestored(true)
+      } else {
+        if (!isEmailInput && isPhoneInput) {
+          setPhone(inputVal)
+          setEmail('')
+        }
+        toast.error(
+          isIndo
+            ? 'Data belum ditemukan di sistem. Silakan lengkapi pendaftaran baru di tab Daftar Baru.'
+            : 'Record not found. Please complete registration under New Register.'
+        )
+        submitLock.current = false
+      }
+    } catch (err) {
+      console.error('Lead restore error:', err)
+      toast.error(isIndo ? 'Terjadi kesalahan. Coba lagi.' : 'An error occurred. Try again.')
+      submitLock.current = false
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -137,11 +199,11 @@ export default function LeadCaptureModal({ isOpen, onClose, onRegistered, onStar
             exit={{ scale: 0.9, opacity: 0 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <button className="nv-modal-close" onClick={onClose}>
+            <button type="button" aria-label={isIndo ? 'Tutup' : 'Close'} className="nv-modal-close" onClick={onClose}>
               <X size={16} />
             </button>
 
-            {justRegistered ? (
+            {justRegistered || justRestored ? (
               <div className="text-center">
                 <div className="nv-auth-logo-badge" style={{ background: 'linear-gradient(135deg, #d4a053, #b8862d)' }}>
                   <Sparkles size={24} />
@@ -178,17 +240,90 @@ export default function LeadCaptureModal({ isOpen, onClose, onRegistered, onStar
                 <Sparkles size={24} />
               </div>
               <h3 className="nv-modal-title mt-2" style={{ fontSize: '1.1rem' }}>
-                {isIndo ? '✨ Daftar Free — Full Akses' : '✨ Register Free — Full Access'}
+                {mode === 'restore'
+                  ? (isIndo ? '✦ Masuk / Pulihkan Akses' : '✦ Login / Restore Access')
+                  : (isIndo ? '✨ Daftar Free — Full Akses' : '✨ Register Free — Full Access')}
               </h3>
-              <p className="nv-modal-desc mt-1" style={{ fontSize: '0.85rem' }}>
-                {isIndo
-                  ? 'Isi data Anda untuk membuka akses penuh ke seluruh modul Hukum Asumsi beserta materi pendukung.'
-                  : 'Fill in your details to unlock full access to all Law of Assumption modules and supporting materials.'
+              <p className="nv-modal-desc mt-1" style={{ fontSize: '0.82rem', marginBottom: 0 }}>
+                {mode === 'restore'
+                  ? (isIndo
+                    ? 'Sudah pernah daftar sebelumnya? Masukkan Email atau No. HP/WA Anda untuk membuka kembali seluruh modul tanpa daftar ulang.'
+                    : 'Already registered? Enter your Email or Phone/WA number to restore full access without re-registering.')
+                  : (isIndo
+                    ? 'Isi data Anda untuk membuka akses penuh ke seluruh modul Hukum Asumsi beserta materi pendukung.'
+                    : 'Fill in your details to unlock full access to all Law of Assumption modules and supporting materials.'
+                  )
                 }
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-6">
+            <div className="flex gap-2 mt-4">
+              <button
+                type="button"
+                onClick={() => setMode('register')}
+                className="flex-1 py-2.5 px-2 rounded-lg text-[11px] sm:text-xs font-bold leading-tight cursor-pointer"
+                style={{
+                  background: mode === 'register' ? 'linear-gradient(135deg, #d4a053, #b8862d)' : 'transparent',
+                  color: mode === 'register' ? '#000' : '#a1a1aa',
+                  border: '1px solid rgba(212,160,83,.35)'
+                }}
+              >
+                {isIndo ? 'Daftar Baru' : 'New Register'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode('restore')}
+                className="flex-1 py-2.5 px-2 rounded-lg text-[11px] sm:text-xs font-bold leading-tight cursor-pointer"
+                style={{
+                  background: mode === 'restore' ? 'linear-gradient(135deg, #d4a053, #b8862d)' : 'transparent',
+                  color: mode === 'restore' ? '#000' : '#a1a1aa',
+                  border: '1px solid rgba(212,160,83,.35)'
+                }}
+              >
+                {isIndo ? 'Sudah Pernah Daftar' : 'Already Registered'}
+              </button>
+            </div>
+
+            {mode === 'restore' ? (
+            <form onSubmit={handleRestore} className="flex flex-col gap-3.5 sm:gap-4 mt-5">
+              <div className="nv-auth-input-group">
+                <label className="nv-modal-label">
+                  {isIndo ? 'EMAIL ATAU NO. HP / WHATSAPP' : 'EMAIL OR PHONE / WHATSAPP'}
+                </label>
+                <div className="nv-auth-input-wrapper">
+                  <Mail size={16} className="nv-auth-input-icon" />
+                  <input
+                    type="text"
+                    required
+                    autoComplete="username"
+                    placeholder={isIndo ? 'email@anda.com atau 08xxxxxxxxxx' : 'email@you.com or 08xxxxxxxxxx'}
+                    className="nv-auth-input"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <motion.button
+                type="submit"
+                disabled={isSubmitting}
+                className="nv-auth-submit-btn mt-2"
+                style={{
+                  background: 'linear-gradient(135deg, #d4a053, #b8862d)',
+                  color: '#000',
+                  fontWeight: 700
+                }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                {isSubmitting
+                  ? (isIndo ? 'Memulihkan...' : 'Restoring...')
+                  : (isIndo ? '✦ Masuk & Pulihkan Akses Saya' : '✦ Login & Restore My Access')
+                }
+              </motion.button>
+            </form>
+            ) : (
+            <form onSubmit={handleSubmit} className="flex flex-col gap-3.5 sm:gap-4 mt-5">
               {/* Name */}
               <div className="nv-auth-input-group">
                 <label className="nv-modal-label">
@@ -199,6 +334,7 @@ export default function LeadCaptureModal({ isOpen, onClose, onRegistered, onStar
                   <input
                     type="text"
                     required
+                    autoComplete="name"
                     placeholder={isIndo ? 'Nama Anda' : 'Your name'}
                     className="nv-auth-input"
                     value={name}
@@ -215,6 +351,7 @@ export default function LeadCaptureModal({ isOpen, onClose, onRegistered, onStar
                   <input
                     type="email"
                     required
+                    autoComplete="email"
                     placeholder="email@anda.com"
                     className="nv-auth-input"
                     value={email}
@@ -232,6 +369,8 @@ export default function LeadCaptureModal({ isOpen, onClose, onRegistered, onStar
                   <Phone size={16} className="nv-auth-input-icon" />
                   <input
                     type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
                     required
                     placeholder={isIndo ? '08xxxxxxxxxx' : '08xxxxxxxxxx'}
                     className="nv-auth-input"
@@ -295,6 +434,7 @@ export default function LeadCaptureModal({ isOpen, onClose, onRegistered, onStar
                 </button>
               </div>
             </form>
+            )}
 
             <TestimoniModal isOpen={showTestimoniGallery} onClose={() => setShowTestimoniGallery(false)} />
 

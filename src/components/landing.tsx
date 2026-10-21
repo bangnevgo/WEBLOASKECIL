@@ -24,6 +24,8 @@ import KnowledgeBank from '@/components/knowledge-bank'
 import MiniCourseSection from '@/components/mini-course-section'
 import type { GraphNodeTarget } from '@/components/curriculum-graph-view'
 
+import LeadCaptureModal from '@/components/lead-capture-modal'
+
 const CurriculumGraphView = dynamic(() => import('@/components/curriculum-graph-view'), {
   ssr: false,
   loading: () => (
@@ -33,7 +35,6 @@ const CurriculumGraphView = dynamic(() => import('@/components/curriculum-graph-
     </div>
   ),
 })
-const LeadCaptureModal = dynamic(() => import('@/components/lead-capture-modal'), { ssr: false })
 const TestimoniModal = dynamic(() => import('@/components/testimoni-modal'), { ssr: false })
 
 const customEase = [0.25, 0.46, 0.45, 0.94] as const
@@ -129,26 +130,48 @@ const partImageAspectRatios = [
 ]
 
 export default function Landing() {
-  const { setView, isAuthenticated, leadRegistered } = useAppStore()
+  const { view, setView, isAuthenticated, leadRegistered, leadData, checkLeadAccess } = useAppStore()
   const { t, language, setLanguage } = useTranslation()
   const curriculumParts = language === 'en' ? ALL_PARTS_EN : ALL_PARTS
   const [activeSection, setActiveSection] = useState<string | null>(null)
   const [showBackTop, setShowBackTop] = useState(false)
   const [showStickyBar, setShowStickyBar] = useState(false)
   const [showLeadModal, setShowLeadModal] = useState(false)
+  const [leadModalMode, setLeadModalMode] = useState<'register' | 'restore'>('register')
   const [showTestimoniModal, setShowTestimoniModal] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [pendingLesson, setPendingLesson] = useState<{ partId: string; lessonNum: string } | null>(null)
 
+  const openLeadModal = useCallback((mode: 'register' | 'restore' = 'register') => {
+    setLeadModalMode(mode)
+    setShowLeadModal(true)
+  }, [])
+
+  useEffect(() => {
+    checkLeadAccess()
+  }, [checkLeadAccess])
+
+  useEffect(() => {
+    if (view === 'login') {
+      openLeadModal('restore')
+      setView('landing')
+    } else if (view === 'register') {
+      openLeadModal('register')
+      setView('landing')
+    }
+  }, [view, openLeadModal, setView])
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
-    if (params.get('register') !== '1') return
-
-    // Defer until after hydration; this URL is only used when a protected
-    // lesson redirects an anonymous visitor to the registration form.
-    const timer = window.setTimeout(() => setShowLeadModal(true), 0)
-    return () => window.clearTimeout(timer)
-  }, [])
+    if (params.get('login') === '1') {
+      const timer = window.setTimeout(() => openLeadModal('restore'), 0)
+      return () => window.clearTimeout(timer)
+    }
+    if (params.get('register') === '1') {
+      const timer = window.setTimeout(() => openLeadModal('register'), 0)
+      return () => window.clearTimeout(timer)
+    }
+  }, [openLeadModal])
 
   // Client-only flag to avoid hydration mismatch
   const [isMounted, setIsMounted] = useState(false)
@@ -233,7 +256,7 @@ export default function Landing() {
       const isLessonLocked = isMounted ? (!leadRegistered && !isLessonFree) : !isLessonFree
       if (isLessonLocked) {
         setPendingLesson({ partId: part.id, lessonNum: lesson.num })
-        setShowLeadModal(true)
+        openLeadModal()
       } else {
         useAppStore.getState().openLesson(part.id, lesson.num)
       }
@@ -246,7 +269,7 @@ export default function Landing() {
     if (target.type === 'url') {
       window.open(target.url, '_blank', 'noopener,noreferrer')
     }
-  }, [curriculumParts, isMounted, leadRegistered])
+  }, [curriculumParts, isMounted, leadRegistered, openLeadModal])
 
   return (
     <div className="nv-page" ref={mainRef}>
@@ -313,24 +336,46 @@ export default function Landing() {
               </button>
             </div>
 
-            {isAuthenticated ? (
+            {isMounted && isAuthenticated ? (
               <button 
+                type="button"
                 className="px-4 py-1.5 bg-[#d4a053]/10 hover:bg-[#d4a053]/20 border border-[#d4a053]/30 text-[#d4a053] text-xs font-bold rounded-lg transition cursor-pointer"
                 onClick={() => setView('dashboard')}
               >
                 {t('myDashboard')}
               </button>
-            ) : (
-              <>
-                <button 
-                  className="text-xs text-neutral-400 hover:text-white transition bg-transparent border-none cursor-pointer px-2 py-1"
-                  onClick={() => setView('login')}
+            ) : isMounted && leadRegistered ? (
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  className="px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/35 text-emerald-400 text-xs font-bold rounded-lg transition cursor-pointer flex items-center gap-1.5"
+                  onClick={() => document.getElementById('part-1')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                  title={leadData?.email || ''}
+                >
+                  <span>✦</span>
+                  <span>{leadData?.name ? `Akses Aktif (${leadData.name.split(' ')[0]})` : (language === 'en' ? 'Full Access Active' : 'Akses Penuh Aktif')}</span>
+                </button>
+                <button
+                  type="button"
+                  className="text-xs text-neutral-400 hover:text-white transition bg-transparent border border-neutral-800 hover:border-neutral-700 rounded-lg cursor-pointer px-2.5 py-1.5"
+                  onClick={() => openLeadModal('restore')}
                 >
                   {t('login')}
                 </button>
-                <button 
+              </div>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className="px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-neutral-200 hover:text-white text-xs font-bold rounded-lg transition cursor-pointer"
+                  onClick={() => openLeadModal('restore')}
+                >
+                  {t('login')}
+                </button>
+                <button
+                  type="button"
                   className="px-4 py-1.5 bg-[#d4a053] hover:bg-[#c4883a] text-black text-xs font-bold rounded-lg transition cursor-pointer"
-                  onClick={() => setShowLeadModal(true)}
+                  onClick={() => openLeadModal('register')}
                 >
                   {t('register')}
                 </button>
@@ -340,6 +385,15 @@ export default function Landing() {
 
           {/* Mobile Actions & Hamburger Toggle */}
           <div className="flex md:hidden items-center gap-1.5 sm:gap-2 shrink-0">
+            {!(isMounted && (isAuthenticated || leadRegistered)) && (
+              <button
+                type="button"
+                className="px-2.5 py-1.5 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-[#ffd27d] text-[11px] font-bold rounded-lg transition cursor-pointer"
+                onClick={() => openLeadModal('restore')}
+              >
+                {t('login')}
+              </button>
+            )}
             {/* Language Toggle (compact) */}
             <div className="relative flex items-center bg-neutral-950 border border-neutral-800 rounded-full p-0.5 w-[64px] h-7 shrink-0">
               <div 
@@ -390,24 +444,47 @@ export default function Landing() {
             >
               <div className="flex flex-col gap-3.5">
                 {/* Primary Actions */}
-                {isAuthenticated ? (
+                {isMounted && isAuthenticated ? (
                   <button
+                    type="button"
                     className="w-full py-3 bg-[#d4a053]/15 hover:bg-[#d4a053]/25 border border-[#d4a053]/40 text-[#d4a053] font-bold rounded-xl transition text-sm flex items-center justify-center gap-2"
                     onClick={() => { setMobileMenuOpen(false); setView('dashboard'); }}
                   >
                     <span>✦</span> {t('myDashboard')}
                   </button>
+                ) : isMounted && leadRegistered ? (
+                  <div className="flex flex-col gap-2">
+                    <button
+                      type="button"
+                      className="w-full py-2.5 bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 font-bold rounded-xl transition text-xs flex items-center justify-center gap-2"
+                      onClick={() => {
+                        setMobileMenuOpen(false)
+                        document.getElementById('part-1')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                      }}
+                    >
+                      <span>✦</span> {leadData?.name ? `Akses Penuh Aktif (${leadData.name})` : 'Akses Penuh Aktif — Mulai Belajar'}
+                    </button>
+                    <button
+                      type="button"
+                      className="w-full py-2 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-neutral-300 text-xs font-bold rounded-xl transition"
+                      onClick={() => { setMobileMenuOpen(false); openLeadModal('restore'); }}
+                    >
+                      {language === 'en' ? 'Switch Account / Restore Access' : 'Ganti Email / Pulihkan Akses'}
+                    </button>
+                  </div>
                 ) : (
                   <div className="grid grid-cols-2 gap-2.5">
                     <button
+                      type="button"
                       className="py-2.5 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-neutral-200 text-xs font-bold rounded-xl transition"
-                      onClick={() => { setMobileMenuOpen(false); setView('login'); }}
+                      onClick={() => { setMobileMenuOpen(false); openLeadModal('restore'); }}
                     >
                       {t('login')}
                     </button>
                     <button
+                      type="button"
                       className="py-2.5 bg-[#d4a053] hover:bg-[#c4883a] text-black text-xs font-bold rounded-xl transition shadow-md"
-                      onClick={() => { setMobileMenuOpen(false); setShowLeadModal(true); }}
+                      onClick={() => { setMobileMenuOpen(false); openLeadModal('register'); }}
                     >
                       {t('register')}
                     </button>
@@ -629,7 +706,7 @@ export default function Landing() {
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
                 <motion.button
                   className="nv-cta-button nv-cta-pulse"
-                  onClick={() => setShowLeadModal(true)}
+                  onClick={() => openLeadModal()}
                   whileHover={{ scale: 1.03, y: -2 }}
                   whileTap={{ scale: 0.97 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 17 }}
@@ -835,7 +912,7 @@ export default function Landing() {
                       onClick={() => {
                         if (isLessonLocked) {
                           setPendingLesson({ partId: part.id, lessonNum: lesson.num })
-                          setShowLeadModal(true)
+                          openLeadModal()
                         } else {
                           useAppStore.getState().openLesson(part.id, lesson.num)
                         }
@@ -1824,7 +1901,7 @@ export default function Landing() {
                 <p className="text-[10px] text-[#d4a053] font-medium">49 Pelajaran Bebas Biaya</p>
               </div>
               <button
-                onClick={() => setShowLeadModal(true)}
+                onClick={() => openLeadModal()}
                 className="flex-shrink-0 px-3.5 py-2 text-xs font-bold text-black rounded-lg bg-gradient-to-r from-[#d4a053] to-[#b8862d] shadow-lg active:scale-95 transition-transform"
               >
                 {language === 'en' ? 'Register Free' : 'Daftar Gratis (Akses 10 Modul)'}
@@ -1837,6 +1914,7 @@ export default function Landing() {
       {/* ─── LEAD CAPTURE MODAL ─── */}
       <LeadCaptureModal
         isOpen={showLeadModal}
+        defaultMode={leadModalMode}
         onClose={() => {
           setShowLeadModal(false)
           setPendingLesson(null)

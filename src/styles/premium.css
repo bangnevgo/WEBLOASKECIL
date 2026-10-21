@@ -503,6 +503,13 @@ h1, h2, h3, h4, h5, h6,
   box-shadow: 0 0 0 2px rgba(212, 160, 83, 0.15);
 }
 
+@media (max-width: 640px) {
+  .nv-auth-input {
+    font-size: 16px;
+    padding: 11px 14px 11px 40px;
+  }
+}
+
 .nv-auth-submit-btn {
   width: 100%;
   padding: 12px 24px;

@@ -8,6 +8,7 @@ import { ALL_PARTS_EN } from '@/lib/curriculum-data-en'
 import { useTranslation } from '@/lib/translations'
 import { FileText, Sparkles, ArrowLeft, ChevronLeft, ChevronRight, Check } from 'lucide-react'
 import AudioPlayer from '@/components/ui/audio-player'
+import LeadCaptureModal from '@/components/lead-capture-modal'
 import { toast } from 'sonner'
 
 // Map lessons to specific audio meditations
@@ -45,6 +46,13 @@ export default function LessonDetail() {
   } = useAppStore()
   
   const [readingProgress, setReadingProgress] = useState(0)
+  const [showLeadModal, setShowLeadModal] = useState(false)
+  const [leadModalMode, setLeadModalMode] = useState<'register' | 'restore'>('register')
+
+  const openLeadModal = (mode: 'register' | 'restore' = 'register') => {
+    setLeadModalMode(mode)
+    setShowLeadModal(true)
+  }
 
   const part = curriculumParts.find((p) => p.id === activePartId)
   const lesson = part?.lessons.find((l) => l.num === activeLessonNum)
@@ -252,13 +260,22 @@ export default function LessonDetail() {
                       ? 'Register for free to unlock all 49 lessons, sourced quotes, daily practices, and meditation audios.' 
                       : 'Daftar gratis untuk membuka akses penuh ke 49 modul pelajaran, kutipan asli bersumber, praktik harian, dan panduan meditasi audio.'}
                   </p>
-                  <a
-                    href="/?register=1"
-                    className="px-6 py-2.5 bg-[#d4a053] hover:bg-[#c39043] text-black font-extrabold text-sm rounded-xl transition shadow-lg inline-block"
-                    style={{ textDecoration: 'none' }}
-                  >
-                    ✦ {language === 'en' ? 'Unlock Free Access Now' : 'Buka Akses Gratis Sekarang'}
-                  </a>
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-1">
+                    <button
+                      type="button"
+                      onClick={() => openLeadModal('register')}
+                      className="px-6 py-2.5 bg-[#d4a053] hover:bg-[#c39043] text-black font-extrabold text-sm rounded-xl transition shadow-lg cursor-pointer"
+                    >
+                      ✦ {language === 'en' ? 'Unlock Free Access Now' : 'Buka Akses Gratis Sekarang'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => openLeadModal('restore')}
+                      className="px-5 py-2.5 bg-neutral-900 hover:bg-neutral-800 border border-[#d4a053]/40 text-[#e5b869] font-bold text-xs rounded-xl transition cursor-pointer"
+                    >
+                      {language === 'en' ? 'Already Registered? Login →' : 'Sudah Pernah Daftar? Masuk →'}
+                    </button>
+                  </div>
                 </div>
               </>
             ) : (
@@ -584,6 +601,13 @@ export default function LessonDetail() {
         </aside>
 
       </div>
+
+      <LeadCaptureModal
+        isOpen={showLeadModal}
+        defaultMode={leadModalMode}
+        onClose={() => setShowLeadModal(false)}
+        onRegistered={() => setShowLeadModal(false)}
+      />
     </div>
   )
 }

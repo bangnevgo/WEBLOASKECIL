@@ -70,6 +70,10 @@ interface AppState {
   leadRegistered: boolean
   leadData: LeadData | null
   registerLead: (data: LeadData) => void
+  /** Pulihkan akses member lama via /api/lead/restore (tanpa baris Lead baru). */
+  restoreLead: (identifier: string) => Promise<boolean>
+  /** Sinkronkan akses dari cookie nv-lead-access atau email tersimpan. */
+  checkLeadAccess: () => Promise<void>
 }
 
 // Load persisted state from localStorage
@@ -133,8 +137,8 @@ const persisted = typeof window !== 'undefined' ? loadPersistedState() : null
 export const useAppStore = create<AppState>((set, get) => ({
   view: 'landing',
   setView: (view) => set({ view }),
-  userName: persisted?.userName || '',
-  userEmail: persisted?.userEmail || '',
+  userName: persisted?.userName || persisted?.leadData?.name || '',
+  userEmail: persisted?.userEmail || persisted?.leadData?.email || '',
   isAuthenticated: persisted?.isAuthenticated || false,
   language: persisted?.language || 'id',
   setLanguage: (language) => {
@@ -212,6 +216,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       userName: '',
       userEmail: '',
       isAuthenticated: false,
+      leadRegistered: false,
+      leadData: null,
       view: 'landing',
       completedLessons: new Set<string>(),
     })
@@ -219,10 +225,12 @@ export const useAppStore = create<AppState>((set, get) => ({
       userName: '',
       userEmail: '',
       isAuthenticated: false,
+      leadRegistered: false,
+      leadData: null,
       completedLessons: []
     })
   },
-  hasCurriculumAccess: () => get().leadRegistered,
+  hasCurriculumAccess: () => get().leadRegistered || get().isAuthenticated,
   /** Komunitas tetap bebas diakses */
   hasCommunityAccess: () => true,
   // Freemium lesson state
@@ -241,15 +249,64 @@ export const useAppStore = create<AppState>((set, get) => ({
   leadRegistered: persisted?.leadRegistered || false,
   leadData: persisted?.leadData || null,
   registerLead: (data) => {
-    set({ leadRegistered: true, leadData: data })
+    const nextUserName = get().userName || data.name
+    const nextUserEmail = get().userEmail || data.email
+    set({
+      leadRegistered: true,
+      leadData: data,
+      userName: nextUserName,
+      userEmail: nextUserEmail,
+    })
     persistState({
-      userName: get().userName,
-      userEmail: get().userEmail,
+      userName: nextUserName,
+      userEmail: nextUserEmail,
       isAuthenticated: get().isAuthenticated,
       completedLessons: [...get().completedLessons],
       leadRegistered: true,
       leadData: data
     })
+  },
+  restoreLead: async (identifier) => {
+    try {
+      const cleaned = identifier.trim()
+      const res = await fetch('/api/lead/restore', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: cleaned, identifier: cleaned })
+      })
+      const data = await res.json().catch(() => ({}))
+      if (res.ok && data.success && data.data?.email) {
+        get().registerLead({
+          name: String(data.data.name || data.data.email.split('@')[0]),
+          email: String(data.data.email),
+          phone: String(data.data.phone || '')
+        })
+        return true
+      }
+    } catch (error) {
+      console.error('Restore lead error:', error)
+    }
+    return false
+  },
+  checkLeadAccess: async () => {
+    if (get().leadRegistered) return
+    try {
+      const savedEmail = get().leadData?.email || get().userEmail || ''
+      const query = savedEmail ? `?email=${encodeURIComponent(savedEmail)}` : ''
+      const res = await fetch(`/api/lead/status${query}`)
+      if (!res.ok) return
+      const data = await res.json().catch(() => ({}))
+      if (data.success && data.registered) {
+        const existingLead = get().leadData || {
+          name: get().userName || (savedEmail ? savedEmail.split('@')[0] : 'Member LOAS'),
+          email: savedEmail,
+          phone: '',
+        }
+        get().registerLead(existingLead)
+      }
+    } catch {
+      // Ignore network errors on background status check
+    }
   },
 
   // Authentication
